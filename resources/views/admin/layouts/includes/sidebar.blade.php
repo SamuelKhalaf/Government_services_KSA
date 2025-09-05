@@ -66,12 +66,116 @@
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                                                            <span class="menu-title">@lang('navigation.users')</span>
+                        <span class="menu-title">@lang('navigation.users')</span>
                         </a>
                         <!--end:Menu link-->
                     </div>
                     <!--end:Menu item-->
                 @endif
+
+                {{-- CLIENT MANAGEMENT MODULE --}}
+                @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ALL_CLIENTS, PermissionEnum::VIEW_ASSIGNED_CLIENTS, PermissionEnum::CREATE_CLIENTS, PermissionEnum::UPDATE_CLIENTS, PermissionEnum::DELETE_CLIENTS, PermissionEnum::VIEW_CLIENT_EMPLOYEES, PermissionEnum::CREATE_CLIENT_EMPLOYEES, PermissionEnum::UPDATE_CLIENT_EMPLOYEES, PermissionEnum::DELETE_CLIENT_EMPLOYEES, PermissionEnum::VIEW_ALL_DOCUMENTS, PermissionEnum::VIEW_ASSIGNED_DOCUMENTS, PermissionEnum::VIEW_DOCUMENT_DASHBOARD,PermissionEnum::VIEW_DOCUMENT_TYPES, PermissionEnum::CREATE_DOCUMENT_TYPES, PermissionEnum::UPDATE_DOCUMENT_TYPES, PermissionEnum::DELETE_DOCUMENT_TYPES]))
+                    <!--begin:Menu item-->
+                    <div data-kt-menu-trigger="click"
+                         class="menu-item menu-accordion {{setMenuOpenClass(['admin.companies.*','admin.employees.*','admin.documents.*','admin.document-dashboard','admin.document-types.*'])}}">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-2">
+                                    <i class="fa-solid fa-building"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">@lang('navigation.client_management')</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                            @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ALL_CLIENTS, PermissionEnum::VIEW_ASSIGNED_CLIENTS, PermissionEnum::CREATE_CLIENTS, PermissionEnum::UPDATE_CLIENTS, PermissionEnum::DELETE_CLIENTS]))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.companies.*')}}"
+                                       href="{{route('admin.companies.index')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.companies')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+
+                            @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_CLIENT_EMPLOYEES, PermissionEnum::CREATE_CLIENT_EMPLOYEES, PermissionEnum::UPDATE_CLIENT_EMPLOYEES, PermissionEnum::DELETE_CLIENT_EMPLOYEES]))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.employees.*')}}"
+                                       href="{{route('admin.employees.index')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.employees')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+
+                            @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ALL_DOCUMENTS, PermissionEnum::VIEW_ASSIGNED_DOCUMENTS, PermissionEnum::UPLOAD_DOCUMENTS, PermissionEnum::UPDATE_DOCUMENTS, PermissionEnum::DELETE_DOCUMENTS]))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.documents.*')}}"
+                                       href="{{route('admin.documents.index')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.documents')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+
+                            @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_DOCUMENT_TYPES, PermissionEnum::CREATE_DOCUMENT_TYPES, PermissionEnum::UPDATE_DOCUMENT_TYPES, PermissionEnum::DELETE_DOCUMENT_TYPES]))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.document-types.*')}}"
+                                       href="{{route('admin.document-types.index')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.document_types')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+
+                            @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_DOCUMENT_DASHBOARD))
+                                <!--begin:Menu item-->
+{{--                                <div class="menu-item">--}}
+{{--                                    <!--begin:Menu link-->--}}
+{{--                                    <a class="menu-link {{setActiveClass('admin.document-dashboard')}}"--}}
+{{--                                       href="{{route('admin.document-dashboard')}}">--}}
+{{--                                        <span class="menu-bullet">--}}
+{{--                                            <span class="bullet bullet-dot"></span>--}}
+{{--                                        </span>--}}
+{{--                                        <span class="menu-title">@lang('navigation.document_dashboard')</span>--}}
+{{--                                    </a>--}}
+{{--                                    <!--end:Menu link-->--}}
+{{--                                </div>--}}
+                                <!--end:Menu item-->
+                            @endif
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
+                    <!--end:Menu item-->
+                @endif
+
                 @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_PERMISSIONS, PermissionEnum::CREATE_PERMISSIONS, PermissionEnum::DELETE_PERMISSIONS, PermissionEnum::ASSIGN_PERMISSIONS]) || auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ROLES, PermissionEnum::CREATE_ROLES, PermissionEnum::UPDATE_ROLES, PermissionEnum::DELETE_ROLES]))
                     <!--begin:Menu item-->
                     <div data-kt-menu-trigger="click"
@@ -85,7 +189,7 @@
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                                                        <span class="menu-title">@lang('navigation.system_setting')</span>
+                        <span class="menu-title">@lang('navigation.system_setting')</span>
                         <span class="menu-arrow"></span>
                     </span>
                         <!--end:Menu link-->

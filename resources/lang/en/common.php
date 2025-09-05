@@ -28,6 +28,8 @@ return [
     'error' => 'Error',
     'warning' => 'Warning',
     'info' => 'Information',
+    'information' => 'Information',
+    'complete' => 'Complete',
     'loading' => 'Loading...',
     'processing' => 'Processing...',
     'saving' => 'Saving...',
@@ -128,6 +130,53 @@ return [
     'ok_got_it' => 'Ok, got it!',
     'try_again' => 'Try Again',
     
+    // Page and section titles
+    'dashboard' => 'Dashboard',
+    'client_management' => 'Client Management',
+    'companies' => 'Companies',
+    'employees' => 'Employees',
+    'documents' => 'Documents',
+    'document_dashboard' => 'Document Dashboard',
+    'document_types' => 'Document Types',
+    
+    // Company related
+    'companies_management' => 'Companies Management',
+    'add_company' => 'Add Company',
+    'edit_company' => 'Edit Company',
+    'company_details' => 'Company Details',
+    'company' => 'Company',
+    'add_employee' => 'Add Employee',
+    
+    // Documents related
+    'municipality_license' => 'Municipality License',
+    'civil_defense_license' => 'Civil Defense License',
+    'branch_registration' => 'Branch Registration',
+    'certificate_file' => 'Certificate File',
+    'download_certificate' => 'Download Certificate',
+    'edit_license' => 'Edit License',
+    'delete_license' => 'Delete License',
+    
+    // Status and time
+    'expired' => 'Expired',
+    'expiring_soon' => 'Expiring Soon',
+    'valid' => 'Valid',
+    'days' => 'days',
+    'until_expiry' => 'Until Expiry',
+    'n_a' => 'N/A',
+    
+    // Common form fields
+    'details' => 'Details',
+    'issue_date' => 'Issue Date',
+    'expiry_date' => 'Expiry Date',
+    'license_number' => 'License Number',
+    'area' => 'Area',
+    'notes' => 'Notes',
+    'contact' => 'Contact',
+    'location' => 'Location',
+    'total' => 'Total',
+    'expiring' => 'Expiring',
+    'apply' => 'Apply',
+    
     // Confirmation messages
     'confirm_close' => 'Are you sure you would like to close?',
     'confirm_cancel' => 'Are you sure you would like to cancel?',
@@ -135,5 +184,8 @@ return [
     'yes_cancel' => 'Yes, cancel it!',
     'yes_delete' => 'Yes, delete!',
     'no_return' => 'No, return',
+    'please_wait' => 'Please wait...',
     'form_not_cancelled' => 'Your form has not been cancelled!',
+
+    'employee' => 'Employee',
 ];

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-@php 
+@php
     $currentLang = app()->getLocale();
     $isRTL = $currentLang === 'ar';
 @endphp
@@ -117,18 +117,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isRTL) {
         document.body.classList.add('app-rtl');
     }
-    
+
     // Handle language switching
     document.querySelectorAll('a[href*="language/switch"]').forEach(function(link) {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             const url = this.href;
             const language = url.split('/').pop();
-            
+
             // Show loading state
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (language === 'ar' ? 'جاري التحميل...' : 'Loading...');
-            
+
             // Make AJAX request to switch language
             fetch(url, {
                 method: 'GET',
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     alert('Failed to change language. Please try again.');
                 }
-                
+
                 // Restore original link text
                 this.innerHTML = this.querySelector('.menu-title').textContent;
             });
@@ -180,8 +180,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <!--end::Language Switching Script-->
+
+<!--begin::Notifications-->
+@include('admin.layouts.includes.notifications')
+<!--end::Notifications-->
+
 <!--end::Javascript-->
 @yield('scripts')
+@stack('scripts')
 </body>
 <!--end::Body-->
 </html>

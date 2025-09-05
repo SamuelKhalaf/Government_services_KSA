@@ -40,6 +40,15 @@ enum PermissionEnum : string
     case UPDATE_CLIENT_EMPLOYEES = 'update_client_employees';
     case DELETE_CLIENT_EMPLOYEES = 'delete_client_employees';
 
+    // Company Documents Management
+    case VIEW_COMPANY_DOCUMENTS = 'view_company_documents';
+    case CREATE_COMPANY_DOCUMENTS = 'create_company_documents';
+    case UPDATE_COMPANY_DOCUMENTS = 'update_company_documents';
+    case DELETE_COMPANY_DOCUMENTS = 'delete_company_documents';
+    case MANAGE_CIVIL_DEFENSE_LICENSES = 'manage_civil_defense_licenses';
+    case MANAGE_MUNICIPALITY_LICENSES = 'manage_municipality_licenses';
+    case MANAGE_BRANCH_REGISTRATIONS = 'manage_branch_registrations';
+
     // Documents Management
     case VIEW_ALL_DOCUMENTS = 'view_all_documents';
     case VIEW_ASSIGNED_DOCUMENTS = 'view_assigned_documents';
@@ -48,6 +57,13 @@ enum PermissionEnum : string
     case DELETE_DOCUMENTS = 'delete_documents';
     case DOWNLOAD_DOCUMENTS = 'download_documents';
     case APPROVE_DOCUMENTS = 'approve_documents';
+    case VIEW_DOCUMENT_DASHBOARD = 'view_document_dashboard';
+
+    // Document Types Management
+    case VIEW_DOCUMENT_TYPES = 'view_document_types';
+    case CREATE_DOCUMENT_TYPES = 'create_document_types';
+    case UPDATE_DOCUMENT_TYPES = 'update_document_types';
+    case DELETE_DOCUMENT_TYPES = 'delete_document_types';
 
     // Tasks Management
     case VIEW_ALL_TASKS = 'view_all_tasks';
@@ -148,18 +164,27 @@ enum PermissionEnum : string
             self::ASSIGN_PERMISSIONS => $lang === 'ar' ? 'تعيين الصلاحيات' : 'Assign Permissions',
 
             // Clients Management
-            self::VIEW_ALL_CLIENTS => $lang === 'ar' ? 'عرض جميع العملاء' : 'View All Clients',
-            self::VIEW_ASSIGNED_CLIENTS => $lang === 'ar' ? 'عرض العملاء المخصصين' : 'View Assigned Clients',
-            self::CREATE_CLIENTS => $lang === 'ar' ? 'إنشاء عملاء' : 'Create Clients',
-            self::UPDATE_CLIENTS => $lang === 'ar' ? 'تحديث العملاء' : 'Update Clients',
-            self::DELETE_CLIENTS => $lang === 'ar' ? 'حذف العملاء' : 'Delete Clients',
-            self::ASSIGN_CLIENTS_TO_EMPLOYEES => $lang === 'ar' ? 'تعيين العملاء للموظفين' : 'Assign Clients to Employees',
+            self::VIEW_ALL_CLIENTS => $lang === 'ar' ? 'عرض جميع المنشأت' : 'View All Clients',
+            self::VIEW_ASSIGNED_CLIENTS => $lang === 'ar' ? 'عرض المنشأت المخصصين' : 'View Assigned Clients',
+            self::CREATE_CLIENTS => $lang === 'ar' ? 'إنشاء منشأت' : 'Create Clients',
+            self::UPDATE_CLIENTS => $lang === 'ar' ? 'تحديث المنشأت' : 'Update Clients',
+            self::DELETE_CLIENTS => $lang === 'ar' ? 'حذف المنشأت' : 'Delete Clients',
+            self::ASSIGN_CLIENTS_TO_EMPLOYEES => $lang === 'ar' ? 'تعيين المنشأت للموظفين' : 'Assign Clients to Employees',
 
             // Client Employees Management
-            self::VIEW_CLIENT_EMPLOYEES => $lang === 'ar' ? 'عرض موظفي العملاء' : 'View Client Employees',
-            self::CREATE_CLIENT_EMPLOYEES => $lang === 'ar' ? 'إنشاء موظفي عملاء' : 'Create Client Employees',
-            self::UPDATE_CLIENT_EMPLOYEES => $lang === 'ar' ? 'تحديث موظفي العملاء' : 'Update Client Employees',
-            self::DELETE_CLIENT_EMPLOYEES => $lang === 'ar' ? 'حذف موظفي العملاء' : 'Delete Client Employees',
+            self::VIEW_CLIENT_EMPLOYEES => $lang === 'ar' ? 'عرض موظفي المنشأت' : 'View Client Employees',
+            self::CREATE_CLIENT_EMPLOYEES => $lang === 'ar' ? 'إنشاء موظفي منشأت' : 'Create Client Employees',
+            self::UPDATE_CLIENT_EMPLOYEES => $lang === 'ar' ? 'تحديث موظفي المنشأت' : 'Update Client Employees',
+            self::DELETE_CLIENT_EMPLOYEES => $lang === 'ar' ? 'حذف موظفي المنشأت' : 'Delete Client Employees',
+
+            // Company Documents Management
+            self::VIEW_COMPANY_DOCUMENTS => $lang === 'ar' ? 'عرض وثائق المنشأت' : 'View Company Documents',
+            self::CREATE_COMPANY_DOCUMENTS => $lang === 'ar' ? 'إنشاء وثائق المنشأت' : 'Create Company Documents',
+            self::UPDATE_COMPANY_DOCUMENTS => $lang === 'ar' ? 'تحديث وثائق المنشأت' : 'Update Company Documents',
+            self::DELETE_COMPANY_DOCUMENTS => $lang === 'ar' ? 'حذف وثائق المنشأت' : 'Delete Company Documents',
+            self::MANAGE_CIVIL_DEFENSE_LICENSES => $lang === 'ar' ? 'إدارة تراخيص الدفاع المدني' : 'Manage Civil Defense Licenses',
+            self::MANAGE_MUNICIPALITY_LICENSES => $lang === 'ar' ? 'إدارة تراخيص البلدية' : 'Manage Municipality Licenses',
+            self::MANAGE_BRANCH_REGISTRATIONS => $lang === 'ar' ? 'إدارة تسجيل الفروع' : 'Manage Branch Registrations',
 
             // Documents Management
             self::VIEW_ALL_DOCUMENTS => $lang === 'ar' ? 'عرض جميع الوثائق' : 'View All Documents',
@@ -169,6 +194,13 @@ enum PermissionEnum : string
             self::DELETE_DOCUMENTS => $lang === 'ar' ? 'حذف الوثائق' : 'Delete Documents',
             self::DOWNLOAD_DOCUMENTS => $lang === 'ar' ? 'تحميل الوثائق' : 'Download Documents',
             self::APPROVE_DOCUMENTS => $lang === 'ar' ? 'اعتماد الوثائق' : 'Approve Documents',
+            self::VIEW_DOCUMENT_DASHBOARD => $lang === 'ar' ? 'عرض لوحة الوثائق' : 'View Document Dashboard',
+
+            // Document Types Management
+            self::VIEW_DOCUMENT_TYPES => $lang === 'ar' ? 'عرض أنواع الوثائق' : 'View Document Types',
+            self::CREATE_DOCUMENT_TYPES => $lang === 'ar' ? 'إنشاء أنواع الوثائق' : 'Create Document Types',
+            self::UPDATE_DOCUMENT_TYPES => $lang === 'ar' ? 'تحديث أنواع الوثائق' : 'Update Document Types',
+            self::DELETE_DOCUMENT_TYPES => $lang === 'ar' ? 'حذف أنواع الوثائق' : 'Delete Document Types',
 
             // Tasks Management
             self::VIEW_ALL_TASKS => $lang === 'ar' ? 'عرض جميع المهام' : 'View All Tasks',
@@ -187,16 +219,16 @@ enum PermissionEnum : string
             self::DELETE_NOTIFICATIONS => $lang === 'ar' ? 'حذف الإشعارات' : 'Delete Notifications',
 
             // Financial Packages Management
-            self::VIEW_FINANCIAL_PACKAGES => $lang === 'ar' ? 'عرض الحزم المالية' : 'View Financial Packages',
-            self::CREATE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'إنشاء حزم مالية' : 'Create Financial Packages',
-            self::UPDATE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'تحديث الحزم المالية' : 'Update Financial Packages',
-            self::DELETE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'حذف الحزم المالية' : 'Delete Financial Packages',
-            self::ASSIGN_PACKAGES_TO_CLIENTS => $lang === 'ar' ? 'تعيين الحزم للعملاء' : 'Assign Packages to Clients',
+            self::VIEW_FINANCIAL_PACKAGES => $lang === 'ar' ? 'عرض الباقات المالية' : 'View Financial Packages',
+            self::CREATE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'إنشاء باقات مالية' : 'Create Financial Packages',
+            self::UPDATE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'تحديث الباقات المالية' : 'Update Financial Packages',
+            self::DELETE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'حذف الباقات المالية' : 'Delete Financial Packages',
+            self::ASSIGN_PACKAGES_TO_CLIENTS => $lang === 'ar' ? 'تعيين الباقات للمنشأت' : 'Assign Packages to Clients',
 
             // Reports & Analytics
             self::VIEW_REPORTS => $lang === 'ar' ? 'عرض التقارير' : 'View Reports',
             self::EXPORT_REPORTS => $lang === 'ar' ? 'تصدير التقارير' : 'Export Reports',
-            self::VIEW_CLIENT_REPORTS => $lang === 'ar' ? 'عرض تقارير العملاء' : 'View Client Reports',
+            self::VIEW_CLIENT_REPORTS => $lang === 'ar' ? 'عرض تقارير المنشأت' : 'View Client Reports',
             self::VIEW_EMPLOYEE_PERFORMANCE => $lang === 'ar' ? 'عرض أداء الموظفين' : 'View Employee Performance',
         };
     }
@@ -207,34 +239,40 @@ enum PermissionEnum : string
     public function getCategory(string $lang = 'en'): string
     {
         return match($this) {
-            self::VIEW_DASHBOARD, self::VIEW_ANALYTICS, self::MANAGE_SYSTEM_SETTINGS 
+            self::VIEW_DASHBOARD, self::VIEW_ANALYTICS, self::MANAGE_SYSTEM_SETTINGS
                 => $lang === 'ar' ? 'لوحة التحكم والنظام' : 'Dashboard & System',
-            
-            self::VIEW_USERS, self::CREATE_USERS, self::UPDATE_USERS, self::DELETE_USERS, self::ACTIVATE_DEACTIVATE_USERS 
+
+            self::VIEW_USERS, self::CREATE_USERS, self::UPDATE_USERS, self::DELETE_USERS, self::ACTIVATE_DEACTIVATE_USERS
                 => $lang === 'ar' ? 'إدارة المستخدمين' : 'Users Management',
-            
-            self::VIEW_ROLES, self::CREATE_ROLES, self::UPDATE_ROLES, self::DELETE_ROLES, self::VIEW_PERMISSIONS, self::CREATE_PERMISSIONS, self::DELETE_PERMISSIONS, self::ASSIGN_PERMISSIONS 
+
+            self::VIEW_ROLES, self::CREATE_ROLES, self::UPDATE_ROLES, self::DELETE_ROLES, self::VIEW_PERMISSIONS, self::CREATE_PERMISSIONS, self::DELETE_PERMISSIONS, self::ASSIGN_PERMISSIONS
                 => $lang === 'ar' ? 'الأدوار والصلاحيات' : 'Roles & Permissions',
-            
-            self::VIEW_ALL_CLIENTS, self::VIEW_ASSIGNED_CLIENTS, self::CREATE_CLIENTS, self::UPDATE_CLIENTS, self::DELETE_CLIENTS, self::ASSIGN_CLIENTS_TO_EMPLOYEES 
-                => $lang === 'ar' ? 'إدارة العملاء' : 'Clients Management',
-            
-            self::VIEW_CLIENT_EMPLOYEES, self::CREATE_CLIENT_EMPLOYEES, self::UPDATE_CLIENT_EMPLOYEES, self::DELETE_CLIENT_EMPLOYEES 
-                => $lang === 'ar' ? 'إدارة موظفي العملاء' : 'Client Employees Management',
-            
-            self::VIEW_ALL_DOCUMENTS, self::VIEW_ASSIGNED_DOCUMENTS, self::UPLOAD_DOCUMENTS, self::UPDATE_DOCUMENTS, self::DELETE_DOCUMENTS, self::DOWNLOAD_DOCUMENTS, self::APPROVE_DOCUMENTS 
+
+            self::VIEW_ALL_CLIENTS, self::VIEW_ASSIGNED_CLIENTS, self::CREATE_CLIENTS, self::UPDATE_CLIENTS, self::DELETE_CLIENTS, self::ASSIGN_CLIENTS_TO_EMPLOYEES
+                => $lang === 'ar' ? 'إدارة المنشأت' : 'Clients Management',
+
+            self::VIEW_CLIENT_EMPLOYEES, self::CREATE_CLIENT_EMPLOYEES, self::UPDATE_CLIENT_EMPLOYEES, self::DELETE_CLIENT_EMPLOYEES
+                => $lang === 'ar' ? 'إدارة موظفي المنشأت' : 'Client Employees Management',
+
+            self::VIEW_COMPANY_DOCUMENTS, self::CREATE_COMPANY_DOCUMENTS, self::UPDATE_COMPANY_DOCUMENTS, self::DELETE_COMPANY_DOCUMENTS, self::MANAGE_CIVIL_DEFENSE_LICENSES, self::MANAGE_MUNICIPALITY_LICENSES, self::MANAGE_BRANCH_REGISTRATIONS
+                => $lang === 'ar' ? 'إدارة وثائق المنشأت' : 'Company Documents Management',
+
+            self::VIEW_ALL_DOCUMENTS, self::VIEW_ASSIGNED_DOCUMENTS, self::UPLOAD_DOCUMENTS, self::UPDATE_DOCUMENTS, self::DELETE_DOCUMENTS, self::DOWNLOAD_DOCUMENTS, self::APPROVE_DOCUMENTS, self::VIEW_DOCUMENT_DASHBOARD
                 => $lang === 'ar' ? 'إدارة الوثائق' : 'Documents Management',
-            
-            self::VIEW_ALL_TASKS, self::VIEW_ASSIGNED_TASKS, self::CREATE_TASKS, self::UPDATE_TASKS, self::DELETE_TASKS, self::ASSIGN_TASKS, self::COMPLETE_TASKS 
+
+            self::VIEW_DOCUMENT_TYPES, self::CREATE_DOCUMENT_TYPES, self::UPDATE_DOCUMENT_TYPES, self::DELETE_DOCUMENT_TYPES
+                => $lang === 'ar' ? 'إدارة أنواع الوثائق' : 'Document Types Management',
+
+            self::VIEW_ALL_TASKS, self::VIEW_ASSIGNED_TASKS, self::CREATE_TASKS, self::UPDATE_TASKS, self::DELETE_TASKS, self::ASSIGN_TASKS, self::COMPLETE_TASKS
                 => $lang === 'ar' ? 'إدارة المهام' : 'Tasks Management',
-            
-            self::VIEW_ALL_NOTIFICATIONS, self::VIEW_OWN_NOTIFICATIONS, self::CREATE_NOTIFICATIONS, self::MARK_NOTIFICATIONS_READ, self::DELETE_NOTIFICATIONS 
+
+            self::VIEW_ALL_NOTIFICATIONS, self::VIEW_OWN_NOTIFICATIONS, self::CREATE_NOTIFICATIONS, self::MARK_NOTIFICATIONS_READ, self::DELETE_NOTIFICATIONS
                 => $lang === 'ar' ? 'إدارة الإشعارات' : 'Notifications Management',
-            
-            self::VIEW_FINANCIAL_PACKAGES, self::CREATE_FINANCIAL_PACKAGES, self::UPDATE_FINANCIAL_PACKAGES, self::DELETE_FINANCIAL_PACKAGES, self::ASSIGN_PACKAGES_TO_CLIENTS 
-                => $lang === 'ar' ? 'إدارة الحزم المالية' : 'Financial Packages Management',
-            
-            self::VIEW_REPORTS, self::EXPORT_REPORTS, self::VIEW_CLIENT_REPORTS, self::VIEW_EMPLOYEE_PERFORMANCE 
+
+            self::VIEW_FINANCIAL_PACKAGES, self::CREATE_FINANCIAL_PACKAGES, self::UPDATE_FINANCIAL_PACKAGES, self::DELETE_FINANCIAL_PACKAGES, self::ASSIGN_PACKAGES_TO_CLIENTS
+                => $lang === 'ar' ? 'إدارة الباقات المالية' : 'Financial Packages Management',
+
+            self::VIEW_REPORTS, self::EXPORT_REPORTS, self::VIEW_CLIENT_REPORTS, self::VIEW_EMPLOYEE_PERFORMANCE
                 => $lang === 'ar' ? 'التقارير والتحليلات' : 'Reports & Analytics',
         };
     }

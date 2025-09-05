@@ -1,0 +1,115 @@
+<?php
+
+return [
+    // Page Titles
+    'management' => 'Document Types Management',
+    'create' => 'Create Document Type',
+    'edit' => 'Edit Document Type',
+    'list' => 'Document Types List',
+
+    // Actions
+    'add_document_type' => 'Add Document Type',
+    'create_document_type' => 'Create Document Type',
+    'update_document_type' => 'Update Document Type',
+    'back_to_list' => 'Back to List',
+    'cancel' => 'Cancel',
+    'save' => 'Save',
+    'edit_document_type' => 'Edit Document Type',
+    'delete_document_type' => 'Delete Document Type',
+
+    // Form Sections
+    'basic_information' => 'Basic Information',
+    'document_requirements' => 'Document Requirements',
+    'visual_elements' => 'Visual Elements',
+    'descriptions' => 'Descriptions',
+    'status' => 'Status',
+
+    // Form Fields
+    'name_en' => 'Name (English)',
+    'name_ar' => 'Name (Arabic)',
+    'code' => 'Code',
+    'category' => 'Category',
+    'entity_type' => 'Entity Type',
+    'sort_order' => 'Sort Order',
+    'requires_expiry_date' => 'Requires Expiry Date',
+    'requires_file_upload' => 'Requires File Upload',
+    'has_auto_reminder' => 'Auto Reminder',
+    'reminder_days_before' => 'Reminder Days Before',
+    'icon_class' => 'Icon Class',
+    'color' => 'Color',
+    'description_en' => 'Description (English)',
+    'description_ar' => 'Description (Arabic)',
+    'is_active' => 'Active',
+
+    // Form Options
+    'select_category' => 'Select Category',
+    'select_entity_type' => 'Select Entity Type',
+    'employee' => 'Employee',
+    'company' => 'Company',
+    'saudi' => 'Saudi',
+    'expat' => 'Expat',
+    'both' => 'Both',
+
+    // Table Headers
+    'name' => 'Name',
+    'code' => 'Code',
+    'category' => 'Category',
+    'entity_type' => 'Entity Type',
+    'requirements' => 'Requirements',
+    'status' => 'Status',
+    'actions' => 'Actions',
+
+    // Table Data
+    'all_categories' => 'All Categories',
+    'all_types' => 'All Types',
+    'all_status' => 'All Status',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+    'expiry_date' => 'Expiry Date',
+    'file_upload' => 'File Upload',
+    'auto_reminder' => 'Auto Reminder',
+
+    // Filters
+    'filter' => 'Filter',
+    'reset' => 'Reset',
+
+    // Messages
+    'no_document_types_found' => 'No document types found',
+    'document_type_created_successfully' => 'Document type created successfully.',
+    'document_type_updated_successfully' => 'Document type updated successfully.',
+    'document_type_deleted_successfully' => 'Document type deleted successfully.',
+    'error_creating_document_type' => 'An error occurred while creating the document type. Please try again.',
+    'error_updating_document_type' => 'An error occurred while updating the document type. Please try again.',
+    'error_deleting_document_type' => 'An error occurred while deleting the document type. Please try again.',
+    'cannot_delete_document_type' => 'Cannot delete document type. It is being used by existing documents.',
+    'confirm_delete_document_type' => 'Are you sure you want to delete this document type?',
+
+    // Validation Messages
+    'name_en_required' => 'Name (English) is required.',
+    'name_ar_required' => 'Name (Arabic) is required.',
+    'code_required' => 'Code is required.',
+    'code_unique' => 'Code must be unique.',
+    'category_required' => 'Category is required.',
+    'entity_type_required' => 'Entity type is required.',
+    'sort_order_numeric' => 'Sort order must be a number.',
+    'reminder_days_between' => 'Reminder days must be between 1 and 365.',
+    'icon_max_length' => 'Icon class must not exceed 100 characters.',
+    'color_max_length' => 'Color must not exceed 7 characters.',
+
+    // Placeholders
+    'icon_placeholder' => 'ki-duotone ki-document',
+    'code_placeholder' => 'Enter unique code',
+    'name_en_placeholder' => 'Enter English name',
+    'name_ar_placeholder' => 'Enter Arabic name',
+    'description_en_placeholder' => 'Enter English description',
+    'description_ar_placeholder' => 'Enter Arabic description',
+
+    // Help Text
+    'code_help' => 'A unique identifier for this document type',
+    'category_help' => 'Whether this document type is for employees or companies',
+    'entity_type_help' => 'Whether this document type applies to Saudi nationals, expats, or both',
+    'sort_order_help' => 'Order in which this document type appears in lists',
+    'reminder_days_help' => 'Number of days before expiry to send reminder',
+    'icon_help' => 'CSS class for the icon (e.g., ki-duotone ki-document)',
+    'color_help' => 'Color for the icon and visual elements',
+];

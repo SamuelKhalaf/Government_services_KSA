@@ -28,6 +28,8 @@ return [
     'error' => 'خطأ',
     'warning' => 'تحذير',
     'info' => 'معلومات',
+    'information' => 'معلومات',
+    'complete' => 'مكتمل',
     'loading' => 'جاري التحميل...',
     'processing' => 'جاري المعالجة...',
     'saving' => 'جاري الحفظ...',
@@ -127,7 +129,54 @@ return [
     'got_it' => 'فهمت!',
     'ok_got_it' => 'حسناً، فهمت!',
     'try_again' => 'حاول مرة أخرى',
-    
+
+    // Page and section titles
+    'dashboard' => 'لوحة التحكم',
+    'client_management' => 'إدارة المنشأت',
+    'companies' => 'المنشأت',
+    'employees' => 'الموظفين',
+    'documents' => 'الوثائق',
+    'document_dashboard' => 'لوحة تحكم الوثائق',
+    'document_types' => 'أنواع الوثائق',
+
+    // Company related
+    'companies_management' => 'إدارة المنشأت',
+    'add_company' => 'إضافة منشأة',
+    'edit_company' => 'تعديل المنشأة',
+    'company_details' => 'تفاصيل المنشأة',
+    'company' => 'المنشأة',
+    'add_employee' => 'إضافة موظف',
+
+    // Documents related
+    'municipality_license' => 'رخصة البلدية',
+    'civil_defense_license' => 'رخصة الدفاع المدني',
+    'branch_registration' => 'تسجيل الفرع',
+    'certificate_file' => 'ملف الشهادة',
+    'download_certificate' => 'تحميل الشهادة',
+    'edit_license' => 'تعديل الرخصة',
+    'delete_license' => 'حذف الرخصة',
+
+    // Status and time
+    'expired' => 'منتهية الصلاحية',
+    'expiring_soon' => 'تنتهي قريباً',
+    'valid' => 'صالحة',
+    'days' => 'أيام',
+    'until_expiry' => 'حتى انتهاء الصلاحية',
+    'n_a' => 'غير متوفر',
+
+    // Common form fields
+    'details' => 'التفاصيل',
+    'issue_date' => 'تاريخ الإصدار',
+    'expiry_date' => 'تاريخ انتهاء الصلاحية',
+    'license_number' => 'رقم الرخصة',
+    'area' => 'المساحة',
+    'notes' => 'الملاحظات',
+    'contact' => 'الاتصال',
+    'location' => 'الموقع',
+    'total' => 'الإجمالي',
+    'expiring' => 'منتهية قريباً',
+    'apply' => 'تطبيق',
+
     // Confirmation messages
     'confirm_close' => 'هل أنت متأكد من الإغلاق؟',
     'confirm_cancel' => 'هل أنت متأكد من الإلغاء؟',
@@ -135,5 +184,8 @@ return [
     'yes_cancel' => 'نعم، ألغي!',
     'yes_delete' => 'نعم، احذف!',
     'no_return' => 'لا، ارجع',
+    'please_wait' => 'يرجى الانتظار...',
     'form_not_cancelled' => 'لم يتم إلغاء النموذج!',
+
+    'employee' => 'الموظف',
 ];

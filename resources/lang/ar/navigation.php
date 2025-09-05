@@ -8,6 +8,14 @@ return [
     'roles' => 'الأدوار',
     'permissions' => 'الصلاحيات',
 
+    // Client Management
+    'client_management' => 'إدارة المنشأت',
+    'companies' => 'المنشأت',
+    'employees' => 'الموظفين',
+    'documents' => 'الوثائق',
+    'document_dashboard' => 'لوحة تحكم الوثائق',
+    'document_types' => 'أنواع الوثائق',
+
     // User menu
     'my_profile' => 'ملفي الشخصي',
     'sign_out' => 'تسجيل الخروج',
