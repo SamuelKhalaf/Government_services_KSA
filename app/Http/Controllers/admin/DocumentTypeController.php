@@ -61,24 +61,58 @@ class DocumentTypeController extends Controller
             'code' => 'required|string|max:50|unique:document_types,code',
             'category' => 'required|in:employee,company',
             'entity_type' => 'required|in:saudi,expat,both',
-            'requires_expiry_date' => 'boolean',
-            'requires_file_upload' => 'boolean',
-            'has_auto_reminder' => 'boolean',
             'reminder_days_before' => 'nullable|integer|min:1|max:365',
-            'required_fields' => 'nullable|array',
-            'optional_fields' => 'nullable|array',
-            'icon' => 'nullable|string|max:100',
-            'color' => 'nullable|string|max:7',
+            'custom_fields' => 'nullable|array',
+            'quick_fields' => 'nullable|array',
+            'quick_fields.*.name_en' => 'required|string|max:255',
+            'quick_fields.*.name_ar' => 'required|string|max:255',
+            'quick_fields.*.key' => 'required|string|max:100',
+            'quick_fields.*.type' => 'required|in:text,number,email,date,file,select,textarea',
+            'quick_fields.*.required' => 'boolean',
+            'quick_fields.*.placeholder_en' => 'nullable|string|max:255',
+            'quick_fields.*.placeholder_ar' => 'nullable|string|max:255',
+            'custom_fields.*.key' => 'required|string|max:100',
+            'custom_fields.*.name_en' => 'required|string|max:255',
+            'custom_fields.*.name_ar' => 'required|string|max:255',
+            'custom_fields.*.type' => 'required|in:text,number,email,date,file,select,textarea',
+            'custom_fields.*.required' => 'boolean',
+            'custom_fields.*.options' => 'nullable|array',
+            'custom_fields.*.placeholder_en' => 'nullable|string|max:255',
+            'custom_fields.*.placeholder_ar' => 'nullable|string|max:255',
             'description_en' => 'nullable|string',
             'description_ar' => 'nullable|string',
-            'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $documentType = DocumentType::create($request->all());
+            $data = $request->all();
+            
+            // Ensure is_active is properly set as boolean
+            $data['is_active'] = $request->boolean('is_active');
+            
+            // Merge quick_fields with custom_fields
+            if ($request->has('quick_fields')) {
+                $quickFields = collect($request->quick_fields)->map(function ($field) {
+                    return [
+                        'name_en' => $field['name_en'],
+                        'name_ar' => $field['name_ar'],
+                        'key' => $field['key'],
+                        'type' => $field['type'],
+                        'required' => (bool) $field['required'],
+                        'placeholder_en' => $field['placeholder_en'] ?? '',
+                        'placeholder_ar' => $field['placeholder_ar'] ?? '',
+                    ];
+                })->toArray();
+                
+                $existingCustomFields = $data['custom_fields'] ?? [];
+                $data['custom_fields'] = array_merge($existingCustomFields, $quickFields);
+            }
+            
+            unset($data['quick_fields']); // Remove quick_fields from data
+            
+            $documentType = DocumentType::create($data);
 
             DB::commit();
 
@@ -112,24 +146,58 @@ class DocumentTypeController extends Controller
             'code' => 'required|string|max:50|unique:document_types,code,' . $type->id,
             'category' => 'required|in:employee,company',
             'entity_type' => 'required|in:saudi,expat,both',
-            'requires_expiry_date' => 'boolean',
-            'requires_file_upload' => 'boolean',
-            'has_auto_reminder' => 'boolean',
             'reminder_days_before' => 'nullable|integer|min:1|max:365',
-            'required_fields' => 'nullable|array',
-            'optional_fields' => 'nullable|array',
-            'icon' => 'nullable|string|max:100',
-            'color' => 'nullable|string|max:7',
+            'custom_fields' => 'nullable|array',
+            'quick_fields' => 'nullable|array',
+            'quick_fields.*.name_en' => 'required|string|max:255',
+            'quick_fields.*.name_ar' => 'required|string|max:255',
+            'quick_fields.*.key' => 'required|string|max:100',
+            'quick_fields.*.type' => 'required|in:text,number,email,date,file,select,textarea',
+            'quick_fields.*.required' => 'boolean',
+            'quick_fields.*.placeholder_en' => 'nullable|string|max:255',
+            'quick_fields.*.placeholder_ar' => 'nullable|string|max:255',
+            'custom_fields.*.key' => 'required|string|max:100',
+            'custom_fields.*.name_en' => 'required|string|max:255',
+            'custom_fields.*.name_ar' => 'required|string|max:255',
+            'custom_fields.*.type' => 'required|in:text,number,email,date,file,select,textarea',
+            'custom_fields.*.required' => 'boolean',
+            'custom_fields.*.options' => 'nullable|array',
+            'custom_fields.*.placeholder_en' => 'nullable|string|max:255',
+            'custom_fields.*.placeholder_ar' => 'nullable|string|max:255',
             'description_en' => 'nullable|string',
             'description_ar' => 'nullable|string',
-            'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $type->update($request->all());
+            $data = $request->all();
+            
+            // Ensure is_active is properly set as boolean
+            $data['is_active'] = $request->boolean('is_active');
+            
+            // Merge quick_fields with custom_fields
+            if ($request->has('quick_fields')) {
+                $quickFields = collect($request->quick_fields)->map(function ($field) {
+                    return [
+                        'name_en' => $field['name_en'],
+                        'name_ar' => $field['name_ar'],
+                        'key' => $field['key'],
+                        'type' => $field['type'],
+                        'required' => (bool) $field['required'],
+                        'placeholder_en' => $field['placeholder_en'] ?? '',
+                        'placeholder_ar' => $field['placeholder_ar'] ?? '',
+                    ];
+                })->toArray();
+                
+                $existingCustomFields = $data['custom_fields'] ?? [];
+                $data['custom_fields'] = array_merge($existingCustomFields, $quickFields);
+            }
+            
+            unset($data['quick_fields']); // Remove quick_fields from data
+            
+            $type->update($data);
 
             DB::commit();
 
@@ -183,12 +251,8 @@ class DocumentTypeController extends Controller
                 'name_ar' => $type->name_ar,
                 'category' => $type->category,
                 'entity_type' => $type->entity_type,
-                'requires_expiry_date' => $type->requires_expiry_date,
-                'requires_file_upload' => $type->requires_file_upload,
-                'has_auto_reminder' => $type->has_auto_reminder,
                 'reminder_days_before' => $type->reminder_days_before,
-                'required_fields' => $type->required_fields ?? [],
-                'optional_fields' => $type->optional_fields ?? [],
+                'custom_fields' => $type->custom_fields ?? [],
                 'description' => $type->description_en,
                 'description_ar' => $type->description_ar,
                 'is_active' => $type->is_active,
@@ -224,12 +288,8 @@ class DocumentTypeController extends Controller
                     'code' => $type->code,
                     'category' => $type->category,
                     'entity_type' => $type->entity_type,
-                    'requires_expiry_date' => $type->requires_expiry_date,
-                    'requires_file_upload' => $type->requires_file_upload,
-                    'has_auto_reminder' => $type->has_auto_reminder,
                     'reminder_days_before' => $type->reminder_days_before,
-                    'required_fields' => $type->required_fields ?? [],
-                    'optional_fields' => $type->optional_fields ?? [],
+                    'custom_fields' => $type->custom_fields ?? [],
                     'validation_rules' => $this->getValidationRules($type),
                     'is_active' => $type->is_active,
                 ];
@@ -252,8 +312,7 @@ class DocumentTypeController extends Controller
                     'name_ar' => $type->name_ar,
                     'category' => $type->category,
                     'total_documents' => $type->employee_documents_count,
-                    'color' => $type->color,
-                    'icon' => $type->icon,
+                    'custom_fields_count' => $type->custom_fields_count,
                 ];
             });
 
@@ -278,28 +337,17 @@ class DocumentTypeController extends Controller
             'renewal_notes' => 'nullable|string',
         ];
 
-        // Apply expiry date validation if required
-        if ($type->requires_expiry_date) {
-            $rules['expiry_date'] = 'required|date|after:today';
-        } else {
-            $rules['expiry_date'] = 'nullable|date|after:today';
-        }
+        // Expiry date validation can be handled through custom fields
+        $rules['expiry_date'] = 'nullable|date|after:today';
 
-        // Apply file upload validation if required
-        if ($type->requires_file_upload) {
-            $rules['document_file'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:10240';
-        } else {
-            $rules['document_file'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240';
-        }
+        // File upload validation can be handled through custom fields
+        $rules['document_file'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240';
 
-        // Apply custom field validation based on required_fields
-        if ($type->required_fields && is_array($type->required_fields)) {
-            foreach ($type->required_fields as $field) {
-                if (!isset($rules[$field])) {
-                    $rules[$field] = 'required|string|max:255';
-                }
-            }
-        }
+        // Custom field validation is now handled by getCustomFieldsValidationRules()
+
+        // Apply custom fields validation
+        $customRules = $type->getCustomFieldsValidationRules();
+        $rules = array_merge($rules, $customRules);
 
         return $rules;
     }

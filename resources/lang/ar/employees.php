@@ -25,7 +25,7 @@ return [
 
     // Employee types
     'saudi' => 'سعودي',
-    'expat' => 'وافد',
+    'expat' => 'مغترب',
 
     // Gender
     'male' => 'ذكر',
@@ -92,6 +92,7 @@ return [
     // Status values
     'active' => 'نشط',
     'inactive' => 'غير نشط',
+    'pending' => 'معلق',
     'terminated' => 'منتهي الخدمة',
     'on_leave' => 'في إجازة',
 
@@ -119,7 +120,7 @@ return [
     // Statistics
     'total_employees' => 'إجمالي الموظفين',
     'saudi_employees' => 'الموظفون السعوديون',
-    'expat_employees' => 'الموظفون الوافدون',
+    'expat_employees' => 'الموظفون المغتربون',
     'documents_uploaded' => 'الوثائق المرفوعة',
     'expiring_documents' => 'الوثائق منتهية الصلاحية',
 
@@ -142,7 +143,7 @@ return [
     'select_status' => 'اختر الحالة',
     'select_contract_type' => 'اختر نوع العقد',
     'identity_information_saudi' => 'معلومات الهوية (سعودي)',
-    'identity_information_expat' => 'معلومات الهوية (وافد)',
+    'identity_information_expat' => 'معلومات الهوية (مغترب)',
     'national_id_number' => 'رقم الهوية الوطنية',
     'id_issue_place' => 'مكان إصدار الهوية',
     'id_issue_date' => 'تاريخ إصدار الهوية',
@@ -215,7 +216,7 @@ return [
     'inactive' => 'غير نشط',
     'status' => 'الحالة',
     'identity_information_saudi' => 'معلومات الهوية (سعودي)',
-    'identity_information_expat' => 'معلومات الهوية (وافد)',
+    'identity_information_expat' => 'معلومات الهوية (مغترب)',
     'passport_issue_place' => 'مكان إصدار جواز السفر',
     'employee_documents' => 'مستندات الموظف',
     'no_documents_found' => 'لم يتم العثور على مستندات',

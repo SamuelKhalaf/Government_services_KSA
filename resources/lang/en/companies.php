@@ -8,6 +8,36 @@ return [
     'company_details' => 'Company Details',
     'company_workflow' => 'Company Setup Workflow',
     'company_documents' => 'Company Documents',
+    'additional_documents' => 'Additional Documents',
+    'add_document' => 'Add Document',
+    'document_details' => 'Document Details',
+    'document_information' => 'Document Information',
+    'document_number' => 'Document Number',
+    'issue_date' => 'Issue Date',
+    'expiry_date' => 'Expiry Date',
+    'issuing_authority' => 'Issuing Authority',
+    'place_of_issue' => 'Place of Issue',
+    'reference_number' => 'Reference Number',
+    'fees_amount' => 'Fees Amount',
+    'reminder_settings' => 'Reminder Settings',
+    'enable_reminder' => 'Enable Reminder',
+    'reminder_days' => 'Reminder Days',
+    'select_document_type' => 'Select Document Type',
+    'select_status' => 'Select Status',
+    'save_document' => 'Save Document',
+    'update_document' => 'Update Document',
+    'delete_document' => 'Delete Document',
+    'no_additional_documents' => 'No additional documents found',
+    'delete_document_warning' => 'Are you sure you want to delete this document? This action cannot be undone.',
+    'additional_info' => 'Additional Information',
+    'company' => 'Company',
+    'all_company_documents' => 'All Company Documents',
+    'no_company_documents_found' => 'No company documents found',
+    'no_company_documents_description' => 'There are no company documents in the system yet.',
+    'other_company_documents' => 'Other Company Documents',
+    'add_other_documents_description' => 'Add any additional documents required for this company',
+    'documents_uploaded' => 'Documents Uploaded',
+    'view_all_documents' => 'View All Documents',
 
     // Fields
     'company_name_ar' => 'Company Name (Arabic)',
@@ -84,7 +114,7 @@ return [
     'cr_number_unique' => 'Commercial registration number must be unique',
     'establishment_date_required' => 'Establishment date is required',
     'owner_name_required' => 'Owner name is required',
-    
+
     // Additional common translations for views
     'search_companies' => 'Search companies...',
     'filter_options' => 'Filter Options',
@@ -96,7 +126,7 @@ return [
     'showing_results' => 'Showing results',
     'no_companies_found' => 'No companies found',
     'total_companies' => 'Total Companies',
-    
+
     // Form labels and messages
     'please_wait' => 'Please wait...',
     'are_you_sure_delete_company' => 'Are you sure you want to delete this company?',
@@ -105,7 +135,7 @@ return [
     'company_deleted_successfully' => 'Company deleted successfully!',
     'company_saved_successfully' => 'Company saved successfully!',
     'company_updated_successfully' => 'Company updated successfully!',
-    
+
     // Branch types
     'main_branch' => 'Main Branch',
     'sub_branch' => 'Sub Branch',
@@ -115,12 +145,12 @@ return [
     'warehouse' => 'Warehouse',
     'other' => 'Other',
     'select_branch_type' => 'Select Branch Type',
-    
+
     // Legal forms
     'limited_liability_company_llc' => 'Limited Liability Company (LLC)',
     'joint_stock_company_jsc' => 'Joint Stock Company (JSC)',
     'select_legal_form' => 'Select Legal Form',
-    
+
     // Document specific
     'branch_registration_number' => 'Branch Registration Number',
     'parent_cr_number' => 'Parent CR Number',
@@ -129,7 +159,7 @@ return [
     'edit_branch_registration' => 'Edit Branch Registration',
     'delete_branch_registration' => 'Delete Branch Registration',
     'are_you_sure_delete_branch_registration' => 'Are you sure you want to delete this Branch Registration?',
-    
+
     // Municipality specific
     'municipality_name' => 'Municipality',
     'license_type' => 'License Type',
@@ -142,17 +172,17 @@ return [
     'conditions_requirements' => 'Conditions & Requirements',
     'delete_municipality_license' => 'Delete Municipality License',
     'are_you_sure_delete_municipality_license' => 'Are you sure you want to delete this Municipality License?',
-    
+
     // File types
     'pdf_certificate' => 'PDF Certificate',
     'image_certificate' => 'Image Certificate',
     'click_download_button_to_view' => 'Click download button to view the certificate',
-    
+
     // License information
     'license_information' => 'License Information',
     'created_at' => 'Created At',
     'last_updated' => 'Last Updated',
-    
+
     // Form labels for create/edit
     'company_information' => 'Company Information',
     'basic_information' => 'Basic Information',
@@ -160,7 +190,7 @@ return [
     'address_information' => 'Address Information',
     'legal_information' => 'Legal Information',
     'add_new' => 'Add New',
-    
+
     // Form fields
     'select_company_type' => 'Select Company Type',
     'limited_liability_company' => 'Limited Liability Company (LLC)',
@@ -190,7 +220,7 @@ return [
     'capital_amount_sar' => 'Capital Amount (SAR)',
     'save_continue' => 'Save & Continue',
     'errors_detected' => 'Sorry, looks like there are some errors detected, please try again.',
-    
+
     // Workflow specific translations
     'company_setup_workflow' => 'Company Setup Workflow',
     'workflow' => 'Workflow',
@@ -228,7 +258,7 @@ return [
     'continue_to_documents' => 'Continue to Documents',
     'complete_setup' => 'Complete Setup',
     'view_company_details' => 'View Company Details',
-    
+
     // Show page specific translations
     'workflow' => 'Workflow',
     'active_employees' => 'Active Employees',
@@ -255,7 +285,7 @@ return [
     'no_branch_registrations' => 'No Branch registrations found.',
     'company_employees' => 'Company Employees',
     'no_employees_found' => 'No employees found. Start by adding employees to this company.',
-    
+
     // Index page specific translations
     'view' => 'View',
     'edit' => 'Edit',
@@ -267,12 +297,12 @@ return [
     'delete_company' => 'Delete Company',
     'are_you_sure' => 'Are you sure?',
     'delete_company_warning' => 'This action cannot be undone. This will permanently delete the company and all associated data.',
-    
+
     // Edit page specific translations
     'edit_company_information' => 'Edit Company Information',
     'update_company' => 'Update Company',
     'please_wait' => 'Please wait...',
-    
+
     // Civil Defense License translations
     'civil_defense_license' => 'Civil Defense License',
     'add_civil_defense_license' => 'Add Civil Defense License',
@@ -310,7 +340,7 @@ return [
     'total_area' => 'Total Area',
     'created_at' => 'Created At',
     'last_updated' => 'Last Updated',
-    
+
     // Facility Types
     'select_facility_type' => 'Select Facility Type',
     'office_building' => 'Office Building',
@@ -323,21 +353,21 @@ return [
     'residential_building' => 'Residential Building',
     'mixed_use' => 'Mixed Use',
     'other' => 'Other',
-    
+
     // Safety Status
     'select_safety_status' => 'Select Safety Status',
     'compliant' => 'Compliant',
     'non_compliant' => 'Non-Compliant',
     'pending_review' => 'Pending Review',
     'under_review' => 'Under Review',
-    
+
     // Inspection Status
     'select_inspection_status' => 'Select Inspection Status',
     'passed' => 'Passed',
     'failed' => 'Failed',
     'pending' => 'Pending',
     'not_required' => 'Not Required',
-    
+
     // Placeholders and descriptions
     'general_directorate_civil_defense' => 'e.g., General Directorate of Civil Defense',
     'commercial_industrial_residential' => 'e.g., Commercial, Industrial, Residential',
@@ -347,7 +377,7 @@ return [
     'click_download_button_to_view' => 'Click download button to view the certificate',
     'are_you_sure_delete_civil_defense_license' => 'Are you sure you want to delete this Civil Defense License?',
     'this_action_cannot_be_undone' => 'This action cannot be undone.',
-    
+
     // Municipality License translations
     'municipality_license' => 'Municipality License',
     'add_municipality_license' => 'Add Municipality License',
@@ -367,7 +397,7 @@ return [
     'activity_description' => 'Activity Description',
     'conditions_requirements' => 'Conditions & Requirements',
     'municipality' => 'Municipality',
-    
+
     // License Types
     'select_license_type' => 'Select License Type',
     'commercial_license' => 'Commercial License',
@@ -377,7 +407,7 @@ return [
     'demolition_license' => 'Demolition License',
     'advertising_license' => 'Advertising License',
     'event_license' => 'Event License',
-    
+
     // Land Use Types
     'select_land_use_type' => 'Select Land Use Type',
     'commercial' => 'Commercial',
@@ -387,7 +417,7 @@ return [
     'educational' => 'Educational',
     'health_services' => 'Health Services',
     'recreational' => 'Recreational',
-    
+
     // Placeholders and descriptions for Municipality
     'riyadh_municipality' => 'e.g., Riyadh Municipality',
     'loc_001_2024' => 'e.g., LOC-001-2024',
@@ -395,7 +425,7 @@ return [
     'describe_licensed_activity' => 'Describe the licensed activity in detail...',
     'list_special_conditions' => 'List any special conditions or requirements...',
     'are_you_sure_delete_municipality_license' => 'Are you sure you want to delete this Municipality License?',
-    
+
     // Branch Registration translations
     'branch_registration' => 'Branch Registration',
     'add_branch_registration' => 'Add Branch Registration',
@@ -424,7 +454,7 @@ return [
     'add_registration' => 'Add Registration',
     'update_registration' => 'Update Registration',
     'delete_registration' => 'Delete Registration',
-    
+
     // Branch Type specific
     'select_branch_type' => 'Select Branch Type',
     'main_branch' => 'Main Branch',
@@ -433,7 +463,7 @@ return [
     'representative_office' => 'Representative Office',
     'sales_office' => 'Sales Office',
     'warehouse' => 'Warehouse',
-    
+
     // Legal Form specific
     'select_legal_form' => 'Select Legal Form',
     'limited_liability_company_llc' => 'Limited Liability Company (LLC)',
@@ -441,7 +471,7 @@ return [
     'partnership' => 'Partnership',
     'sole_proprietorship' => 'Sole Proprietorship',
     'branch_office' => 'Branch Office',
-    
+
     // Placeholders and descriptions for Branch Registration
     'main_company_cr_number' => 'Main company CR number',
     'ministry_of_commerce' => 'e.g., Ministry of Commerce',
@@ -449,4 +479,32 @@ return [
     'describe_branch_activities' => 'Describe the branch activities...',
     'list_of_authorized_activities' => 'List of authorized activities...',
     'are_you_sure_delete_branch_registration' => 'Are you sure you want to delete this Branch Registration?',
+
+    // Missing keys from view files
+    'enable_expiry_reminder' => 'Enable Expiry Reminder',
+    'remind_before_days' => 'Remind Before Days',
+    'reminder_help_text' => 'Number of days before expiry to send reminder notification.',
+    'edit_document' => 'Edit Document',
+    'additional_information' => 'Additional Information',
+    'document_deleted_successfully' => 'Document deleted successfully.',
+    'select_option' => 'Select Option',
+    'apply' => 'Apply',
+    'reset' => 'Reset',
+    'filter' => 'Filter',
+    'search' => 'Search',
+    'actions' => 'Actions',
+    'delete' => 'Delete',
+    'download' => 'Download',
+    'cancel' => 'Cancel',
+    'dashboard' => 'Dashboard',
+    'companies' => 'Companies',
+    'document_type' => 'Document Type',
+    'files' => 'Files',
+    'n_a' => 'N/A',
+    'cancelled' => 'Cancelled',
+    'file' => 'File',
+    'document_file' => 'Document File',
+    'days_before_expiry' => 'days before expiry',
+    'enabled' => 'Enabled',
+    'disabled' => 'Disabled',
 ];

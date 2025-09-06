@@ -382,6 +382,43 @@
                                         @endforelse
                                     </div>
                                     <!--end::Branch Registrations-->
+
+                                    <!--begin::Additional Documents-->
+                                    <div class="mb-10">
+                                        <h4 class="text-gray-800 mb-5">
+                                            <i class="fa-solid fa-file-circle-plus fs-2 text-primary me-2"></i>{{ __('companies.additional_documents') }}
+                                            <a href="{{ route('admin.companies.documents.index', $company) }}" class="btn btn-sm btn-light-info ms-2">{{ __('companies.view_all_documents') }}</a>
+                                            <a href="{{ route('admin.companies.documents.create', $company) }}" class="btn btn-sm btn-light-primary ms-3">{{ __('companies.add_document') }}</a>
+                                        </h4>
+                                        @forelse($company->companyDocuments as $document)
+                                            <div class="card card-flush mb-3">
+                                                <div class="card-body d-flex align-items-center justify-content-between py-5">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="ms-5">
+                                                            <div class="fw-bold text-gray-800">{{ app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en }}</div>
+                                                            <div class="text-muted">{{ __('companies.document_number') }}: {{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</div>
+                                                            @if($document->getCustomFieldValue('expiry_date'))
+                                                                <div class="text-muted">{{ __('companies.expires') }}: {{ \Carbon\Carbon::parse($document->getCustomFieldValue('expiry_date'))->format('Y-m-d') }}</div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <a href="{{ route('admin.companies.documents.show', [$company, $document]) }}" class="btn btn-sm btn-light me-2">{{ __('companies.view') }}</a>
+                                                        <a href="{{ route('admin.companies.documents.edit', [$company, $document]) }}" class="btn btn-sm btn-primary">{{ __('companies.edit') }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                                                <div class="d-flex flex-stack flex-grow-1">
+                                                    <div class="fw-semibold">
+                                                        <div class="fs-6 text-gray-700">{{ __('companies.no_additional_documents') }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                    <!--end::Additional Documents-->
                                 </div>
                                 <!--end::Card body-->
                             </div>

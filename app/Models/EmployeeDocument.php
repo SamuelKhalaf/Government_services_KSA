@@ -13,48 +13,15 @@ class EmployeeDocument extends Model
     protected $fillable = [
         'employee_id',
         'document_type_id',
-        'document_number',
-        'issue_date',
-        'expiry_date',
-        'issuing_authority',
-        'issue_place',
-        'reference_number',
-        'fees_amount',
-        'visa_type',
-        'sponsor_name',
-        'sponsor_id',
-        'visa_purpose',
-        'duration_days',
-        'travel_type',
-        'travel_date',
-        'return_date',
-        'destination_country',
-        'fees_paid',
-        'payment_method',
-        'receipt_number',
         'status',
-        'document_status',
-        'file_path',
-        'original_filename',
-        'file_type',
-        'file_size',
-        'notes',
-        'renewal_notes',
-        'reminder_date',
-        'auto_reminder',
-        'dynamic_fields'
+        'enable_reminder',
+        'reminder_days',
+        'custom_fields'
     ];
 
     protected $casts = [
-        'issue_date' => 'date',
-        'expiry_date' => 'date',
-        'travel_date' => 'date',
-        'return_date' => 'date',
-        'reminder_date' => 'date',
-        'fees_paid' => 'decimal:2',
-        'fees_amount' => 'decimal:2',
-        'auto_reminder' => 'boolean',
-        'dynamic_fields' => 'array'
+        'enable_reminder' => 'boolean',
+        'custom_fields' => 'array'
     ];
 
     /**
@@ -78,7 +45,8 @@ class EmployeeDocument extends Model
      */
     public function getIsExpiredAttribute()
     {
-        return $this->expiry_date && $this->expiry_date < now();
+        $expiryDate = $this->getCustomFieldValue('expiry_date');
+        return $expiryDate && \Carbon\Carbon::parse($expiryDate) < now();
     }
 
     /**
@@ -86,10 +54,12 @@ class EmployeeDocument extends Model
      */
     public function getIsExpiringSoonAttribute()
     {
-        if (!$this->expiry_date) return false;
+        $expiryDate = $this->getCustomFieldValue('expiry_date');
+        if (!$expiryDate) return false;
         
+        $expiryDate = \Carbon\Carbon::parse($expiryDate);
         $thirtyDaysFromNow = now()->addDays(30);
-        return $this->expiry_date <= $thirtyDaysFromNow && $this->expiry_date >= now();
+        return $expiryDate <= $thirtyDaysFromNow && $expiryDate >= now();
     }
 
     /**
@@ -97,9 +67,10 @@ class EmployeeDocument extends Model
      */
     public function getFormattedFileSizeAttribute()
     {
-        if (!$this->file_size) return null;
+        $fileData = $this->getCustomFieldValue('document_file');
+        if (!$fileData || !isset($fileData['file_size'])) return null;
         
-        $bytes = $this->file_size;
+        $bytes = $fileData['file_size'];
         $units = ['B', 'KB', 'MB', 'GB'];
         
         for ($i = 0; $bytes > 1024; $i++) {
@@ -141,8 +112,9 @@ class EmployeeDocument extends Model
      */
     public function scopeExpired($query)
     {
-        return $query->whereNotNull('expiry_date')
-                    ->where('expiry_date', '<', now());
+        return $query->whereJsonContains('custom_fields->expiry_date', function($q) {
+            $q->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') < ?", [now()->toDateString()]);
+        });
     }
 
     /**
@@ -151,9 +123,9 @@ class EmployeeDocument extends Model
     public function scopeExpiringSoon($query, $days = 30)
     {
         $expiryDate = now()->addDays($days);
-        return $query->whereNotNull('expiry_date')
-                    ->where('expiry_date', '<=', $expiryDate)
-                    ->where('expiry_date', '>=', now());
+        return $query->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') IS NOT NULL")
+                    ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') <= ?", [$expiryDate->toDateString()])
+                    ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') >= ?", [now()->toDateString()]);
     }
 
     /**
@@ -179,7 +151,7 @@ class EmployeeDocument extends Model
      */
     public function scopeWithFiles($query)
     {
-        return $query->whereNotNull('file_path');
+        return $query->whereRaw("JSON_EXTRACT(custom_fields, '$.document_file') IS NOT NULL");
     }
 
     /**
@@ -187,9 +159,65 @@ class EmployeeDocument extends Model
      */
     public function scopeNeedingReminder($query)
     {
-        return $query->where('auto_reminder', true)
-                    ->whereNotNull('reminder_date')
-                    ->where('reminder_date', '<=', now());
+        return $query->where('enable_reminder', true)
+                    ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') IS NOT NULL")
+                    ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') <= ?", [now()->addDays(30)->toDateString()]);
+    }
+
+    /**
+     * Get custom field value by key
+     */
+    public function getCustomFieldValue(string $key)
+    {
+        if (!$this->custom_fields || !is_array($this->custom_fields)) {
+            return null;
+        }
+        
+        return $this->custom_fields[$key] ?? null;
+    }
+
+    /**
+     * Check if document has a file
+     */
+    public function hasFile(): bool
+    {
+        $fileData = $this->getCustomFieldValue('document_file');
+        return $fileData && is_array($fileData) && !empty($fileData['file_path']);
+    }
+
+    /**
+     * Get file information
+     */
+    public function getFileInfo(): array
+    {
+        $fileData = $this->getCustomFieldValue('document_file');
+        
+        if (!$fileData || !is_array($fileData)) {
+            return [];
+        }
+
+        $filePath = $fileData['file_path'] ?? '';
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        
+        return [
+            'file_path' => $filePath,
+            'original_filename' => $fileData['original_filename'] ?? basename($filePath),
+            'file_size' => $fileData['file_size'] ?? 0,
+            'extension' => $extension,
+            'url' => $filePath ? asset('storage/' . $filePath) : null,
+        ];
+    }
+
+    /**
+     * Set custom field value by key
+     */
+    public function setCustomFieldValue(string $key, $value): void
+    {
+        if (!is_array($this->custom_fields)) {
+            $this->custom_fields = [];
+        }
+        
+        $this->custom_fields[$key] = $value;
     }
 
     /**
@@ -235,21 +263,15 @@ class EmployeeDocument extends Model
             return $errors;
         }
 
-        // Check expiry date requirement
-        if ($this->documentType->requires_expiry_date && !$this->expiry_date) {
-            $errors[] = 'Expiry date is required for this document type';
-        }
-
-        // Check file upload requirement
-        if ($this->documentType->requires_file_upload && !$this->file_path) {
-            $errors[] = 'File upload is required for this document type';
-        }
-
-        // Check required fields
-        if ($this->documentType->required_fields && is_array($this->documentType->required_fields)) {
-            foreach ($this->documentType->required_fields as $field) {
-                if (!isset($this->dynamic_fields[$field]) || empty($this->dynamic_fields[$field])) {
-                    $errors[] = "Required field '{$field}' is missing";
+        // Check custom fields requirements
+        if ($this->documentType->custom_fields && is_array($this->documentType->custom_fields)) {
+            foreach ($this->documentType->custom_fields as $field) {
+                if ($field['required'] ?? false) {
+                    $fieldKey = $field['key'];
+                    if (!isset($this->custom_fields[$fieldKey]) || empty($this->custom_fields[$fieldKey])) {
+                        $fieldName = app()->getLocale() === 'ar' ? $field['name_ar'] : $field['name_en'];
+                        $errors[] = "Required field '{$fieldName}' is missing";
+                    }
                 }
             }
         }
@@ -268,38 +290,12 @@ class EmployeeDocument extends Model
 
         $rules = [
             'document_type_id' => 'required|exists:document_types,id',
-            'document_number' => 'nullable|string|max:255',
-            'issue_date' => 'nullable|date',
-            'issuing_authority' => 'nullable|string|max:255',
-            'issue_place' => 'nullable|string|max:255',
-            'reference_number' => 'nullable|string|max:255',
-            'fees_amount' => 'nullable|numeric|min:0',
-            'notes' => 'nullable|string',
-            'renewal_notes' => 'nullable|string',
+            'status' => 'required|in:active,expired,cancelled,pending',
         ];
 
-        // Apply expiry date validation if required
-        if ($this->documentType->requires_expiry_date) {
-            $rules['expiry_date'] = 'required|date|after:today';
-        } else {
-            $rules['expiry_date'] = 'nullable|date|after:today';
-        }
-
-        // Apply file upload validation if required
-        if ($this->documentType->requires_file_upload) {
-            $rules['document_file'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:10240';
-        } else {
-            $rules['document_file'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240';
-        }
-
-        // Apply custom field validation based on required_fields
-        if ($this->documentType->required_fields && is_array($this->documentType->required_fields)) {
-            foreach ($this->documentType->required_fields as $field) {
-                if (!isset($rules[$field])) {
-                    $rules[$field] = 'required|string|max:255';
-                }
-            }
-        }
+        // Apply custom field validation from document type
+        $customRules = $this->documentType->getCustomFieldsValidationRules();
+        $rules = array_merge($rules, $customRules);
 
         return $rules;
     }

@@ -93,7 +93,10 @@ return [
     'disabled' => 'Disabled',
     'active' => 'Active',
     'inactive' => 'Inactive',
-
+    'cancelled' => 'Cancelled',
+    'pending' => 'Pending',
+    'expired' => 'Expired',
+    
     // File operations
     'file_uploaded' => 'File uploaded successfully!',
     'file_deleted' => 'File deleted successfully!',
@@ -101,6 +104,15 @@ return [
     'file_too_large' => 'File is too large.',
     'invalid_file_type' => 'Invalid file type.',
     'upload_failed' => 'File upload failed.',
+    'file' => 'File',
+    'document_file' => 'Document File',
+    'document_number' => 'Document Number',
+    'document_type' => 'Document Type',
+    'files' => 'Files',
+    'uploaded' => 'Uploaded',
+    'no_file' => 'No file',
+    'filter_options' => 'Filter Options',
+    'select_option' => 'Select Option',
 
     // Authentication
     'login_successful' => 'Login successful!',
@@ -129,6 +141,8 @@ return [
     'got_it' => 'Got it!',
     'ok_got_it' => 'Ok, got it!',
     'try_again' => 'Try Again',
+    'overview' => 'Overview',
+    'last_updated' => 'Last Updated',
     
     // Page and section titles
     'dashboard' => 'Dashboard',

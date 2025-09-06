@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('title', __('documents.edit_document') . ' - ' . $document->document_number)
+@section('title', __('documents.edit_document') . ' - ' . ($document->getCustomFieldValue('document_number') ?? __('common.n_a')))
 
 @section('content')
     <!--begin::Content wrapper-->
@@ -37,7 +37,7 @@
                             <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('admin.employees.documents.show', [$employee, $document]) }}" class="text-muted text-hover-primary">{{ $document->document_number }}</a>
+                            <a href="{{ route('admin.employees.documents.show', [$employee, $document]) }}" class="text-muted text-hover-primary">{{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</a>
                         </li>
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-400 w-5px h-2px"></span>
@@ -62,7 +62,7 @@
                     <!--begin::Card header-->
                     <div class="card-header">
                         <!--begin::Card title-->
-                        <div class="card-title fs-3 fw-bold">{{ __('documents.edit_document') }} - {{ $document->documentType->name_en ?? $document->document_type_id }}</div>
+                        <div class="card-title fs-3 fw-bold">{{ __('documents.edit_document') }} - {{ (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id }}</div>
                         <!--end::Card title-->
                     </div>
                     <!--end::Card header-->
@@ -88,18 +88,14 @@
                                         <div class="col-md-6 fv-row">
                                             <label class="required fs-6 fw-semibold mb-2">{{ __('documents.document_type') }}</label>
                                             <select class="form-select form-select-solid @error('document_type_id') is-invalid @enderror"
-                                                    name="document_type_id" id="document_type_id">
+                                                    name="document_type_id" id="document_type_id" required>
                                                 <option value="">{{ __('documents.select_document_type') }}</option>
                                                 @foreach($documentTypes as $type)
                                                     <option value="{{ $type->id }}"
-                                                            data-requires-expiry="{{ $type->requires_expiry_date ? 'true' : 'false' }}"
-                                                            data-requires-file="{{ $type->requires_file_upload ? 'true' : 'false' }}"
-                                                            data-required-fields="{{ json_encode($type->required_fields ?? []) }}"
-                                                            data-optional-fields="{{ json_encode($type->optional_fields ?? []) }}"
-                                                            data-has-reminder="{{ $type->has_auto_reminder ? 'true' : 'false' }}"
+                                                            data-custom-fields="{{ json_encode($type->custom_fields ?? []) }}"
                                                             data-reminder-days="{{ $type->reminder_days_before ?? 30 }}"
                                                         @selected(old('document_type_id', $document->document_type_id) == $type->id)>
-                                                        {{ $type->name_en }} ({{ $type->name_ar }})
+                                                        {{ app()->getLocale() === 'ar' ? $type->name_ar : $type->name_en }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -110,133 +106,14 @@
                                         <!--end::Col-->
                                         <!--begin::Col-->
                                         <div class="col-md-6 fv-row">
-                                            <label class="required fs-6 fw-semibold mb-2">{{ __('documents.document_number') }}</label>
-                                            <input type="text" class="form-control form-control-solid @error('document_number') is-invalid @enderror"
-                                                   name="document_number" value="{{ old('document_number', $document->document_number) }}" />
-                                            @error('document_number')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                    <!--begin::Row-->
-                                    <div class="row g-9 mb-8">
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row">
-                                            <label class="required fs-6 fw-semibold mb-2">{{ __('documents.issue_date') }}</label>
-                                            <input type="date" class="form-control form-control-solid @error('issue_date') is-invalid @enderror"
-                                                   name="issue_date" value="{{ old('issue_date', $document->issue_date?->format('Y-m-d')) }}" />
-                                            @error('issue_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row" id="expiry_date_field">
-                                            <label class="fs-6 fw-semibold mb-2" id="expiry_date_label">{{ __('documents.expiry_date') }}</label>
-                                            <input type="date" class="form-control form-control-solid @error('expiry_date') is-invalid @enderror"
-                                                   name="expiry_date" value="{{ old('expiry_date', $document->expiry_date?->format('Y-m-d')) }}" />
-                                            @error('expiry_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                    <!--begin::Row-->
-                                    <div class="row g-9 mb-8">
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row">
-                                            <label class="fs-6 fw-semibold mb-2">{{ __('documents.issuing_authority') }}</label>
-                                            <input type="text" class="form-control form-control-solid @error('issuing_authority') is-invalid @enderror"
-                                                   name="issuing_authority" value="{{ old('issuing_authority', $document->issuing_authority) }}" />
-                                            @error('issuing_authority')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row">
-                                            <label class="fs-6 fw-semibold mb-2">{{ __('documents.place_of_issue') }}</label>
-                                            <input type="text" class="form-control form-control-solid @error('issue_place') is-invalid @enderror"
-                                                   name="issue_place" value="{{ old('issue_place', $document->issue_place) }}" />
-                                            @error('issue_place')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                    <!--begin::Row-->
-                                    <div class="row g-9 mb-8">
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row">
-                                            <label class="fs-6 fw-semibold mb-2">{{ __('documents.status') }}</label>
-                                            <select class="form-select form-select-solid @error('status') is-invalid @enderror" name="status">
+                                            <label class="required fs-6 fw-semibold mb-2">{{ __('documents.status') }}</label>
+                                            <select class="form-select form-select-solid @error('status') is-invalid @enderror" name="status" required>
                                                 <option value="active" @selected(old('status', $document->status) == 'active')>{{ __('documents.active') }}</option>
                                                 <option value="expired" @selected(old('status', $document->status) == 'expired')>{{ __('documents.expired') }}</option>
                                                 <option value="cancelled" @selected(old('status', $document->status) == 'cancelled')>{{ __('documents.cancelled') }}</option>
                                                 <option value="pending" @selected(old('status', $document->status) == 'pending')>{{ __('documents.pending') }}</option>
                                             </select>
                                             @error('status')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row">
-                                            <label class="fs-6 fw-semibold mb-2">{{ __('documents.reference_number') }}</label>
-                                            <input type="text" class="form-control form-control-solid @error('reference_number') is-invalid @enderror"
-                                                   name="reference_number" value="{{ old('reference_number', $document->reference_number) }}" />
-                                            @error('reference_number')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                    <!--begin::Row-->
-                                    <div class="row g-9 mb-8">
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row">
-                                            <label class="fs-6 fw-semibold mb-2">{{ __('documents.fees_amount') }}</label>
-                                            <input type="number" min="0" step="0.01" class="form-control form-control-solid @error('fees_amount') is-invalid @enderror"
-                                                   name="fees_amount" value="{{ old('fees_amount', $document->fees_amount) }}" />
-                                            @error('fees_amount')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                        <!--begin::Col-->
-                                        <div class="col-md-6 fv-row" id="file_upload_field">
-                                            <label class="fs-6 fw-semibold mb-2" id="file_upload_label">{{ __('documents.file_path') }}</label>
-                                            <input type="file" class="form-control form-control-solid @error('document_file') is-invalid @enderror"
-                                                   name="document_file" accept=".pdf,.jpg,.jpeg,.png" />
-                                            <div class="form-text">
-                                                @if($document->file_path)
-                                                    {{ __('documents.current_file') }}:
-                                                    <a href="{{ route('admin.employees.documents.download', [$employee, $document]) }}"
-                                                       class="text-primary" target="_blank">{{ __('documents.view_file') }}</a>
-                                                    <br>
-                                                @endif
-                                                {{ __('documents.file_upload_instructions') }}
-                                            </div>
-                                            @error('document_file')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                    <!--begin::Row-->
-                                    <div class="row g-9">
-                                        <!--begin::Col-->
-                                        <div class="col-md-12 fv-row">
-                                            <label class="fs-6 fw-semibold mb-2">{{ __('documents.notes') }}</label>
-                                            <textarea class="form-control form-control-solid @error('notes') is-invalid @enderror"
-                                                      name="notes" rows="4">{{ old('notes', $document->notes) }}</textarea>
-                                            @error('notes')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -253,7 +130,7 @@
                                 <div class="row mb-8">
                                     <!--begin::Col-->
                                     <div class="col-xl-3">
-                                        <div class="fs-6 fw-semibold mt-2 mb-3">{{ __('documents.additional_information') }}</div>
+                                        <div class="fs-6 fw-semibold mt-2 mb-3">{{ __('documents.document_fields') }}</div>
                                     </div>
                                     <!--end::Col-->
                                     <!--begin::Col-->
@@ -268,7 +145,7 @@
                             <!--end::Dynamic Fields Section-->
 
                             <!--begin::Reminder Section-->
-                            <div class="row mb-8">
+                            <div class="row mb-8" id="reminder_section" style="display: none;">
                                 <!--begin::Col-->
                                 <div class="col-xl-3">
                                     <div class="fs-6 fw-semibold mt-2 mb-3">{{ __('documents.reminder_settings') }}</div>
@@ -294,6 +171,7 @@
                                             <label class="fs-6 fw-semibold mb-2">{{ __('documents.remind_before_days') }}</label>
                                             <input type="number" min="1" max="365" class="form-control form-control-solid @error('reminder_days') is-invalid @enderror"
                                                    name="reminder_days" value="{{ old('reminder_days', $document->reminder_days ?? 30) }}" />
+                                            <div class="form-text">{{ __('documents.reminder_help_text') }}</div>
                                             @error('reminder_days')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -343,7 +221,9 @@
             var form;
             var submitButton;
             var documentTypeSelect;
-            var expiryDateField;
+            var dynamicFieldsSection;
+            var dynamicFieldsContainer;
+            var reminderSection;
             var enableReminderCheckbox;
             var reminderDaysField;
 
@@ -368,49 +248,43 @@
             var handleDocumentTypeChange = function () {
                 documentTypeSelect.addEventListener('change', function () {
                     var selectedOption = this.options[this.selectedIndex];
-                    var requiresExpiry = selectedOption.getAttribute('data-requires-expiry') === 'true';
-                    var requiresFile = selectedOption.getAttribute('data-requires-file') === 'true';
-                    var requiredFields = JSON.parse(selectedOption.getAttribute('data-required-fields') || '[]');
-                    var optionalFields = JSON.parse(selectedOption.getAttribute('data-optional-fields') || '[]');
-
-                    // Handle expiry date field
-                    var expiryLabel = document.getElementById('expiry_date_label');
-                    var expiryInput = document.querySelector('input[name="expiry_date"]');
-
-                    if (requiresExpiry) {
-                        expiryLabel.textContent = '{{ __("documents.expiry_date") }} *';
-                        expiryLabel.classList.add('required');
-                        expiryInput.setAttribute('required', 'required');
-                        expiryDateField.style.display = 'block';
+                    var customFieldsData = selectedOption.getAttribute('data-custom-fields') || '[]';
+                    var reminderDays = selectedOption.getAttribute('data-reminder-days');
+                    
+                    // Clear previous fields
+                    dynamicFieldsContainer.innerHTML = '';
+                    
+                    try {
+                        var customFields = JSON.parse(customFieldsData);
+                        
+                        // Convert customFields object to array if needed
+                        if (!Array.isArray(customFields)) {
+                            if (typeof customFields === 'object' && customFields !== null) {
+                                customFields = Object.values(customFields);
                     } else {
-                        expiryLabel.textContent = '{{ __("documents.expiry_date") }}';
-                        expiryLabel.classList.remove('required');
-                        expiryInput.removeAttribute('required');
-                        expiryDateField.style.display = 'none';
+                                customFields = [];
+                            }
+                        }
+                        
+                        if (customFields.length === 0) {
+                            dynamicFieldsSection.style.display = 'none';
+                            reminderSection.style.display = 'none';
+                            return;
+                        }
+
+                        // Show dynamic fields section
+                        dynamicFieldsSection.style.display = 'block';
+                        
+                        // Generate fields based on custom fields
+                        generateDynamicFields(customFields);
+                        
+                        // Handle reminder settings
+                        handleReminderSettings(customFields, reminderDays);
+                    } catch (error) {
+                        console.error('Error parsing custom fields:', error);
+                        dynamicFieldsSection.style.display = 'none';
+                        reminderSection.style.display = 'none';
                     }
-
-                    // Handle file upload field
-                    var fileLabel = document.getElementById('file_upload_label');
-                    var fileInput = document.querySelector('input[name="document_file"]');
-                    var fileField = document.getElementById('file_upload_field');
-
-                    if (requiresFile) {
-                        fileLabel.textContent = '{{ __("documents.file_path") }} *';
-                        fileLabel.classList.add('required');
-                        fileInput.setAttribute('required', 'required');
-                        fileField.style.display = 'block';
-                    } else {
-                        fileLabel.textContent = '{{ __("documents.file_path") }}';
-                        fileLabel.classList.remove('required');
-                        fileInput.removeAttribute('required');
-                        fileField.style.display = 'block'; // Always show but not required
-                    }
-
-                    // Handle dynamic fields
-                    generateDynamicFields(requiredFields, optionalFields);
-
-                    // Handle reminder settings based on document type
-                    handleReminderSettings(selectedOption);
                 });
 
                 // Trigger initial state
@@ -419,67 +293,98 @@
                 }
             }
 
-            var generateDynamicFields = function (requiredFields, optionalFields) {
-                var container = document.getElementById('dynamic_fields_container');
-                var section = document.getElementById('dynamic_fields_section');
-
-                container.innerHTML = '';
-
-                if (requiredFields.length === 0 && optionalFields.length === 0) {
-                    section.style.display = 'none';
-                    return;
+            var generateDynamicFields = function (customFields) {
+                // Convert customFields object to array if needed
+                if (!Array.isArray(customFields)) {
+                    if (typeof customFields === 'object' && customFields !== null) {
+                        customFields = Object.values(customFields);
+                    } else {
+                        customFields = [];
+                    }
                 }
-
-                section.style.display = 'block';
-
-                var allFields = [...requiredFields.map(f => ({...f, required: true})), ...optionalFields.map(f => ({...f, required: false}))];
-
-                allFields.forEach(function(field, index) {
+                
+                customFields.forEach(function(field, index) {
                     var isEven = index % 2 === 0;
 
                     if (isEven) {
                         var row = document.createElement('div');
                         row.className = 'row g-9 mb-8';
-                        container.appendChild(row);
+                        dynamicFieldsContainer.appendChild(row);
                     }
 
-                    var currentRow = container.lastElementChild;
+                    var currentRow = dynamicFieldsContainer.lastElementChild;
                     var col = document.createElement('div');
                     col.className = 'col-md-6 fv-row';
 
                     var label = document.createElement('label');
                     label.className = 'fs-6 fw-semibold mb-2' + (field.required ? ' required' : '');
-                    label.textContent = field.label || field.name;
+                    label.textContent = '{{ app()->getLocale() }}' === 'ar' ? (field.name_ar || field.name_en || field.key) : (field.name_en || field.name_ar || field.key);
 
+                    var input = createInputForField(field);
+                    input.name = field.key;
+                    if (field.required) {
+                        input.setAttribute('required', 'required');
+                    }
+
+                    // Set existing values
+                    var existingData = @json($document->custom_fields ?? []);
+                    if (existingData && existingData[field.key]) {
+                        if (field.type === 'file') {
+                            // Show existing file info
+                            var fileInfo = document.createElement('div');
+                            fileInfo.className = 'form-text text-muted mb-2';
+                            if (existingData[field.key].original_filename) {
+                                fileInfo.innerHTML = '{{ __("documents.current_file") }}: <a href="#" class="text-primary">' + existingData[field.key].original_filename + '</a>';
+                            }
+                            col.appendChild(fileInfo);
+                        } else {
+                            input.value = existingData[field.key];
+                        }
+                    }
+
+                    col.appendChild(label);
+                    col.appendChild(input);
+                    currentRow.appendChild(col);
+                });
+            }
+
+            var createInputForField = function (field) {
                     var input;
-                    switch (field.type) {
+                var fieldType = field.type || 'text';
+                
+                switch (fieldType) {
                         case 'select':
                             input = document.createElement('select');
                             input.className = 'form-select form-select-solid';
                             var defaultOption = document.createElement('option');
                             defaultOption.value = '';
-                            defaultOption.textContent = '{{ __("documents.select") }} ' + (field.label || field.name);
+                        defaultOption.textContent = '{{ __("documents.select") }} ' + ('{{ app()->getLocale() }}' === 'ar' ? (field.name_ar || field.name_en || field.key) : (field.name_en || field.name_ar || field.key));
                             input.appendChild(defaultOption);
 
-                            if (field.options) {
+                        if (field.options && Array.isArray(field.options)) {
                                 field.options.forEach(function(option) {
                                     var opt = document.createElement('option');
                                     opt.value = option.value || option;
-                                    opt.textContent = option.label || option;
+                                opt.textContent = '{{ app()->getLocale() }}' === 'ar' ? 
+                                    (option.label_ar || option.label_en || option.value || option) : 
+                                    (option.label_en || option.label_ar || option.value || option);
                                     input.appendChild(opt);
                                 });
                             }
                             break;
+                        
                         case 'textarea':
                             input = document.createElement('textarea');
                             input.className = 'form-control form-control-solid';
                             input.rows = 3;
                             break;
+                        
                         case 'date':
                             input = document.createElement('input');
                             input.type = 'date';
                             input.className = 'form-control form-control-solid';
                             break;
+                        
                         case 'number':
                             input = document.createElement('input');
                             input.type = 'number';
@@ -488,30 +393,57 @@
                             if (field.max !== undefined) input.max = field.max;
                             if (field.step !== undefined) input.step = field.step;
                             break;
+                        
+                    case 'file':
+                        input = document.createElement('input');
+                        input.type = 'file';
+                        input.className = 'form-control form-control-solid';
+                        input.accept = '.pdf,.jpg,.jpeg,.png,.doc,.docx';
+                        break;
+                        
+                    case 'email':
+                        input = document.createElement('input');
+                        input.type = 'email';
+                        input.className = 'form-control form-control-solid';
+                        break;
+                        
                         default:
                             input = document.createElement('input');
                             input.type = 'text';
                             input.className = 'form-control form-control-solid';
                     }
 
-                    input.name = 'dynamic_fields[' + field.name + ']';
-                    if (field.required) {
-                        input.setAttribute('required', 'required');
-                    }
-                    if (field.placeholder) {
-                        input.placeholder = field.placeholder;
-                    }
+                // Set placeholder based on locale
+                if (field.placeholder_en || field.placeholder_ar) {
+                    input.placeholder = '{{ app()->getLocale() }}' === 'ar' ? 
+                        (field.placeholder_ar || field.placeholder_en) : 
+                        (field.placeholder_en || field.placeholder_ar);
+                }
 
-                    // Set existing values if available
-                    var existingData = @json($document->dynamic_fields ?? []);
-                    if (existingData && existingData[field.name]) {
-                        input.value = existingData[field.name];
-                    }
+                return input;
+            }
 
-                    col.appendChild(label);
-                    col.appendChild(input);
-                    currentRow.appendChild(col);
-                });
+            var handleReminderSettings = function (customFields, reminderDays) {
+                // Convert customFields object to array if needed
+                if (!Array.isArray(customFields)) {
+                    if (typeof customFields === 'object' && customFields !== null) {
+                        customFields = Object.values(customFields);
+                    } else {
+                        customFields = [];
+                    }
+                }
+                
+                // Check if any field is expiry_date and required
+                var hasExpiryDate = customFields.some(field => field && field.key === 'expiry_date' && field.required);
+                
+                if (hasExpiryDate) {
+                    reminderSection.style.display = 'block';
+                    if (reminderDays && reminderDaysField && reminderDaysField.querySelector('input')) {
+                        reminderDaysField.querySelector('input').value = reminderDays;
+                    }
+                } else {
+                    reminderSection.style.display = 'none';
+                }
             }
 
             var handleReminderToggle = function () {
@@ -531,35 +463,15 @@
                 }
             }
 
-            var handleReminderSettings = function (selectedOption) {
-                var hasReminder = selectedOption.getAttribute('data-has-reminder') === 'true';
-                var reminderDays = selectedOption.getAttribute('data-reminder-days');
-                var requiresExpiry = selectedOption.getAttribute('data-requires-expiry') === 'true';
-
-                if (hasReminder && requiresExpiry) {
-                    enableReminderCheckbox.checked = true;
-                    enableReminderCheckbox.disabled = false;
-                    reminderDaysField.style.display = 'block';
-                    reminderDaysField.querySelector('input').setAttribute('required', 'required');
-                    
-                    if (reminderDays) {
-                        reminderDaysField.querySelector('input').value = reminderDays;
-                    }
-                } else {
-                    enableReminderCheckbox.checked = false;
-                    enableReminderCheckbox.disabled = true;
-                    reminderDaysField.style.display = 'none';
-                    reminderDaysField.querySelector('input').removeAttribute('required');
-                }
-            }
-
             // Public methods
             return {
                 init: function () {
                     form = document.querySelector('#kt_document_form');
                     submitButton = document.querySelector('#kt_document_submit');
                     documentTypeSelect = document.querySelector('#document_type_id');
-                    expiryDateField = document.querySelector('#expiry_date_field');
+                    dynamicFieldsSection = document.querySelector('#dynamic_fields_section');
+                    dynamicFieldsContainer = document.querySelector('#dynamic_fields_container');
+                    reminderSection = document.querySelector('#reminder_section');
                     enableReminderCheckbox = document.querySelector('#enable_reminder');
                     reminderDaysField = document.querySelector('#reminder_days_field');
 
@@ -583,6 +495,13 @@
         // On document ready
         KTUtil.onDOMContentLoaded(function () {
             KTDocumentEdit.init();
+            
+            // If there are validation errors and a document type is selected, populate fields
+            var documentTypeSelect = document.querySelector('#document_type_id');
+            if (documentTypeSelect && documentTypeSelect.value && document.querySelector('#dynamic_fields_section')) {
+                // Trigger change event to populate dynamic fields
+                documentTypeSelect.dispatchEvent(new Event('change'));
+            }
         });
     </script>
 @endpush

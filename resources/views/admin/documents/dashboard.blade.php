@@ -32,7 +32,7 @@
             <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2 gap-lg-3">
                 <a href="{{ route('admin.documents.index') }}" class="btn btn-sm fw-bold btn-primary">
-                    <i class="ki-duotone ki-document fs-2"></i>{{ __('documents.all_documents') }}
+                    <i class="fa fa-file-text"></i>{{ __('documents.all_documents') }}
                 </a>
             </div>
             <!--end::Actions-->
@@ -216,10 +216,7 @@
                             <div class="d-flex flex-stack">
                                 <!--begin::Flag-->
                                 <span class="badge badge-light-success fs-base">
-                                    <i class="ki-duotone ki-shield-tick fs-5 text-success me-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>{{ __('Civil Defense') }}
+                                    <i class="fa fa-shield-alt text-success me-2"></i>{{ __('Civil Defense') }}
                                 </span>
                                 <!--end::Flag-->
                                 <!--begin::Number-->
@@ -234,10 +231,7 @@
                             <div class="d-flex flex-stack">
                                 <!--begin::Flag-->
                                 <span class="badge badge-light-primary fs-base">
-                                    <i class="ki-duotone ki-buildings-2 fs-5 text-primary me-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>{{ __('Municipality') }}
+                                    <i class="fa fa-building text-primary me-2"></i>{{ __('Municipality') }}
                                 </span>
                                 <!--end::Flag-->
                                 <!--begin::Number-->
@@ -252,10 +246,7 @@
                             <div class="d-flex flex-stack">
                                 <!--begin::Flag-->
                                 <span class="badge badge-light-warning fs-base">
-                                    <i class="ki-duotone ki-document fs-5 text-warning me-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>{{ __('Branch Registration') }}
+                                    <i class="fa fa-file-text text-warning me-2"></i>{{ __('Branch Registration') }}
                                 </span>
                                 <!--end::Flag-->
                                 <!--begin::Number-->
@@ -467,10 +458,7 @@
                                         <!--end::Label-->
                                         <!--begin::Badge-->
                                         <div class="timeline-badge">
-                                            <i class="ki-duotone ki-abstract-8 fs-2 text-gray-400">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fa fa-circle fs-2 text-gray-400"></i>
                                         </div>
                                         <!--end::Badge-->
                                         <!--begin::Text-->

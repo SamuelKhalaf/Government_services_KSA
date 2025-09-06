@@ -100,7 +100,8 @@ class CompanyController extends Controller
             },
             'civilDefenseLicenses',
             'municipalityLicenses',
-            'branchCommercialRegistrations'
+            'branchCommercialRegistrations',
+            'companyDocuments.documentType'
         ]);
 
         // Get document statistics

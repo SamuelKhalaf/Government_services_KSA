@@ -124,8 +124,32 @@ class Employee extends Model
         
         return $this->documents()
             ->where('status', 'active')
-            ->where('expiry_date', '<=', $thirtyDaysFromNow)
-            ->where('expiry_date', '>=', now())
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') <= ?", [$thirtyDaysFromNow->toDateString()])
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') >= ?", [now()->toDateString()])
+            ->get();
+    }
+
+    /**
+     * Get expired documents
+     */
+    public function getExpiredDocumentsAttribute()
+    {
+        return $this->documents()
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') < ?", [now()->toDateString()])
+            ->get();
+    }
+
+    /**
+     * Get active documents (not expired yet)
+     */
+    public function getActiveNotExpiredDocumentsAttribute()
+    {
+        return $this->documents()
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') IS NULL")
+                      ->orWhereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') >= ?", [now()->toDateString()]);
+            })
             ->get();
     }
 
@@ -209,8 +233,8 @@ class Employee extends Model
         
         return $query->whereHas('documents', function ($q) use ($expiryDate) {
             $q->where('status', 'active')
-              ->where('expiry_date', '<=', $expiryDate)
-              ->where('expiry_date', '>=', now());
+              ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') <= ?", [$expiryDate->toDateString()])
+              ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') >= ?", [now()->toDateString()]);
         });
     }
 
@@ -282,8 +306,8 @@ class Employee extends Model
             })
             ->get()
             ->filter(function ($type) {
-                // Consider document types with required fields as "required"
-                return !empty($type->required_fields) && !$this->hasDocumentType($type->code);
+                // Consider document types with custom fields as "required"
+                return !empty($type->custom_fields) && !$this->hasDocumentType($type->code);
             });
 
         return $requiredTypes;
@@ -296,9 +320,9 @@ class Employee extends Model
     {
         return [
             'total_documents' => $this->documents->count(),
-            'active_documents' => $this->activeDocuments->count(),
+            'active_documents' => $this->activeNotExpiredDocuments->count(),
             'expiring_soon' => $this->expiring_soon_documents->count(),
-            'expired_documents' => $this->documents()->expired()->count(),
+            'expired_documents' => $this->expired_documents->count(),
             'missing_required' => $this->getMissingRequiredDocumentTypes()->count()
         ];
     }

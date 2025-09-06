@@ -27,7 +27,7 @@ class EmployeeDocumentController extends Controller
         if ($request->filled('search')) {
             $query->whereHas('employee', function ($q) use ($request) {
                 $q->search($request->search);
-            })->orWhere('document_number', 'like', '%' . $request->search . '%');
+            })->orWhereRaw("JSON_EXTRACT(custom_fields, '$.document_number') LIKE ?", ['%' . $request->search . '%']);
         }
 
         // Filter by document type
@@ -95,16 +95,13 @@ class EmployeeDocumentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEmployeeDocumentRequest $request, Employee $employee)
+    public function store(Request $request, Employee $employee)
     {
         try {
             DB::beginTransaction();
 
-            $documentData = $request->validated();
-            $documentData['employee_id'] = $employee->id;
-
             // Get document type to apply specific logic
-            $documentType = DocumentType::find($documentData['document_type_id']);
+            $documentType = DocumentType::find($request->document_type_id);
             
             if (!$documentType) {
                 throw new \Exception(__('documents.document_type_not_found'));
@@ -113,28 +110,53 @@ class EmployeeDocumentController extends Controller
             // Validate document type compatibility with employee
             $this->validateDocumentTypeCompatibility($documentType, $employee);
             
-            // Handle file upload if required by document type
-            if ($request->hasFile('document_file')) {
-                $file = $request->file('document_file');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('employee_documents/' . $employee->id, $filename, 'public');
-                
-                $documentData['file_path'] = $path;
-                $documentData['original_filename'] = $file->getClientOriginalName();
-                $documentData['file_type'] = $file->getClientOriginalExtension();
-                $documentData['file_size'] = $file->getSize();
-            } elseif ($documentType->requires_file_upload) {
-                // If file is required but not provided, throw error
-                throw new \Exception(__('documents.file_upload_required'));
+            // Get validation rules from document type
+            $validationRules = $documentType->getAllValidationRules();
+            $customMessages = $this->getCustomValidationMessages($documentType);
+            $validatedData = $request->validate($validationRules, $customMessages);
+
+            // Prepare document data
+            $documentData = [
+                'employee_id' => $employee->id,
+                'document_type_id' => $documentType->id,
+                'status' => $validatedData['status'] ?? 'active',
+                'custom_fields' => []
+            ];
+
+            // Process custom fields from document type
+            if ($documentType->custom_fields && is_array($documentType->custom_fields)) {
+                foreach ($documentType->custom_fields as $field) {
+                    $fieldKey = $field['key'];
+                    $fieldType = $field['type'];
+                    
+                    if (isset($validatedData[$fieldKey])) {
+                        $value = $validatedData[$fieldKey];
+                        
+                        // Handle file uploads
+                        if ($fieldType === 'file' && $request->hasFile($fieldKey)) {
+                            $file = $request->file($fieldKey);
+                            $filename = time() . '_' . $file->getClientOriginalName();
+                            $path = $file->storeAs('employee_documents/' . $employee->id, $filename, 'public');
+                            
+                            $documentData['custom_fields'][$fieldKey] = [
+                                'file_path' => $path,
+                                'original_filename' => $file->getClientOriginalName(),
+                                'file_type' => $file->getClientOriginalExtension(),
+                                'file_size' => $file->getSize(),
+                            ];
+                        } else {
+                            $documentData['custom_fields'][$fieldKey] = $value;
+                        }
+                    }
+                }
             }
 
-            // Set default status if not provided
-            if (!isset($documentData['status'])) {
-                $documentData['status'] = 'active';
+            // Handle reminder settings
+            $documentData['enable_reminder'] = $request->boolean('enable_reminder');
+            
+            if (isset($validatedData['reminder_days'])) {
+                $documentData['reminder_days'] = $validatedData['reminder_days'];
             }
-
-            // Apply document type specific logic
-            $documentData = $this->applyDocumentTypeLogic($documentData, $documentType);
 
             $document = EmployeeDocument::create($documentData);
 
@@ -158,7 +180,7 @@ class EmployeeDocumentController extends Controller
     {
         $document->load(['employee.company', 'documentType']);
         
-        return view('admin.documents.show', compact('document'));
+        return view('admin.documents.show', compact('document', 'employee'));
     }
 
     /**
@@ -177,21 +199,19 @@ class EmployeeDocumentController extends Controller
             return back()->with('error', __('documents.no_compatible_document_types'));
         }
 
-        return view('admin.documents.edit', compact('document', 'documentTypes'));
+        return view('admin.documents.edit', compact('document', 'documentTypes', 'employee'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEmployeeDocumentRequest $request, Employee $employee, EmployeeDocument $document)
+    public function update(Request $request, Employee $employee, EmployeeDocument $document)
     {
         try {
             DB::beginTransaction();
 
-            $documentData = $request->validated();
-
             // Get document type to apply specific logic
-            $documentType = DocumentType::find($documentData['document_type_id']);
+            $documentType = DocumentType::find($request->document_type_id);
             
             if (!$documentType) {
                 throw new \Exception(__('documents.document_type_not_found'));
@@ -200,28 +220,57 @@ class EmployeeDocumentController extends Controller
             // Validate document type compatibility with employee
             $this->validateDocumentTypeCompatibility($documentType, $employee);
             
-            // Handle file upload if required by document type
-            if ($request->hasFile('document_file')) {
-                // Delete old file if exists
-                if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
-                    Storage::disk('public')->delete($document->file_path);
-                }
+            // Get validation rules from document type
+            $validationRules = $documentType->getAllValidationRules();
+            $customMessages = $this->getCustomValidationMessages($documentType);
+            $validatedData = $request->validate($validationRules, $customMessages);
 
-                $file = $request->file('document_file');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('employee_documents/' . $employee->id, $filename, 'public');
-                
-                $documentData['file_path'] = $path;
-                $documentData['original_filename'] = $file->getClientOriginalName();
-                $documentData['file_type'] = $file->getClientOriginalExtension();
-                $documentData['file_size'] = $file->getSize();
-            } elseif ($documentType->requires_file_upload && !$document->file_path) {
-                // If file is required but not provided and no existing file, throw error
-                throw new \Exception(__('documents.file_upload_required'));
+            // Prepare document data
+            $documentData = [
+                'document_type_id' => $documentType->id,
+                'status' => $validatedData['status'] ?? $document->status,
+                'custom_fields' => $document->custom_fields ?? []
+            ];
+
+            // Process custom fields from document type
+            if ($documentType->custom_fields && is_array($documentType->custom_fields)) {
+                foreach ($documentType->custom_fields as $field) {
+                    $fieldKey = $field['key'];
+                    $fieldType = $field['type'];
+                    
+                    if (isset($validatedData[$fieldKey])) {
+                        $value = $validatedData[$fieldKey];
+                        
+                        // Handle file uploads
+                        if ($fieldType === 'file' && $request->hasFile($fieldKey)) {
+                            // Delete old file if exists
+                            if (isset($document->custom_fields[$fieldKey]['file_path']) && Storage::disk('public')->exists($document->custom_fields[$fieldKey]['file_path'])) {
+                                Storage::disk('public')->delete($document->custom_fields[$fieldKey]['file_path']);
+                            }
+
+                            $file = $request->file($fieldKey);
+                            $filename = time() . '_' . $file->getClientOriginalName();
+                            $path = $file->storeAs('employee_documents/' . $employee->id, $filename, 'public');
+                            
+                            $documentData['custom_fields'][$fieldKey] = [
+                                'file_path' => $path,
+                                'original_filename' => $file->getClientOriginalName(),
+                                'file_type' => $file->getClientOriginalExtension(),
+                                'file_size' => $file->getSize(),
+                            ];
+                        } else {
+                            $documentData['custom_fields'][$fieldKey] = $value;
+                        }
+                    }
+                }
             }
 
-            // Apply document type specific logic
-            $documentData = $this->applyDocumentTypeLogic($documentData, $documentType);
+            // Handle reminder settings
+            $documentData['enable_reminder'] = $request->boolean('enable_reminder');
+            
+            if (isset($validatedData['reminder_days'])) {
+                $documentData['reminder_days'] = $validatedData['reminder_days'];
+            }
 
             $document->update($documentData);
 
@@ -246,9 +295,13 @@ class EmployeeDocumentController extends Controller
         try {
             DB::beginTransaction();
 
-            // Delete file if exists
-            if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
-                Storage::disk('public')->delete($document->file_path);
+            // Delete custom field files if they exist
+            if ($document->custom_fields && is_array($document->custom_fields)) {
+                foreach ($document->custom_fields as $fieldKey => $fieldData) {
+                    if (isset($fieldData['file_path']) && Storage::disk('public')->exists($fieldData['file_path'])) {
+                        Storage::disk('public')->delete($fieldData['file_path']);
+                    }
+                }
             }
 
             $document->delete();
@@ -265,15 +318,82 @@ class EmployeeDocumentController extends Controller
     }
 
     /**
-     * Download document file
+     * Download document file (with employee parameter)
      */
-    public function download(EmployeeDocument $document)
+    public function download(Employee $employee, EmployeeDocument $document)
     {
-        if (!$document->file_path || !Storage::disk('public')->exists($document->file_path)) {
-            return back()->with('error', __('documents.document_file_not_found'));
+        // Try custom field files
+        if ($document->custom_fields && is_array($document->custom_fields)) {
+            foreach ($document->custom_fields as $fieldKey => $fieldData) {
+                if (isset($fieldData['file_path']) && Storage::disk('public')->exists($fieldData['file_path'])) {
+                    return Storage::disk('public')->download($fieldData['file_path'], $fieldData['original_filename']);
+                }
+            }
         }
 
-        return Storage::disk('public')->download($document->file_path, $document->original_filename);
+        return back()->with('error', __('documents.document_file_not_found'));
+    }
+
+    /**
+     * Download document file (legacy route without employee parameter)
+     */
+    public function downloadLegacy(EmployeeDocument $document)
+    {
+        // Try custom field files
+        if ($document->custom_fields && is_array($document->custom_fields)) {
+            foreach ($document->custom_fields as $fieldKey => $fieldData) {
+                if (isset($fieldData['file_path']) && Storage::disk('public')->exists($fieldData['file_path'])) {
+                    return Storage::disk('public')->download($fieldData['file_path'], $fieldData['original_filename']);
+                }
+            }
+        }
+
+        return back()->with('error', __('documents.document_file_not_found'));
+    }
+
+    /**
+     * Get custom validation messages for document type fields
+     */
+    private function getCustomValidationMessages(DocumentType $documentType): array
+    {
+        $messages = [];
+        
+        if ($documentType->custom_fields && is_array($documentType->custom_fields)) {
+            foreach ($documentType->custom_fields as $field) {
+                $fieldKey = $field['key'];
+                $fieldName = app()->getLocale() === 'ar' ? $field['name_ar'] : $field['name_en'];
+                
+                // Required field messages
+                $messages[$fieldKey . '.required'] = __('documents.required_field_missing', ['field' => $fieldName]);
+                
+                // Field-specific messages
+                switch ($field['type'] ?? 'text') {
+                    case 'email':
+                        $messages[$fieldKey . '.email'] = __('documents.invalid_email_format', ['field' => $fieldName]);
+                        break;
+                    case 'date':
+                        $messages[$fieldKey . '.date'] = __('documents.invalid_date_format', ['field' => $fieldName]);
+                        break;
+                    case 'number':
+                        $messages[$fieldKey . '.numeric'] = __('documents.invalid_number_format', ['field' => $fieldName]);
+                        break;
+                    case 'file':
+                        $messages[$fieldKey . '.file'] = __('documents.invalid_file_format', ['field' => $fieldName]);
+                        $messages[$fieldKey . '.mimes'] = __('documents.invalid_file_type', ['field' => $fieldName]);
+                        $messages[$fieldKey . '.max'] = __('documents.file_too_large', ['field' => $fieldName]);
+                        break;
+                    case 'select':
+                        $messages[$fieldKey . '.in'] = __('documents.invalid_selection', ['field' => $fieldName]);
+                        break;
+                    default:
+                        $messages[$fieldKey . '.string'] = __('documents.invalid_text_format', ['field' => $fieldName]);
+                        $messages[$fieldKey . '.max'] = __('documents.text_too_long', ['field' => $fieldName]);
+                        break;
+                }
+            }
+        }
+        
+        return $messages;
     }
 
     /**
@@ -302,38 +422,20 @@ class EmployeeDocumentController extends Controller
     }
 
     /**
-     * Apply document type specific logic to document data
+     * Download document file
      */
-    private function applyDocumentTypeLogic(array $documentData, DocumentType $documentType): array
+    public function downloadFile(EmployeeDocument $document, $fieldKey)
     {
-        // Set auto reminder if document type has it enabled
-        if ($documentType->has_auto_reminder && $documentType->requires_expiry_date) {
-            $documentData['auto_reminder'] = true;
-            if (isset($documentData['expiry_date'])) {
-                $expiryDate = \Carbon\Carbon::parse($documentData['expiry_date']);
-                $reminderDate = $expiryDate->subDays($documentType->reminder_days_before ?? 30);
-                $documentData['reminder_date'] = $reminderDate;
-            }
-        } else {
-            $documentData['auto_reminder'] = false;
-            $documentData['reminder_date'] = null;
+        if (!$document->custom_fields || !isset($document->custom_fields[$fieldKey])) {
+            return back()->with('error', __('documents.document_file_not_found'));
         }
 
-        // Set default values based on document type requirements
-        if ($documentType->requires_expiry_date && !isset($documentData['expiry_date'])) {
-            // Set a default expiry date (e.g., 1 year from now)
-            $documentData['expiry_date'] = now()->addYear();
+        $fileData = $document->custom_fields[$fieldKey];
+        
+        if (!isset($fileData['file_path']) || !Storage::disk('public')->exists($fileData['file_path'])) {
+            return back()->with('error', __('documents.document_file_not_found'));
         }
 
-        // Apply custom field validation based on document type
-        if ($documentType->required_fields && is_array($documentType->required_fields)) {
-            foreach ($documentType->required_fields as $field) {
-                if (!isset($documentData[$field]) || empty($documentData[$field])) {
-                    throw new \Exception(__('documents.required_field_missing', ['field' => $field]));
-                }
-            }
-        }
-
-        return $documentData;
+        return Storage::disk('public')->download($fileData['file_path'], $fileData['original_filename']);
     }
 }

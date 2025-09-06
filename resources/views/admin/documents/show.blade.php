@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('title', $document->documentType->name_en ?? $document->document_type_id . ' - ' . $document->document_number)
+@section('title', (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id . ' - ' . ($document->getCustomFieldValue('document_number') ?? __('common.n_a')))
 
 @section('content')
     <!--begin::Content wrapper-->
@@ -13,7 +13,7 @@
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
                     <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                        {{ $document->documentType->name_en ?? $document->document_type_id }}
+                        {{ (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id }}
                     </h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
@@ -36,16 +36,16 @@
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
-                        <li class="breadcrumb-item text-muted">{{ $document->document_number }}</li>
+                        <li class="breadcrumb-item text-muted">{{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</li>
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
                 <!--end::Page title-->
                 <!--begin::Actions-->
                 <div class="d-flex align-items-center gap-2 gap-lg-3">
-                    @if($document->file_path)
+                    @if($document->hasFile())
                         <a href="{{ route('admin.employees.documents.download', [$employee, $document]) }}" class="btn btn-sm fw-bold btn-success" target="_blank">
-                            <i class="ki-duotone ki-file-down fs-2"></i>@lang('documents.download_file')
+                            <i class="fa fa-download"></i>@lang('documents.download_file')
                         </a>
                     @endif
                     <a href="{{ route('admin.employees.documents.edit', [$employee, $document]) }}" class="btn btn-sm fw-bold btn-primary">
@@ -87,10 +87,10 @@
                                     </div>
                                     <!--end::Avatar-->
                                     <!--begin::Name-->
-                                    <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bold mb-1">{{ $document->document_number }}</a>
+                                    <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bold mb-1">{{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</a>
                                     <!--end::Name-->
                                     <!--begin::Position-->
-                                    <div class="fs-5 fw-semibold text-muted mb-6">{{ $document->documentType->name_en ?? $document->document_type_id }}</div>
+                                    <div class="fs-5 fw-semibold text-muted mb-6">{{ (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id }}</div>
                                     <!--end::Position-->
                                     <!--begin::Info-->
                                     <div class="d-flex flex-wrap flex-center">
@@ -99,7 +99,6 @@
                                             <div class="fs-4 fw-bold text-gray-700">
                                                 {!! $document->statusBadge !!}
                                             </div>
-                                            <div class="fw-semibold text-muted">@lang('common.status')</div>
                                         </div>
                                         <!--end::Stats-->
                                     </div>
@@ -134,21 +133,20 @@
                                         <!--begin::Details item-->
                                         <div class="fw-bold mt-5">@lang('documents.document_type')</div>
                                         <div class="text-gray-600">
-                                            {{ $document->documentType->name_en ?? $document->document_type_id }}
-                                            @if($document->documentType && $document->documentType->name_ar)
-                                                <br><span class="text-muted">{{ $document->documentType->name_ar }}</span>
-                                            @endif
+                                            {{ (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id }}
                                         </div>
                                         <!--end::Details item-->
-                                        <!--begin::Details item-->
-                                        <div class="fw-bold mt-5">@lang('documents.issue_date')</div>
-                                        <div class="text-gray-600">{{ $document->issue_date?->format('Y-m-d') ?? __('common.n_a') }}</div>
-                                        <!--end::Details item-->
-                                        @if($document->expiry_date)
+                                        @if($document->getCustomFieldValue('issue_date'))
+                                            <!--begin::Details item-->
+                                            <div class="fw-bold mt-5">@lang('documents.issue_date')</div>
+                                            <div class="text-gray-600">{{ \Carbon\Carbon::parse($document->getCustomFieldValue('issue_date'))->format('Y-m-d') }}</div>
+                                            <!--end::Details item-->
+                                        @endif
+                                        @if($document->getCustomFieldValue('expiry_date'))
                                             <!--begin::Details item-->
                                             <div class="fw-bold mt-5">@lang('documents.expiry_date')</div>
                                             <div class="text-gray-600">
-                                                {{ $document->expiry_date->format('Y-m-d') }}
+                                                {{ \Carbon\Carbon::parse($document->getCustomFieldValue('expiry_date'))->format('Y-m-d') }}
                                                 @if($document->isExpiringSoon)
                                                     <br><span class="badge badge-light-warning mt-1">@lang('documents.expiring_soon')</span>
                                                 @elseif($document->isExpired)
@@ -159,15 +157,45 @@
                                             </div>
                                             <!--end::Details item-->
                                         @endif
-                                        <!--begin::Details item-->
-                                        <div class="fw-bold mt-5">@lang('documents.issuing_authority')</div>
-                                        <div class="text-gray-600">{{ $document->issuing_authority ?? __('common.n_a') }}</div>
-                                        <!--end::Details item-->
-                                        @if($document->fees_amount)
+                                        @if($document->getCustomFieldValue('issuing_authority'))
+                                            <!--begin::Details item-->
+                                            <div class="fw-bold mt-5">@lang('documents.issuing_authority')</div>
+                                            <div class="text-gray-600">{{ $document->getCustomFieldValue('issuing_authority') }}</div>
+                                            <!--end::Details item-->
+                                        @endif
+                                        @if($document->getCustomFieldValue('fees_amount'))
                                             <!--begin::Details item-->
                                             <div class="fw-bold mt-5">@lang('documents.fees')</div>
-                                            <div class="text-gray-600">{{ number_format($document->fees_amount, 2) }} SAR</div>
+                                            <div class="text-gray-600">{{ number_format($document->getCustomFieldValue('fees_amount'), 2) }} SAR</div>
                                             <!--end::Details item-->
+                                        @endif
+                                        
+                                        @if($document->custom_fields && count($document->custom_fields) > 0)
+                                            @foreach($document->custom_fields as $fieldKey => $fieldValue)
+                                                @if($document->documentType && $document->documentType->custom_fields)
+                                                    @php
+                                                        $fieldConfig = collect($document->documentType->custom_fields)->firstWhere('key', $fieldKey);
+                                                    @endphp
+                                                    @if($fieldConfig)
+                                                        <!--begin::Details item-->
+                                                        <div class="fw-bold mt-5">{{ app()->getLocale() === 'ar' ? ($fieldConfig['name_ar'] ?? $fieldConfig['name_en'] ?? $fieldKey) : ($fieldConfig['name_en'] ?? $fieldKey) }}</div>
+                                                        <div class="text-gray-600">
+                                                            @if($fieldConfig['type'] === 'file' && is_array($fieldValue))
+                                                                <a href="{{ route('admin.employees.documents.download', [$employee, $document]) }}" class="text-primary" target="_blank">
+                                                                    <i class="fa fa-file"></i> {{ $fieldValue['original_filename'] ?? 'Download File' }}
+                                                                </a>
+                                                            @elseif($fieldConfig['type'] === 'date' && $fieldValue)
+                                                                {{ \Carbon\Carbon::parse($fieldValue)->format('Y-m-d') }}
+                                                            @elseif($fieldConfig['type'] === 'select' && is_array($fieldValue))
+                                                                {{ app()->getLocale() === 'ar' ? ($fieldValue['ar'] ?? $fieldValue['en'] ?? $fieldValue) : ($fieldValue['en'] ?? $fieldValue) }}
+                                                            @else
+                                                                {{ $fieldValue ?? __('common.n_a') }}
+                                                            @endif
+                                                        </div>
+                                                        <!--end::Details item-->
+                                                    @endif
+                                                @endif
+                                            @endforeach
                                         @endif
                                     </div>
                                 </div>
@@ -188,14 +216,14 @@
                                 <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_document_view_overview_tab">@lang('common.overview')</a>
                             </li>
                             <!--end:::Tab item-->
-                            @if($document->file_path)
+                            @if($document->hasFile())
                                 <!--begin:::Tab item-->
                                 <li class="nav-item">
                                     <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_document_view_file_tab">@lang('documents.document_file')</a>
                                 </li>
                                 <!--end:::Tab item-->
                             @endif
-                            @if($document->dynamic_fields && count($document->dynamic_fields) > 0)
+                            @if($document->custom_fields && count($document->custom_fields) > 0)
                                 <!--begin:::Tab item-->
                                 <li class="nav-item">
                                     <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_document_view_additional_tab">@lang('documents.additional_info')</a>
@@ -229,25 +257,47 @@
                                                 <tbody class="fs-6 fw-semibold text-gray-600">
                                                 <tr>
                                                     <td class="text-muted">@lang('documents.document_number')</td>
-                                                    <td class="fw-bold text-end">{{ $document->document_number }}</td>
+                                                    <td class="fw-bold text-end">{{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-muted">@lang('documents.document_type')</td>
-                                                    <td class="fw-bold text-end">{{ $document->documentType->name_en ?? $document->document_type_id }}</td>
+                                                    <td class="fw-bold text-end">{{ (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-muted">@lang('common.status')</td>
-                                                    <td class="fw-bold text-end">{!! $document->statusBadge !!}</td>
+                                                    <td class="fw-bold text-end">
+                                                        @switch($document->status)
+                                                            @case('active')
+                                                                <span class="badge badge-light-success">@lang('common.active')</span>
+                                                                @break
+                                                            @case('inactive')
+                                                                <span class="badge badge-light-danger">@lang('common.inactive')</span>
+                                                                @break
+                                                            @case('expired')
+                                                                <span class="badge badge-light-warning">@lang('documents.expired')</span>
+                                                                @break
+                                                            @case('cancelled')
+                                                                <span class="badge badge-light-danger">@lang('documents.cancelled')</span>
+                                                                @break
+                                                            @case('pending')
+                                                                <span class="badge badge-light-warning">@lang('documents.pending')</span>
+                                                                @break
+                                                            @default
+                                                                <span class="badge badge-light-secondary">{{ ucfirst($document->status) }}</span>
+                                                        @endswitch
+                                                    </td>
                                                 </tr>
-                                                <tr>
-                                                    <td class="text-muted">@lang('documents.issue_date')</td>
-                                                    <td class="fw-bold text-end">{{ $document->issue_date?->format('Y-m-d') ?? __('common.n_a') }}</td>
-                                                </tr>
-                                                @if($document->expiry_date)
+                                                @if($document->getCustomFieldValue('issue_date'))
+                                                    <tr>
+                                                        <td class="text-muted">@lang('documents.issue_date')</td>
+                                                        <td class="fw-bold text-end">{{ \Carbon\Carbon::parse($document->getCustomFieldValue('issue_date'))->format('Y-m-d') }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if($document->getCustomFieldValue('expiry_date'))
                                                     <tr>
                                                         <td class="text-muted">@lang('documents.expiry_date')</td>
                                                         <td class="fw-bold text-end">
-                                                            {{ $document->expiry_date->format('Y-m-d') }}
+                                                            {{ \Carbon\Carbon::parse($document->getCustomFieldValue('expiry_date'))->format('Y-m-d') }}
                                                             @if($document->isExpiringSoon)
                                                                 <span class="badge badge-light-warning ms-2">@lang('documents.expiring_soon')</span>
                                                             @elseif($document->isExpired)
@@ -256,33 +306,41 @@
                                                         </td>
                                                     </tr>
                                                 @endif
-                                                <tr>
-                                                    <td class="text-muted">@lang('documents.issuing_authority')</td>
-                                                    <td class="fw-bold text-end">{{ $document->issuing_authority ?? __('common.n_a') }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-muted">@lang('documents.place_of_issue')</td>
-                                                    <td class="fw-bold text-end">{{ $document->issue_place ?? __('common.n_a') }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-muted">@lang('documents.reference_number')</td>
-                                                    <td class="fw-bold text-end">{{ $document->reference_number ?? __('common.n_a') }}</td>
-                                                </tr>
-                                                @if($document->fees_amount)
+                                                @if($document->getCustomFieldValue('issuing_authority'))
+                                                    <tr>
+                                                        <td class="text-muted">@lang('documents.issuing_authority')</td>
+                                                        <td class="fw-bold text-end">{{ $document->getCustomFieldValue('issuing_authority') }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if($document->getCustomFieldValue('place_of_issue'))
+                                                    <tr>
+                                                        <td class="text-muted">@lang('documents.place_of_issue')</td>
+                                                        <td class="fw-bold text-end">{{ $document->getCustomFieldValue('place_of_issue') }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if($document->getCustomFieldValue('reference_number'))
+                                                    <tr>
+                                                        <td class="text-muted">@lang('documents.reference_number')</td>
+                                                        <td class="fw-bold text-end">{{ $document->getCustomFieldValue('reference_number') }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if($document->getCustomFieldValue('fees_amount'))
                                                     <tr>
                                                         <td class="text-muted">@lang('documents.fees_amount')</td>
-                                                        <td class="fw-bold text-end">{{ number_format($document->fees_amount, 2) }} SAR</td>
+                                                        <td class="fw-bold text-end">{{ number_format($document->getCustomFieldValue('fees_amount'), 2) }} SAR</td>
                                                     </tr>
                                                 @endif
-                                                @if($document->enable_reminder && $document->reminder_days)
-                                                    <tr>
-                                                        <td class="text-muted">@lang('documents.reminder_settings')</td>
-                                                        <td class="fw-bold text-end">
-                                                            <span class="badge badge-light-info">@lang('common.enabled')</span>
+                                                <tr>
+                                                    <td class="text-muted">@lang('documents.reminder_settings')</td>
+                                                    <td class="fw-bold text-end">
+                                                        @if($document->enable_reminder && $document->reminder_days)
+                                                            <span class="badge badge-light-success">@lang('common.enabled')</span>
                                                             <br><small class="text-muted">{{ $document->reminder_days }} @lang('documents.days_before_expiry')</small>
-                                                        </td>
-                                                    </tr>
-                                                @endif
+                                                        @else
+                                                            <span class="badge badge-light-danger">@lang('common.disabled')</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <td class="text-muted">@lang('common.created_at')</td>
                                                     <td class="fw-bold text-end">{{ $document->created_at->format('Y-m-d H:i') }}</td>
@@ -297,12 +355,12 @@
                                         </div>
                                         <!--end::Table wrapper-->
 
-                                        @if($document->notes)
+                                        @if($document->getCustomFieldValue('notes'))
                                             <!--begin::Notes section-->
                                             <div class="mt-10">
                                                 <h4 class="text-gray-800 mb-5">@lang('documents.notes')</h4>
                                                 <div class="bg-light-info rounded p-5">
-                                                    <div class="text-gray-700">{!! nl2br(e($document->notes)) !!}</div>
+                                                    <div class="text-gray-700">{!! nl2br(e($document->getCustomFieldValue('notes'))) !!}</div>
                                                 </div>
                                             </div>
                                             <!--end::Notes section-->
@@ -314,7 +372,7 @@
                             </div>
                             <!--end:::Tab pane-->
 
-                            @if($document->file_path)
+                            @if($document->hasFile())
                                 <!--begin:::Tab pane-->
                                 <div class="tab-pane fade" id="kt_document_view_file_tab" role="tabpanel">
                                     <!--begin::Card-->
@@ -329,7 +387,7 @@
                                             <!--begin::Card toolbar-->
                                             <div class="card-toolbar">
                                                 <a href="{{ route('admin.employees.documents.download', [$employee, $document]) }}" class="btn btn-sm btn-primary" target="_blank">
-                                                    <i class="ki-duotone ki-file-down fs-2"></i>@lang('documents.download_file')
+                                                    <i class="fa fa-download"></i>@lang('documents.download_file')
                                                 </a>
                                             </div>
                                             <!--end::Card toolbar-->
@@ -339,31 +397,26 @@
                                         <div class="card-body pt-0">
                                             <div class="text-center">
                                                 @php
-                                                    $fileExtension = strtolower(pathinfo($document->file_path, PATHINFO_EXTENSION));
+                                                    $fileInfo = $document->getFileInfo();
+                                                    $fileExtension = strtolower($fileInfo['extension'] ?? '');
                                                 @endphp
 
                                                 @if($fileExtension === 'pdf')
                                                     <div class="mb-5">
-                                                        <i class="ki-duotone ki-file-text fs-5x text-danger mb-5">
-                                                            <span class="path1"></span>
-                                                            <span class="path2"></span>
-                                                        </i>
+                                                        <i class="fa fa-file-pdf fs-5x text-danger mb-5"></i>
                                                         <div class="fw-bold text-gray-700 fs-4">@lang('documents.pdf_document')</div>
                                                         <div class="text-muted">@lang('documents.click_download_to_view')</div>
                                                     </div>
                                                 @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png']))
                                                     <div class="mb-5">
-                                                        <img src="{{ asset('storage/' . $document->file_path) }}"
-                                                             alt="{{ $document->document_number }}"
+                                                        <img src="{{ $fileInfo['url'] }}"
+                                                             alt="{{ $document->getCustomFieldValue('document_number') ?? 'Document' }}"
                                                              class="img-fluid rounded shadow-sm"
                                                              style="max-height: 500px;" />
                                                     </div>
                                                 @else
                                                     <div class="mb-5">
-                                                        <i class="ki-duotone ki-file fs-5x text-primary mb-5">
-                                                            <span class="path1"></span>
-                                                            <span class="path2"></span>
-                                                        </i>
+                                                        <i class="fa fa-file fs-5x text-primary mb-5"></i>
                                                         <div class="fw-bold text-gray-700 fs-4">@lang('documents.document_file')</div>
                                                         <div class="text-muted">@lang('documents.click_download_to_view')</div>
                                                     </div>
@@ -377,7 +430,7 @@
                                 <!--end:::Tab pane-->
                             @endif
 
-                            @if($document->dynamic_fields && count($document->dynamic_fields) > 0)
+                            @if($document->custom_fields && count($document->custom_fields) > 0)
                                 <!--begin:::Tab pane-->
                                 <div class="tab-pane fade" id="kt_document_view_additional_tab" role="tabpanel">
                                     <!--begin::Card-->
@@ -398,11 +451,30 @@
                                                 <!--begin::Table-->
                                                 <table class="table align-middle table-row-dashed gy-5">
                                                     <tbody class="fs-6 fw-semibold text-gray-600">
-                                                    @foreach($document->dynamic_fields as $key => $value)
-                                                        <tr>
-                                                            <td class="text-muted">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
-                                                            <td class="fw-bold text-end">{{ $value ?? __('common.n_a') }}</td>
-                                                        </tr>
+                                                    @foreach($document->custom_fields as $fieldKey => $fieldValue)
+                                                        @if($document->documentType && $document->documentType->custom_fields)
+                                                            @php
+                                                                $fieldConfig = collect($document->documentType->custom_fields)->firstWhere('key', $fieldKey);
+                                                            @endphp
+                                                            @if($fieldConfig)
+                                                                <tr>
+                                                                    <td class="text-muted">{{ app()->getLocale() === 'ar' ? ($fieldConfig['name_ar'] ?? $fieldConfig['name_en'] ?? $fieldKey) : ($fieldConfig['name_en'] ?? $fieldKey) }}</td>
+                                                                    <td class="fw-bold text-end">
+                                                                        @if($fieldConfig['type'] === 'file' && is_array($fieldValue))
+                                                                            <a href="{{ route('admin.employees.documents.download', [$employee, $document]) }}" class="text-primary" target="_blank">
+                                                                                <i class="fa fa-file"></i> {{ $fieldValue['original_filename'] ?? 'Download File' }}
+                                                                            </a>
+                                                                        @elseif($fieldConfig['type'] === 'date' && $fieldValue)
+                                                                            {{ \Carbon\Carbon::parse($fieldValue)->format('Y-m-d') }}
+                                                                        @elseif($fieldConfig['type'] === 'select' && is_array($fieldValue))
+                                                                            {{ app()->getLocale() === 'ar' ? ($fieldValue['ar'] ?? $fieldValue['en'] ?? $fieldValue) : ($fieldValue['en'] ?? $fieldValue) }}
+                                                                        @else
+                                                                            {{ $fieldValue ?? __('common.n_a') }}
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
+                                                        @endif
                                                     @endforeach
                                                     </tbody>
                                                 </table>
@@ -463,8 +535,8 @@
                             <!--end::Label-->
                             <!--begin::Description-->
                             <div class="text-muted fs-7">
-                                @lang('documents.document'): <strong>{{ $document->document_number }}</strong><br>
-                                @lang('documents.type'): <strong>{{ $document->documentType->name_en ?? $document->document_type_id }}</strong><br>
+                                @lang('documents.document'): <strong>{{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</strong><br>
+                                @lang('documents.type'): <strong>{{ (app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en) ?? $document->document_type_id }}</strong><br>
                                 @lang('documents.delete_warning')
                             </div>
                             <!--end::Description-->

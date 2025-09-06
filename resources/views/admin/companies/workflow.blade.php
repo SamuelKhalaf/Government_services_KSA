@@ -337,6 +337,56 @@
                                                             @endif
                                                         </div>
                                                         <!--end::Branch Registration-->
+
+                                                        <!--begin::Additional Documents-->
+                                                        <div class="card card-flush py-4">
+                                                            <div class="card-header">
+                                                                <div class="card-title">
+                                                                    <h2>{{ __('companies.additional_documents') }}</h2>
+                                                                </div>
+                                                                <div class="card-toolbar">
+                                                                    @if($company->companyDocuments->count() > 0)
+                                                                        <span class="badge badge-light-success">{{ $company->companyDocuments->count() }} {{ __('companies.documents_uploaded') }}</span>
+                                                                    @else
+                                                                        <span class="badge badge-light-warning">{{ __('companies.no_additional_documents') }}</span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-body pt-0">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <div>
+                                                                        <div class="fw-bold text-gray-800">{{ __('companies.other_company_documents') }}</div>
+                                                                        <div class="text-muted fs-7">{{ __('companies.add_other_documents_description') }}</div>
+                                                                    </div>
+                                                                    <a href="{{ route('admin.companies.documents.create', $company) }}" class="btn btn-sm btn-primary">
+                                                                        <i class="fa-solid fa-plus fs-4 me-1"></i>{{ __('companies.add_document') }}
+                                                                    </a>
+                                                                </div>
+                                                                @if($company->companyDocuments->count() > 0)
+                                                                    <div class="mt-5">
+                                                                        @foreach($company->companyDocuments->take(3) as $document)
+                                                                            <div class="d-flex align-items-center mb-3">
+                                                                                <i class="fa-solid fa-file-circle-check fs-3 text-success me-3"></i>
+                                                                                <div class="flex-grow-1">
+                                                                                    <div class="fw-bold">{{ app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en }}</div>
+                                                                                    <div class="text-muted fs-7">{{ $document->getCustomFieldValue('document_number') ?? __('common.n_a') }}</div>
+                                                                                </div>
+                                                                                <a href="{{ route('admin.companies.documents.show', [$company, $document]) }}" class="btn btn-sm btn-light">{{ __('common.view') }}</a>
+                                                                            </div>
+                                                                        @endforeach
+                                                                        @if($company->companyDocuments->count() > 1)
+                                                                            <div class="text-center">
+                                                                                <a href="{{ route('admin.companies.documents.index', $company) }}" class="btn btn-sm btn-light-primary">
+                                                                                    {{ __('companies.view_all_documents') }} ({{ $company->companyDocuments->count() - 3 }} {{ __('common.more') }})
+                                                                                </a>
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                        <!--end::Additional Documents-->
+
                                                     </div>
                                                     <!--end::Documents checklist-->
                                                 </div>

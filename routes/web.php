@@ -118,8 +118,24 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::middleware('permission:' . PermissionEnum::MANAGE_BRANCH_REGISTRATIONS->value)->group(function () {
             Route::resource('branch-registrations', App\Http\Controllers\admin\BranchCommercialRegistrationController::class)->except(['index']);
         });
+
+        // Dynamic Company Documents - Company Specific
+        Route::middleware('permission:' . PermissionEnum::VIEW_ALL_DOCUMENTS->value . '|' . PermissionEnum::VIEW_ASSIGNED_DOCUMENTS->value)->group(function () {
+            Route::get('/documents', [App\Http\Controllers\admin\CompanyDocumentController::class, 'index'])->name('documents.index');
+            Route::get('/documents/create', [App\Http\Controllers\admin\CompanyDocumentController::class, 'create'])->name('documents.create');
+            Route::post('/documents', [App\Http\Controllers\admin\CompanyDocumentController::class, 'store'])->name('documents.store');
+            Route::get('/documents/{document}', [App\Http\Controllers\admin\CompanyDocumentController::class, 'show'])->name('documents.show');
+            Route::get('/documents/{document}/edit', [App\Http\Controllers\admin\CompanyDocumentController::class, 'edit'])->name('documents.edit');
+            Route::put('/documents/{document}', [App\Http\Controllers\admin\CompanyDocumentController::class, 'update'])->name('documents.update');
+            Route::delete('/documents/{document}', [App\Http\Controllers\admin\CompanyDocumentController::class, 'destroy'])->name('documents.destroy');
+            Route::get('/documents/{document}/download', [App\Http\Controllers\admin\CompanyDocumentController::class, 'download'])->name('documents.download');
+        });
     });
 
+    // Dynamic Company Documents - General Index (All Companies)
+    Route::middleware('permission:' . PermissionEnum::VIEW_ALL_DOCUMENTS->value . '|' . PermissionEnum::VIEW_ASSIGNED_DOCUMENTS->value)->group(function () {
+        Route::get('company-documents', [App\Http\Controllers\admin\CompanyDocumentController::class, 'allIndex'])->name('company-documents.index');
+    });
     ############################### Start: Employees Management Routes (general employee routes) #####################################
     // Employees - View (general employee routes, not company-specific)
     Route::middleware('permission:' . PermissionEnum::VIEW_CLIENT_EMPLOYEES->value)->group(function () {
@@ -162,10 +178,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         ->middleware('permission:' . PermissionEnum::DELETE_DOCUMENTS->value)
         ->name('employees.documents.destroy');
 
-    // Employee Documents - Download
-    Route::post('documents/{document}/download', [App\Http\Controllers\admin\EmployeeDocumentController::class, 'download'])
+    // Employee Documents - Download (legacy route)
+    Route::post('documents/{document}/download', [App\Http\Controllers\admin\EmployeeDocumentController::class, 'downloadLegacy'])
         ->middleware('permission:' . PermissionEnum::DOWNLOAD_DOCUMENTS->value)
         ->name('documents.download');
+
+    // Employee Documents - Download (with employee parameter)
+    Route::get('employees/{employee}/documents/{document}/download', [App\Http\Controllers\admin\EmployeeDocumentController::class, 'download'])
+        ->middleware('permission:' . PermissionEnum::DOWNLOAD_DOCUMENTS->value)
+        ->name('employees.documents.download');
 
     ############################### Start: Document Dashboard Routes #####################################
     Route::middleware('permission:' . PermissionEnum::VIEW_DOCUMENT_DASHBOARD->value)->group(function () {

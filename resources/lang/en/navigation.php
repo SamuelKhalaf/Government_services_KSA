@@ -11,7 +11,9 @@ return [
     // Client Management
     'client_management' => 'Client Management',
     'companies' => 'Companies',
+    'company_documents' => 'Company Documents',
     'employees' => 'Employees',
+    'employee_documents' => 'Employee Documents',
     'documents' => 'Documents',
     'document_dashboard' => 'Document Dashboard',
     'document_types' => 'Document Types',

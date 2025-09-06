@@ -76,6 +76,14 @@ class Company extends Model
     }
 
     /**
+     * Get all dynamic company documents for this company
+     */
+    public function companyDocuments(): HasMany
+    {
+        return $this->hasMany(CompanyDocument::class);
+    }
+
+    /**
      * Get active employees only
      */
     public function activeEmployees(): HasMany
@@ -96,7 +104,128 @@ class Company extends Model
     }
 
     /**
-     * Get documents expiring soon (within 30 days)
+     * Get total documents count
+     */
+    public function getTotalDocumentsCountAttribute()
+    {
+        return $this->civilDefenseLicenses->count() + 
+               $this->municipalityLicenses->count() + 
+               $this->branchCommercialRegistrations->count() + 
+               $this->companyDocuments->count();
+    }
+
+    /**
+     * Get active documents count (not expired)
+     */
+    public function getActiveDocumentsCountAttribute()
+    {
+        $activeCivilDefense = $this->civilDefenseLicenses()
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('expiry_date')
+                      ->orWhere('expiry_date', '>', now());
+            })
+            ->count();
+
+        $activeMunicipality = $this->municipalityLicenses()
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('expiry_date')
+                      ->orWhere('expiry_date', '>', now());
+            })
+            ->count();
+
+        $activeBranchReg = $this->branchCommercialRegistrations()
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('expiry_date')
+                      ->orWhere('expiry_date', '>', now());
+            })
+            ->count();
+
+        $activeCompanyDocs = $this->companyDocuments()
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') IS NULL")
+                      ->orWhereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') > ?", [now()->toDateString()]);
+            })
+            ->count();
+
+        return $activeCivilDefense + $activeMunicipality + $activeBranchReg + $activeCompanyDocs;
+    }
+
+    /**
+     * Get expiring soon documents count (within 30 days)
+     */
+    public function getExpiringSoonDocumentsCountAttribute()
+    {
+        $thirtyDaysFromNow = now()->addDays(30);
+        
+        $expiringCivilDefense = $this->civilDefenseLicenses()
+            ->where('status', 'active')
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<=', $thirtyDaysFromNow)
+            ->where('expiry_date', '>=', now())
+            ->count();
+
+        $expiringMunicipality = $this->municipalityLicenses()
+            ->where('status', 'active')
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<=', $thirtyDaysFromNow)
+            ->where('expiry_date', '>=', now())
+            ->count();
+
+        $expiringBranchReg = $this->branchCommercialRegistrations()
+            ->where('status', 'active')
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<=', $thirtyDaysFromNow)
+            ->where('expiry_date', '>=', now())
+            ->count();
+
+        $expiringCompanyDocs = $this->companyDocuments()
+            ->where('status', 'active')
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') IS NOT NULL")
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') <= ?", [$thirtyDaysFromNow->toDateString()])
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') >= ?", [now()->toDateString()])
+            ->count();
+
+        return $expiringCivilDefense + $expiringMunicipality + $expiringBranchReg + $expiringCompanyDocs;
+    }
+
+    /**
+     * Get expired documents count
+     */
+    public function getExpiredDocumentsCountAttribute()
+    {
+        $expiredCivilDefense = $this->civilDefenseLicenses()
+            ->where('status', 'active')
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<', now())
+            ->count();
+
+        $expiredMunicipality = $this->municipalityLicenses()
+            ->where('status', 'active')
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<', now())
+            ->count();
+
+        $expiredBranchReg = $this->branchCommercialRegistrations()
+            ->where('status', 'active')
+            ->whereNotNull('expiry_date')
+            ->where('expiry_date', '<', now())
+            ->count();
+
+        $expiredCompanyDocs = $this->companyDocuments()
+            ->where('status', 'active')
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') IS NOT NULL")
+            ->whereRaw("JSON_EXTRACT(custom_fields, '$.expiry_date') < ?", [now()->toDateString()])
+            ->count();
+
+        return $expiredCivilDefense + $expiredMunicipality + $expiredBranchReg + $expiredCompanyDocs;
+    }
+
+    /**
+     * Get documents expiring soon (within 30 days) - detailed collection
      */
     public function getExpiringSoonDocumentsAttribute()
     {
@@ -122,6 +251,19 @@ class Company extends Model
     }
 
     /**
+     * Get document statistics
+     */
+    public function getDocumentStatistics(): array
+    {
+        return [
+            'total_documents' => $this->total_documents_count,
+            'active_documents' => $this->active_documents_count,
+            'expiring_soon' => $this->expiring_soon_documents_count,
+            'expired_documents' => $this->expired_documents_count,
+        ];
+    }
+
+    /**
      * Scope for active companies
      */
     public function scopeActive($query)
@@ -140,5 +282,16 @@ class Company extends Model
               ->orWhere('cr_number', 'like', "%{$term}%")
               ->orWhere('tax_number', 'like', "%{$term}%");
         });
+    }
+
+    /**
+     * Get compatible document types for this company
+     */
+    public function getCompatibleDocumentTypes()
+    {
+        return DocumentType::active()
+            ->forCompanies()
+            ->ordered()
+            ->get();
     }
 }

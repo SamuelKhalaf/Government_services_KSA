@@ -93,6 +93,9 @@ return [
     'disabled' => 'معطل',
     'active' => 'نشط',
     'inactive' => 'غير نشط',
+    'cancelled' => 'ملغي',
+    'pending' => 'معلق',
+    'expired' => 'منتهي الصلاحية',
 
     // File operations
     'file_uploaded' => 'تم رفع الملف بنجاح!',
@@ -101,6 +104,15 @@ return [
     'file_too_large' => 'الملف كبير جداً.',
     'invalid_file_type' => 'نوع ملف غير صالح.',
     'upload_failed' => 'فشل رفع الملف.',
+    'file' => 'ملف',
+    'document_file' => 'ملف الوثيقة',
+    'document_number' => 'رقم الوثيقة',
+    'document_type' => 'نوع الوثيقة',
+    'files' => 'الملفات',
+    'uploaded' => 'تم الرفع',
+    'no_file' => 'لا يوجد ملف',
+    'filter_options' => 'خيارات التصفية',
+    'select_option' => 'اختر خيار',
 
     // Authentication
     'login_successful' => 'تم تسجيل الدخول بنجاح!',
@@ -129,6 +141,8 @@ return [
     'got_it' => 'فهمت!',
     'ok_got_it' => 'حسناً، فهمت!',
     'try_again' => 'حاول مرة أخرى',
+    'overview' => 'نظرة عامة',
+    'last_updated' => 'آخر تحديث',
 
     // Page and section titles
     'dashboard' => 'لوحة التحكم',

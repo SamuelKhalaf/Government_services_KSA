@@ -77,7 +77,7 @@
                 @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ALL_CLIENTS, PermissionEnum::VIEW_ASSIGNED_CLIENTS, PermissionEnum::CREATE_CLIENTS, PermissionEnum::UPDATE_CLIENTS, PermissionEnum::DELETE_CLIENTS, PermissionEnum::VIEW_CLIENT_EMPLOYEES, PermissionEnum::CREATE_CLIENT_EMPLOYEES, PermissionEnum::UPDATE_CLIENT_EMPLOYEES, PermissionEnum::DELETE_CLIENT_EMPLOYEES, PermissionEnum::VIEW_ALL_DOCUMENTS, PermissionEnum::VIEW_ASSIGNED_DOCUMENTS, PermissionEnum::VIEW_DOCUMENT_DASHBOARD,PermissionEnum::VIEW_DOCUMENT_TYPES, PermissionEnum::CREATE_DOCUMENT_TYPES, PermissionEnum::UPDATE_DOCUMENT_TYPES, PermissionEnum::DELETE_DOCUMENT_TYPES]))
                     <!--begin:Menu item-->
                     <div data-kt-menu-trigger="click"
-                         class="menu-item menu-accordion {{setMenuOpenClass(['admin.companies.*','admin.employees.*','admin.documents.*','admin.document-dashboard','admin.document-types.*'])}}">
+                         class="menu-item menu-accordion {{setMenuOpenClass(['admin.companies.*','admin.employees.*','admin.documents.*','admin.document-dashboard','admin.document-types.*','admin.company-documents.*'])}}">
                         <!--begin:Menu link-->
                         <span class="menu-link">
                             <span class="menu-icon">
@@ -101,6 +101,22 @@
                                             <span class="bullet bullet-dot"></span>
                                         </span>
                                         <span class="menu-title">@lang('navigation.companies')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+
+                            @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ALL_DOCUMENTS, PermissionEnum::VIEW_ASSIGNED_DOCUMENTS]))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.company-documents.*')}}"
+                                       href="{{route('admin.company-documents.index')}}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                        <span class="menu-title">@lang('navigation.company_documents')</span>
                                     </a>
                                     <!--end:Menu link-->
                                 </div>
@@ -132,7 +148,7 @@
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>
-                                        <span class="menu-title">@lang('navigation.documents')</span>
+                                        <span class="menu-title">@lang('navigation.employee_documents')</span>
                                     </a>
                                     <!--end:Menu link-->
                                 </div>

@@ -11,7 +11,9 @@ return [
     // Client Management
     'client_management' => 'إدارة المنشأت',
     'companies' => 'المنشأت',
+    'company_documents' => 'وثائق المنشأت',
     'employees' => 'الموظفين',
+    'employee_documents' => 'وثائق الموظفين',
     'documents' => 'الوثائق',
     'document_dashboard' => 'لوحة تحكم الوثائق',
     'document_types' => 'أنواع الوثائق',

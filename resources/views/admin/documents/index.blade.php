@@ -198,23 +198,23 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if($document->document_number)
-                                                <span class="badge badge-light-info">{{ $document->document_number }}</span>
+                                            @if($document->getCustomFieldValue('document_number'))
+                                                <span class="badge badge-light-info">{{ $document->getCustomFieldValue('document_number') }}</span>
                                             @else
-                                                <span class="text-muted">@lang('common.na')</span>
+                                                <span class="text-muted">@lang('common.n_a')</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if($document->issue_date)
-                                                {{ $document->issue_date->format('Y-m-d') }}
+                                            @if($document->getCustomFieldValue('issue_date'))
+                                                {{ \Carbon\Carbon::parse($document->getCustomFieldValue('issue_date'))->format('Y-m-d') }}
                                             @else
-                                                <span class="text-muted">@lang('common.na')</span>
+                                                <span class="text-muted">@lang('common.n_a')</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if($document->expiry_date)
+                                            @if($document->getCustomFieldValue('expiry_date'))
                                                 <div class="d-flex flex-column">
-                                                    <span class="text-gray-800 mb-1">{{ $document->expiry_date->format('Y-m-d') }}</span>
+                                                    <span class="text-gray-800 mb-1">{{ \Carbon\Carbon::parse($document->getCustomFieldValue('expiry_date'))->format('Y-m-d') }}</span>
                                                     @if($document->is_expiring_soon)
                                                         <span class="badge badge-light-warning">{{ __('documents.expiring_soon') }}</span>
                                                     @elseif($document->is_expired)
@@ -222,7 +222,7 @@
                                                     @endif
                                                 </div>
                                             @else
-                                                <span class="text-muted">@lang('common.na')</span>
+                                                <span class="text-muted">@lang('common.n_a')</span>
                                             @endif
                                         </td>
                                         <td>
@@ -256,10 +256,10 @@
                                                     <a href="{{ route('admin.employees.documents.show', [$document->employee, $document]) }}" class="menu-link px-3">{{ __('documents.view_document') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
-                                                @if($document->file_path)
+                                                @if($document->hasFile())
                                                     <!--begin::Menu item-->
                                                     <div class="menu-item px-3">
-                                                        <a href="{{ route('admin.documents.download', $document) }}" class="menu-link px-3">{{ __('documents.download_file') }}</a>
+                                                        <a href="{{ route('admin.employees.documents.download', [$document->employee, $document]) }}" class="menu-link px-3">{{ __('documents.download_file') }}</a>
                                                     </div>
                                                     <!--end::Menu item-->
                                                 @endif

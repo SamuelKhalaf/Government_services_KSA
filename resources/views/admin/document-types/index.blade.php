@@ -15,7 +15,7 @@
                         </div>
                         <div class="card-toolbar">
                             <a href="{{ route('admin.document-types.create') }}" class="btn btn-primary">
-                                <i class="ki-duotone ki-plus fs-2"></i>
+                                <i class="fa fa-plus"></i>
                                 {{ __('document-types.add_document_type') }}
                             </a>
                         </div>
@@ -52,13 +52,13 @@
                                 </select>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary me-2">
-                                    <i class="ki-duotone ki-magnifier fs-2"></i>
-                                    {{ __('document-types.filter') }}
+                                <button type="submit" class="btn btn-primary me-2 d-flex align-items-center">
+                                    <i class="fa fa-search me-2"></i>
+                                    <span>{{ __('document-types.filter') }}</span>
                                 </button>
-                                <button type="reset" class="btn btn-secondary" id="kt_document_types_table_filter_reset">
-                                    <i class="ki-duotone ki-arrows-rotate fs-2"></i>
-                                    {{ __('document-types.reset') }}
+                                <button type="reset" class="btn btn-secondary d-flex align-items-center" id="kt_document_types_table_filter_reset">
+                                    <i class="fa fa-refresh me-2"></i>
+                                    <span>{{ __('document-types.reset') }}</span>
                                 </button>
                             </div>
                         </form>
@@ -76,7 +76,8 @@
                                         <th class="min-w-125px">{{ __('document-types.code') }}</th>
                                         <th class="min-w-125px">{{ __('document-types.category') }}</th>
                                         <th class="min-w-125px">{{ __('document-types.entity_type') }}</th>
-                                        <th class="min-w-125px">{{ __('document-types.requirements') }}</th>
+                                        <th class="min-w-125px">{{ __('document-types.custom_fields') }}</th>
+                                        <th class="min-w-125px">{{ __('document-types.reminder_days') }}</th>
                                         <th class="min-w-125px">{{ __('document-types.status') }}</th>
                                         <th class="min-w-125px">{{ __('document-types.actions') }}</th>
                                     </tr>
@@ -86,9 +87,6 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if($type->icon)
-                                                    <i class="{{ $type->icon }} fs-2 me-3" style="color: {{ $type->color ?? '#5E6278' }}"></i>
-                                                @endif
                                                 <div>
                                                     <div class="fw-bold text-gray-800">{{ $type->name_en }}</div>
                                                     <div class="text-muted">{{ $type->name_ar }}</div>
@@ -104,22 +102,32 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="badge badge-light-{{ $type->entity_type === 'both' ? 'success' : ($type->entity_type === 'saudi' ? 'primary' : 'secondary') }}">
+                                            <span class="badge badge-{{ $type->entity_type === 'both' ? 'light-success' : ($type->entity_type === 'saudi' ? 'light-primary' : 'secondary') }}">
                                                 {{ __('document-types.' . $type->entity_type) }}
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                @if($type->requires_expiry_date)
-                                                    <span class="badge badge-light-success">{{ __('document-types.expiry_date') }}</span>
-                                                @endif
-                                                @if($type->requires_file_upload)
-                                                    <span class="badge badge-light-info">{{ __('document-types.file_upload') }}</span>
-                                                @endif
-                                                @if($type->has_auto_reminder)
-                                                    <span class="badge badge-light-warning">{{ __('document-types.auto_reminder') }}</span>
-                                                @endif
-                                            </div>
+                                            @if($type->custom_fields && count($type->custom_fields) > 0)
+                                                <div class="d-flex flex-column gap-1">
+                                                    <span class="badge badge-light-primary">
+                                                        {{ __('document-types.custom_fields_count', ['count' => count($type->custom_fields)]) }}
+                                                    </span>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">{{ __('document-types.no_custom_fields') }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($type->reminder_days_before)
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fa fa-bell text-warning me-1"></i>
+                                                    <span class="text-muted me-1">{{ __('document-types.before') }}</span>
+                                                    <span class="fw-bold">{{ $type->reminder_days_before }}</span>
+                                                    <span class="text-muted ms-1">{{ __('document-types.days') }}</span>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">{{ __('document-types.no_reminder') }}</span>
+                                            @endif
                                         </td>
                                         <td>
                                             <span class="badge badge-light-{{ $type->is_active ? 'success' : 'danger' }}">
@@ -128,24 +136,27 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2">
-                                                <a href="{{ route('admin.document-types.edit', $type) }}" class="btn btn-sm btn-light-primary">
-                                                    <i class="ki-duotone ki-pencil fs-2"></i>
-                                                </a>
                                                 <form action="{{ route('admin.document-types.destroy', $type) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('document-types.confirm_delete_document_type') }}')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-light-danger">
-                                                        <i class="ki-duotone ki-trash fs-2"></i>
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
                                                 </form>
+                                                <a href="{{ route('admin.document-types.edit', $type) }}" class="btn btn-sm btn-light-primary">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-5">
-                                            <i class="ki-duotone ki-document fs-3x text-muted mb-3"></i>
-                                            <div>{{ __('document-types.no_document_types_found') }}</div>
+                                        <td colspan="8" class="text-center py-5">
+                                            <div class="d-flex flex-column align-items-center justify-content-center py-5">
+                                                <i class="fa fa-file-text fa-3x text-muted mb-4"></i>
+                                                <h4 class="text-muted mb-2">{{ __('document-types.no_document_types_found') }}</h4>
+                                                <p class="text-muted mb-0">{{ __('document-types.try_adjusting_filters') }}</p>
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforelse
@@ -171,6 +182,39 @@
     // Filter functionality
     const filterForm = document.getElementById('kt_document_types_table_filter_form');
     const resetButton = document.getElementById('kt_document_types_table_filter_reset');
+
+    // Initialize filters from URL parameters on page load
+    function initializeFilters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const categorySelect = filterForm.querySelector('[data-kt-document-types-table-filter="category"]');
+        const entityTypeSelect = filterForm.querySelector('[data-kt-document-types-table-filter="entity_type"]');
+        const statusSelect = filterForm.querySelector('[data-kt-document-types-table-filter="status"]');
+        
+        // Set category filter
+        if (urlParams.has('category') && categorySelect) {
+            const categoryValue = urlParams.get('category');
+            if (categorySelect.querySelector(`option[value="${categoryValue}"]`)) {
+                categorySelect.value = categoryValue;
+            }
+        }
+        
+        // Set entity type filter
+        if (urlParams.has('entity_type') && entityTypeSelect) {
+            const entityTypeValue = urlParams.get('entity_type');
+            if (entityTypeSelect.querySelector(`option[value="${entityTypeValue}"]`)) {
+                entityTypeSelect.value = entityTypeValue;
+            }
+        }
+        
+        // Set status filter
+        if (urlParams.has('status') && statusSelect) {
+            const statusValue = urlParams.get('status');
+            if (statusSelect.querySelector(`option[value="${statusValue}"]`)) {
+                statusSelect.value = statusValue;
+            }
+        }
+    }
 
     filterForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -209,6 +253,33 @@
 
         window.location.href = url.toString();
     }
+
+    // Initialize filters when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeFilters();
+        updateFilterIndicators();
+    });
+
+    // Update visual indicators for active filters
+    function updateFilterIndicators() {
+        const categorySelect = filterForm.querySelector('[data-kt-document-types-table-filter="category"]');
+        const entityTypeSelect = filterForm.querySelector('[data-kt-document-types-table-filter="entity_type"]');
+        const statusSelect = filterForm.querySelector('[data-kt-document-types-table-filter="status"]');
+        
+        // Add visual indicators for active filters
+        [categorySelect, entityTypeSelect, statusSelect].forEach(select => {
+            if (select && select.value) {
+                select.classList.add('border-primary');
+            } else {
+                select.classList.remove('border-primary');
+            }
+        });
+    }
+
+    // Update indicators when filters change
+    filterForm.addEventListener('change', function() {
+        updateFilterIndicators();
+    });
 </script>
 @endpush
 @endsection

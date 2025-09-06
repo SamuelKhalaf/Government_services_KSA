@@ -17,26 +17,15 @@ class DocumentType extends Model
         'code',
         'category',
         'entity_type',
-        'requires_expiry_date',
-        'requires_file_upload',
-        'has_auto_reminder',
         'reminder_days_before',
-        'required_fields',
-        'optional_fields',
-        'icon',
-        'color',
+        'custom_fields',
         'description_ar',
         'description_en',
-        'sort_order',
         'is_active'
     ];
 
     protected $casts = [
-        'requires_expiry_date' => 'boolean',
-        'requires_file_upload' => 'boolean',
-        'has_auto_reminder' => 'boolean',
-        'required_fields' => 'array',
-        'optional_fields' => 'array',
+        'custom_fields' => 'array',
         'is_active' => 'boolean'
     ];
 
@@ -89,36 +78,13 @@ class DocumentType extends Model
     }
 
     /**
-     * Scope ordered by sort order
+     * Scope ordered by name
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order')->orderBy('name_en');
+        return $query->orderBy('name_en');
     }
 
-    /**
-     * Get documents requiring expiry date
-     */
-    public function scopeRequiringExpiry($query)
-    {
-        return $query->where('requires_expiry_date', true);
-    }
-
-    /**
-     * Get documents requiring file upload
-     */
-    public function scopeRequiringFiles($query)
-    {
-        return $query->where('requires_file_upload', true);
-    }
-
-    /**
-     * Get documents with auto reminder enabled
-     */
-    public function scopeWithAutoReminder($query)
-    {
-        return $query->where('has_auto_reminder', true);
-    }
 
     /**
      * Check if document type is compatible with employee
@@ -154,38 +120,12 @@ class DocumentType extends Model
     {
         $rules = [
             'document_type_id' => 'required|exists:document_types,id',
-            'document_number' => 'nullable|string|max:255',
-            'issue_date' => 'nullable|date',
-            'issuing_authority' => 'nullable|string|max:255',
-            'issue_place' => 'nullable|string|max:255',
-            'reference_number' => 'nullable|string|max:255',
-            'fees_amount' => 'nullable|numeric|min:0',
-            'notes' => 'nullable|string',
-            'renewal_notes' => 'nullable|string',
+            'status' => 'required|in:active,expired,cancelled,pending',
+            'enable_reminder' => 'nullable|boolean',
+            'reminder_days' => 'nullable|integer|min:1|max:365',
         ];
 
-        // Apply expiry date validation if required
-        if ($this->requires_expiry_date) {
-            $rules['expiry_date'] = 'required|date|after:today';
-        } else {
-            $rules['expiry_date'] = 'nullable|date|after:today';
-        }
-
-        // Apply file upload validation if required
-        if ($this->requires_file_upload) {
-            $rules['document_file'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:10240';
-        } else {
-            $rules['document_file'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240';
-        }
-
-        // Apply custom field validation based on required_fields
-        if ($this->required_fields && is_array($this->required_fields)) {
-            foreach ($this->required_fields as $field) {
-                if (!isset($rules[$field])) {
-                    $rules[$field] = 'required|string|max:255';
-                }
-            }
-        }
+        // Custom field validation is now handled by getCustomFieldsValidationRules()
 
         return $rules;
     }
@@ -206,36 +146,150 @@ class DocumentType extends Model
         return app()->getLocale() === 'ar' ? $this->description_ar : $this->description_en;
     }
 
+
+
     /**
-     * Check if document type has specific requirement
+     * Get custom fields count
      */
-    public function hasRequirement(string $requirement): bool
+    public function getCustomFieldsCountAttribute(): int
     {
-        switch ($requirement) {
-            case 'expiry_date':
-                return $this->requires_expiry_date;
-            case 'file_upload':
-                return $this->requires_file_upload;
-            case 'auto_reminder':
-                return $this->has_auto_reminder;
-            default:
+        return is_array($this->custom_fields) ? count($this->custom_fields) : 0;
+    }
+
+    /**
+     * Get custom field by key
+     */
+    public function getCustomField(string $key): ?array
+    {
+        if (!is_array($this->custom_fields)) {
+            return null;
+        }
+
+        foreach ($this->custom_fields as $field) {
+            if ($field['key'] === $key) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Add custom field
+     */
+    public function addCustomField(array $field): void
+    {
+        $customFields = $this->custom_fields ?? [];
+        $customFields[] = $field;
+        $this->custom_fields = $customFields;
+    }
+
+    /**
+     * Update custom field
+     */
+    public function updateCustomField(string $key, array $field): bool
+    {
+        if (!is_array($this->custom_fields)) {
+            return false;
+        }
+
+        foreach ($this->custom_fields as $index => $existingField) {
+            if ($existingField['key'] === $key) {
+                $this->custom_fields[$index] = $field;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove custom field
+     */
+    public function removeCustomField(string $key): bool
+    {
+        if (!is_array($this->custom_fields)) {
                 return false;
         }
+
+        foreach ($this->custom_fields as $index => $field) {
+            if ($field['key'] === $key) {
+                unset($this->custom_fields[$index]);
+                $this->custom_fields = array_values($this->custom_fields);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * Get required fields count
+     * Get validation rules for custom fields
      */
-    public function getRequiredFieldsCountAttribute(): int
+    public function getCustomFieldsValidationRules(): array
     {
-        return is_array($this->required_fields) ? count($this->required_fields) : 0;
+        $rules = [];
+
+        if (!is_array($this->custom_fields)) {
+            return $rules;
+        }
+
+        foreach ($this->custom_fields as $field) {
+            $fieldKey = $field['key'];
+            $isRequired = $field['required'] ?? false;
+            $fieldType = $field['type'] ?? 'text';
+
+            $rule = $isRequired ? 'required|' : 'nullable|';
+
+            switch ($fieldType) {
+                case 'number':
+                    $rule .= 'numeric';
+                    break;
+                case 'email':
+                    $rule .= 'email';
+                    break;
+                case 'date':
+                    $rule .= 'date';
+                    break;
+                case 'file':
+                    $rule .= 'file|mimes:pdf,jpg,jpeg,png|max:10240';
+                    break;
+                case 'select':
+                    $options = $field['options'] ?? [];
+                    if (!empty($options)) {
+                        // Handle different option structures
+                        $validValues = [];
+                        foreach ($options as $option) {
+                            if (is_array($option) && isset($option['value'])) {
+                                $validValues[] = $option['value'];
+                            } elseif (is_string($option)) {
+                                $validValues[] = $option;
+                            }
+                        }
+                        if (!empty($validValues)) {
+                            $rule .= 'in:' . implode(',', $validValues);
+                        }
+                    }
+                    break;
+                default:
+                    $rule .= 'string|max:255';
+                    break;
+            }
+
+            $rules[$fieldKey] = $rule;
+        }
+
+        return $rules;
     }
 
     /**
-     * Get optional fields count
+     * Get all validation rules including custom fields
      */
-    public function getOptionalFieldsCountAttribute(): int
+    public function getAllValidationRules(): array
     {
-        return is_array($this->optional_fields) ? count($this->optional_fields) : 0;
+        $rules = $this->getValidationRules();
+        $customRules = $this->getCustomFieldsValidationRules();
+
+        return array_merge($rules, $customRules);
     }
 }

@@ -228,11 +228,19 @@
                                             <div class="d-flex flex-column">
                                                 @php
                                                     $totalDocs = $employee->documents->count();
+                                                    $activeDocs = $employee->activeNotExpiredDocuments->count();
                                                     $expiringDocs = $employee->expiring_soon_documents->count();
+                                                    $expiredDocs = $employee->expired_documents->count();
                                                 @endphp
                                                 <span class="badge badge-light-primary mb-1">{{ $totalDocs }} {{ __('employees.total') }}</span>
+                                                @if($activeDocs > 0)
+                                                    <span class="badge badge-light-success mb-1">{{ $activeDocs }} {{ __('common.active') }}</span>
+                                                @endif
                                                 @if($expiringDocs > 0)
-                                                    <span class="badge badge-light-warning">{{ $expiringDocs }} {{ __('employees.expiring') }}</span>
+                                                    <span class="badge badge-light-warning mb-1">{{ $expiringDocs }} {{ __('employees.expiring_soon') }}</span>
+                                                @endif
+                                                @if($expiredDocs > 0)
+                                                    <span class="badge badge-light-danger">{{ $expiredDocs }} {{ __('employees.expired') }}</span>
                                                 @endif
                                             </div>
                                         </td>

@@ -541,11 +541,19 @@
                                                         </div>
                                                     </div>
                                                     <div class="ms-5">
-                                                        <div class="fw-bold text-gray-800">{{ $document->documentType->name_en ?? $document->document_type_id }}</div>
-                                                        <div class="text-muted">{{ __('employees.number') }}: {{ $document->document_number }}</div>
-                                                        @if($document->expiry_date)
+                                                        <div class="fw-bold text-gray-800">
+                                                            {{ app()->getLocale() === 'ar' ? $document->documentType->name_ar : $document->documentType->name_en }}
+                                                        </div>
+                                                        @php
+                                                            $documentNumber = $document->getCustomFieldValue('document_number');
+                                                            $expiryDate = $document->getCustomFieldValue('expiry_date');
+                                                        @endphp
+                                                        @if($documentNumber)
+                                                            <div class="text-muted">{{ __('employees.number') }}: {{ $documentNumber }}</div>
+                                                        @endif
+                                                        @if($expiryDate)
                                                             <div class="text-muted">
-                                                                {{ __('employees.expires') }}: {{ $document->expiry_date->format('Y-m-d') }}
+                                                                {{ __('employees.expires') }}: {{ \Carbon\Carbon::parse($expiryDate)->format('Y-m-d') }}
                                                                 @if($document->isExpiringSoon)
                                                                     <span class="badge badge-light-warning ms-2">{{ __('employees.expiring_soon') }}</span>
                                                                 @elseif($document->isExpired)
@@ -556,7 +564,20 @@
                                                     </div>
                                                 </div>
                                                 <div class="d-flex">
-                                                    {!! $document->statusBadge !!}
+                                                    @switch($document->status)
+                                                        @case('active')
+                                                            <span class="badge badge-light-success">{{ __('common.active') }}</span>
+                                                            @break
+                                                        @case('expired')
+                                                            <span class="badge badge-light-danger">{{ __('employees.expired') }}</span>
+                                                            @break
+                                                        @case('cancelled')
+                                                            <span class="badge badge-light-secondary">{{ __('employees.cancelled') }}</span>
+                                                            @break
+                                                        @case('pending')
+                                                            <span class="badge badge-light-warning">{{ __('employees.pending') }}</span>
+                                                            @break
+                                                    @endswitch
                                                     <a href="{{ route('admin.employees.documents.show', [$employee, $document]) }}" class="btn btn-sm btn-light me-2 ms-3">{{ __('employees.view') }}</a>
                                                     <a href="{{ route('admin.employees.documents.edit', [$employee, $document]) }}" class="btn btn-sm btn-primary">{{ __('employees.edit') }}</a>
                                                 </div>

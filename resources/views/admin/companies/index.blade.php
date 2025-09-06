@@ -209,12 +209,20 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                 @php
-                                                    $totalDocs = $company->civil_defense_licenses_count + $company->municipality_licenses_count + $company->branch_commercial_registrations_count;
-                                                    $expiringDocs = collect($company->expiring_soon_documents)->flatten()->count();
+                                                    $totalDocs = $company->total_documents_count;
+                                                    $activeDocs = $company->active_documents_count;
+                                                    $expiringDocs = $company->expiring_soon_documents_count;
+                                                    $expiredDocs = $company->expired_documents_count;
                                                 @endphp
-                                                <span class="badge badge-light-success mb-1">{{ $totalDocs }} {{ __('common.total') }}</span>
+                                                <span class="badge badge-light-primary mb-1">{{ $totalDocs }} {{ __('common.total') }}</span>
+                                                @if($activeDocs > 0)
+                                                    <span class="badge badge-light-success mb-1">{{ $activeDocs }} {{ __('common.active') }}</span>
+                                                @endif
                                                 @if($expiringDocs > 0)
-                                                    <span class="badge badge-light-warning">{{ $expiringDocs }} {{ __('common.expiring') }}</span>
+                                                    <span class="badge badge-light-warning mb-1">{{ $expiringDocs }} {{ __('common.expiring_soon') }}</span>
+                                                @endif
+                                                @if($expiredDocs > 0)
+                                                    <span class="badge badge-light-danger">{{ $expiredDocs }} {{ __('common.expired') }}</span>
                                                 @endif
                                             </div>
                                         </td>
@@ -224,7 +232,7 @@
                                                     <span class="badge badge-light-success">{{ __('common.active') }}</span>
                                                     @break
                                                 @case('inactive')
-                                                    <span class="badge badge-light-secondary">{{ __('common.inactive') }}</span>
+                                                    <span class="badge badge-secondary">{{ __('common.inactive') }}</span>
                                                     @break
                                                 @case('suspended')
                                                     <span class="badge badge-light-danger">{{ __('companies.suspended') }}</span>

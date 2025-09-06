@@ -92,6 +92,7 @@ return [
     // Status values
     'active' => 'Active',
     'inactive' => 'Inactive',
+    'pending' => 'Pending',
     'terminated' => 'Terminated',
     'on_leave' => 'On Leave',
 
