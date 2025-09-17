@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::table('employee_documents', function (Blueprint $table) {
             // Add new columns for the simplified structure
-            $table->boolean('enable_reminder')->default(false)->after('status');
-            $table->integer('reminder_days')->nullable()->after('enable_reminder');
-            $table->json('custom_fields')->nullable()->after('reminder_days');
+            if (!Schema::hasColumn('employee_documents', 'enable_reminder')) {
+                $table->boolean('enable_reminder')->default(false)->after('status');
+            }
+            if (!Schema::hasColumn('employee_documents', 'reminder_days')) {
+                $table->integer('reminder_days')->nullable()->after('enable_reminder');
+            }
+            if (!Schema::hasColumn('employee_documents', 'custom_fields')) {
+                $table->json('custom_fields')->nullable()->after('status');
+            }
 
             // Remove legacy columns that are now handled by custom_fields
             $table->dropColumn([
@@ -50,15 +56,27 @@ return new class extends Migration
 
         // Update indexes to reflect new structure
         Schema::table('employee_documents', function (Blueprint $table) {
-            // Remove old indexes (skip the one with foreign key constraint)
-            $table->dropIndex(['document_number']);
-            $table->dropIndex(['expiry_date']);
-            $table->dropIndex(['status', 'expiry_date']);
-            $table->dropIndex(['reminder_date']);
+            // Remove old indexes if they exist
+            if (Schema::hasIndex('employee_documents', 'employee_documents_document_number_index')) {
+                $table->dropIndex(['document_number']);
+            }
+            if (Schema::hasIndex('employee_documents', 'employee_documents_expiry_date_index')) {
+                $table->dropIndex(['expiry_date']);
+            }
+            if (Schema::hasIndex('employee_documents', 'employee_documents_status_expiry_date_index')) {
+                $table->dropIndex(['status', 'expiry_date']);
+            }
+            if (Schema::hasIndex('employee_documents', 'employee_documents_reminder_date_index')) {
+                $table->dropIndex(['reminder_date']);
+            }
 
-            // Add new indexes
-            $table->index(['status', 'enable_reminder']);
-            $table->index('reminder_days');
+            // Add new indexes only if columns exist
+            if (Schema::hasColumn('employee_documents', 'enable_reminder')) {
+                $table->index(['status', 'enable_reminder']);
+            }
+            if (Schema::hasColumn('employee_documents', 'reminder_days')) {
+                $table->index('reminder_days');
+            }
         });
     }
 
@@ -69,7 +87,7 @@ return new class extends Migration
     {
         Schema::table('employee_documents', function (Blueprint $table) {
             // Add back the legacy columns
-            $table->string('document_number')->nullable()->after('document_type_id');
+            $table->string('document_number')->nullable()->after('document_type');
             $table->date('issue_date')->nullable()->after('document_number');
             $table->date('expiry_date')->nullable()->after('issue_date');
             $table->string('issuing_authority')->nullable()->after('expiry_date');
@@ -114,9 +132,15 @@ return new class extends Migration
 
         // Restore old indexes
         Schema::table('employee_documents', function (Blueprint $table) {
-            $table->dropIndex(['status', 'enable_reminder']);
-            $table->dropIndex(['reminder_days']);
+            // Drop new indexes if they exist
+            if (Schema::hasIndex('employee_documents', 'employee_documents_status_enable_reminder_index')) {
+                $table->dropIndex(['status', 'enable_reminder']);
+            }
+            if (Schema::hasIndex('employee_documents', 'employee_documents_reminder_days_index')) {
+                $table->dropIndex(['reminder_days']);
+            }
 
+            // Add back old indexes
             $table->index(['document_number']);
             $table->index(['expiry_date']);
             $table->index(['status', 'expiry_date']);
