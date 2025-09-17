@@ -39,15 +39,19 @@
             <div class="d-flex align-items-center gap-2 gap-lg-3">
                 @if($municipalityLicense->certificate_file_path)
                     <a href="{{ asset('storage/' . $municipalityLicense->certificate_file_path) }}" class="btn btn-sm fw-bold btn-success" target="_blank">
-                        <i class="ki-duotone ki-file-down fs-2"></i>{{ __('companies.download_certificate') }}
+                        <i class="fas fa-download fs-2"></i>{{ __('companies.download_certificate') }}
                     </a>
                 @endif
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                 <a href="{{ route('admin.companies.municipality-licenses.edit', [$company, $municipalityLicense]) }}" class="btn btn-sm fw-bold btn-primary">
-                    <i class="ki-duotone ki-pencil fs-2"></i>{{ __('companies.edit_license') }}
+                    <i class="fas fa-edit fs-2"></i>{{ __('companies.edit_license') }}
                 </a>
+                @endif
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::DELETE_COMPANY_DOCUMENTS->value))
                 <button type="button" class="btn btn-sm fw-bold btn-danger" data-bs-toggle="modal" data-bs-target="#delete_license_modal">
-                    <i class="ki-duotone ki-trash fs-2"></i>@lang('common.delete')
+                    <i class="fas fa-trash fs-2"></i>@lang('common.delete')
                 </button>
+                @endif
             </div>
             <!--end::Actions-->
         </div>
@@ -73,10 +77,7 @@
                                 <!--begin::Avatar-->
                                 <div class="symbol symbol-100px symbol-circle mb-7">
                                     <div class="symbol-label fs-3 bg-light-info text-info">
-                                        <i class="ki-duotone ki-buildings-2 fs-1">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                        </i>
+                                        <i class="fas fa-city fs-1"></i>
                                     </div>
                                 </div>
                                 <!--end::Avatar-->
@@ -118,7 +119,7 @@
                             <div class="d-flex flex-stack fs-4 py-3">
                                 <div class="fw-bold rotate collapsible" data-bs-toggle="collapse" href="#kt_license_view_details" role="button" aria-expanded="false" aria-controls="kt_license_view_details">{{ __('companies.details') }}
                                     <span class="ms-2 rotate-180">
-                                        <i class="ki-duotone ki-down fs-3"></i>
+                                        <i class="fas fa-chevron-down fs-3"></i>
                                     </span>
                                 </div>
                             </div>
@@ -314,22 +315,13 @@
                                         @endphp
 
                                         @if($fileExtension === 'pdf')
-                                            <i class="ki-duotone ki-file-text fs-3x text-info mb-3">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fas fa-file-alt fs-3x text-info mb-3"></i>
                                             <div class="fw-bold text-gray-700 fs-4">{{ __('companies.pdf_certificate') }}</div>
                                         @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png']))
-                                            <i class="ki-duotone ki-picture fs-3x text-info mb-3">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fas fa-image fs-3x text-info mb-3"></i>
                                             <div class="fw-bold text-gray-700 fs-4">{{ __('companies.image_certificate') }}</div>
                                         @else
-                                            <i class="ki-duotone ki-file fs-3x text-info mb-3">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fas fa-file fs-3x text-info mb-3"></i>
                                             <div class="fw-bold text-gray-700 fs-4">{{ __('companies.certificate_file') }}</div>
                                         @endif
 
@@ -366,10 +358,7 @@
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
-                    <i class="ki-duotone ki-cross fs-1">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
+                    <i class="fas fa-times fs-1"></i>
                 </div>
                 <!--end::Close-->
             </div>

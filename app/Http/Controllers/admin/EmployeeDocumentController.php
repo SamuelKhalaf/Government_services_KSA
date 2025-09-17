@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\EmployeeDocument;
 use App\Models\DocumentType;
 use App\Http\Controllers\admin\DocumentTypeController;
+use App\Services\PackageValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,20 @@ class EmployeeDocumentController extends Controller
     public function index(Request $request)
     {
         $query = EmployeeDocument::with(['employee.company', 'documentType']);
+
+        // If user is employee, only show documents assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $assignedDocumentIds = auth()->user()->assignedTasks()
+                ->with('taskDocuments')
+                ->get()
+                ->pluck('taskDocuments')
+                ->flatten()
+                ->where('document_type', 'employee_document')
+                ->pluck('document_id')
+                ->toArray();
+                
+            $query->whereIn('id', $assignedDocumentIds);
+        }
 
         // Search functionality
         if ($request->filled('search')) {
@@ -97,6 +112,16 @@ class EmployeeDocumentController extends Controller
      */
     public function store(Request $request, Employee $employee)
     {
+        // Validate package limits before creating employee document
+        $packageValidationService = new PackageValidationService();
+        $validation = $packageValidationService->canAddEmployeeDocument($employee->company);
+        
+        if (!$validation['allowed']) {
+            return back()
+                ->withInput()
+                ->with('error', $validation['message']);
+        }
+
         try {
             DB::beginTransaction();
 

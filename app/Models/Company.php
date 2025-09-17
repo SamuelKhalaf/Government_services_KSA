@@ -294,4 +294,69 @@ class Company extends Model
             ->ordered()
             ->get();
     }
+
+    /**
+     * Get tasks for this company (as client)
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'client_id');
+    }
+
+    /**
+     * Get the packages assigned to this company.
+     */
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class, 'client_packages')
+                    ->withPivot(['start_date', 'end_date', 'status'])
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the client package assignments for this company.
+     */
+    public function clientPackages(): HasMany
+    {
+        return $this->hasMany(ClientPackage::class, 'client_id');
+    }
+
+    /**
+     * Get the invoices for this company.
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'client_id');
+    }
+
+    /**
+     * Get the active packages relationship for this company.
+     */
+    public function activePackages()
+    {
+        return $this->clientPackages()
+                    ->where('status', 'active')
+                    ->where('end_date', '>=', now()->toDateString())
+                    ->with('package');
+    }
+
+    /**
+     * Get the current active package for this company (helper method).
+     */
+    public function getActivePackageAttribute()
+    {
+        return $this->activePackages()->first();
+    }
+
+    /**
+     * Get the current package (active, expired, or canceled) for this company.
+     */
+    public function getCurrentPackageAttribute()
+    {
+        return $this->clientPackages()
+                    ->whereIn('status', ['active', 'expired', 'canceled'])
+                    ->latest('created_at')
+                    ->with('package')
+                    ->first();
+    }
 }

@@ -206,11 +206,13 @@
                                                 <a href="{{ route('admin.companies.documents.show', [$document->company, $document]) }}" class="menu-link px-3">{{ __('common.view') }}</a>
                                             </div>
                                             <!--end::Menu item-->
+                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                                             <!--begin::Menu item-->
                                             <div class="menu-item px-3">
                                                 <a href="{{ route('admin.companies.documents.edit', [$document->company, $document]) }}" class="menu-link px-3">{{ __('common.edit') }}</a>
                                             </div>
                                             <!--end::Menu item-->
+                                            @endif
                                             @if($document->hasFile())
                                             <!--begin::Menu item-->
                                             <div class="menu-item px-3">
@@ -218,11 +220,13 @@
                                             </div>
                                             <!--end::Menu item-->
                                             @endif
+                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::DELETE_COMPANY_DOCUMENTS->value))
                                             <!--begin::Menu item-->
                                             <div class="menu-item px-3">
                                                 <a href="#" class="menu-link px-3 text-danger" data-kt-document-table-filter="delete_row" data-document-id="{{ $document->id }}">{{ __('common.delete') }}</a>
                                             </div>
                                             <!--end::Menu item-->
+                                            @endif
                                         </div>
                                         <!--end::Menu-->
                                     </td>

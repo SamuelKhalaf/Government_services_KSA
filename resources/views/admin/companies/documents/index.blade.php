@@ -43,9 +43,11 @@
             <!--end::Page title-->
             <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2 gap-lg-3">
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                 <a href="{{ route('admin.companies.documents.create', $company) }}" class="btn btn-sm fw-bold btn-primary">
                     <i class="fa-solid fa-plus fs-2"></i>{{ __('companies.add_document') }}
                 </a>
+                @endif
             </div>
             <!--end::Actions-->
         </div>
@@ -152,11 +154,13 @@
                                                     <a href="{{ route('admin.companies.documents.show', [$company, $document]) }}" class="menu-link px-3">{{ __('common.view') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
                                                     <a href="{{ route('admin.companies.documents.edit', [$company, $document]) }}" class="menu-link px-3">{{ __('common.edit') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @endif
                                                 @if($document->hasFile())
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
@@ -164,11 +168,13 @@
                                                 </div>
                                                 <!--end::Menu item-->
                                                 @endif
+                                                @if(auth()->user()->can(\App\Enums\PermissionEnum::DELETE_COMPANY_DOCUMENTS->value))
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
                                                     <a href="#" class="menu-link px-3 text-danger" data-kt-company-documents-table-filter="delete_row" data-document-id="{{ $document->id }}">{{ __('common.delete') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @endif
                                             </div>
                                             <!--end::Menu-->
                                         </td>

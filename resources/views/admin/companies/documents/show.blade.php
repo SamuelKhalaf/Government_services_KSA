@@ -54,9 +54,11 @@
                     <i class="fa-solid fa-download fs-2"></i>{{ __('common.download') }}
                 </a>
                 @endif
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                 <a href="{{ route('admin.companies.documents.edit', [$company, $document]) }}" class="btn btn-sm fw-bold btn-primary">
                     <i class="fa-solid fa-pencil fs-2"></i>{{ __('common.edit') }}
                 </a>
+                @endif
             </div>
             <!--end::Actions-->
         </div>

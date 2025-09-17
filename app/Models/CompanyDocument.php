@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class CompanyDocument extends Model
@@ -39,6 +40,14 @@ class CompanyDocument extends Model
     public function documentType(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class);
+    }
+
+    /**
+     * Get all task documents that reference this company document
+     */
+    public function taskDocuments(): HasMany
+    {
+        return $this->hasMany(TaskDocument::class, 'document_id')->where('document_type', TaskDocument::TYPE_COMPANY);
     }
 
     /**

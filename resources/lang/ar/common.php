@@ -8,6 +8,16 @@ return [
     'edit' => 'تعديل',
     'delete' => 'حذف',
     'view' => 'عرض',
+    'view_task' => 'عرض المهمة',
+    'view_document' => 'عرض الوثيقة',
+    'edit_document' => 'تعديل الوثيقة',
+    'access_denied' => 'تم رفض الوصول. ليس لديك صلاحية للوصول إلى هذا المورد.',
+    'loading' => 'جاري التحميل...',
+    'error_loading_notifications' => 'خطأ في تحميل الإشعارات',
+    'just_now' => 'الآن',
+    'minutes_ago' => 'دقائق مضت',
+    'hours_ago' => 'ساعات مضت',
+    'days_ago' => 'أيام مضت',
     'add' => 'إضافة',
     'update' => 'تحديث',
     'create' => 'إنشاء',
@@ -50,6 +60,14 @@ return [
     'data_updated' => 'تم تحديث البيانات بنجاح!',
     'data_deleted' => 'تم حذف البيانات بنجاح!',
 
+    // Messages for controllers
+    'messages' => [
+        'created_successfully' => 'تم الإنشاء بنجاح',
+        'updated_successfully' => 'تم التحديث بنجاح',
+        'deleted_successfully' => 'تم الحذف بنجاح',
+        'something_went_wrong' => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+    ],
+
     // Form labels
     'name' => 'الاسم',
     'email' => 'البريد الإلكتروني',
@@ -59,7 +77,13 @@ return [
     'status' => 'الحالة',
     'created_at' => 'تاريخ الإنشاء',
     'updated_at' => 'تاريخ التحديث',
+    'start_date' => 'تاريخ البداية',
+    'end_date' => 'تاريخ النهاية',
+    'client_name' => 'اسم العميل',
     'actions' => 'الإجراءات',
+    'used' => 'مستخدم',
+    'remaining' => 'متبقي',
+    'completed' => 'مكتمل',
     'select_all' => 'تحديد الكل',
     'deselect_all' => 'إلغاء تحديد الكل',
 
@@ -202,4 +226,20 @@ return [
     'form_not_cancelled' => 'لم يتم إلغاء النموذج!',
 
     'employee' => 'الموظف',
+    
+    // Finance Management
+    'finance_management' => 'إدارة المالية',
+    'package_information' => 'معلومات الباقة',
+    'package_details' => 'تفاصيل الباقة',
+    'package_limits' => 'حدود الباقة',
+    'pricing_duration' => 'التسعير والمدة',
+    'package_summary' => 'ملخص الباقة',
+    'assigned_clients' => 'العملاء المخصصين',
+    'no_clients_assigned' => 'لا يوجد عملاء مخصصين لهذه الباقة',
+    'unlimited' => 'غير محدود',
+    'currency' => 'ريال',
+    'month' => 'شهر',
+    'months' => 'أشهر',
+    'expired' => 'منتهي الصلاحية',
+    'total_invoices' => 'إجمالي الفواتير',
 ];

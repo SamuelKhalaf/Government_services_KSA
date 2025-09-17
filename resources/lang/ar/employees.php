@@ -221,4 +221,10 @@ return [
     'employee_documents' => 'مستندات الموظف',
     'no_documents_found' => 'لم يتم العثور على مستندات',
     'total_monthly_salary' => 'إجمالي الراتب الشهري',
+    
+    // Employee filtering notices
+    'assigned_employees_only' => 'الموظفون المخصصون فقط',
+    'assigned_employees_message' => 'أنت تشاهد فقط الموظفين المخصصين لك من خلال المهام. اتصل بمديرك إذا كنت تحتاج إلى الوصول إلى موظفين إضافيين.',
+    'assigned_documents_only' => 'الوثائق المخصصة فقط',
+    'assigned_documents_message' => 'أنت تشاهد فقط الوثائق المتعلقة بمهامك المخصصة. اتصل بمديرك إذا كنت تحتاج إلى الوصول إلى وثائق إضافية.',
 ];

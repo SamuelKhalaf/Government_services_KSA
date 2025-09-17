@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MunicipalityLicense extends Model
 {
@@ -27,14 +28,17 @@ class MunicipalityLicense extends Model
         'license_fees',
         'notes',
         'certificate_file_path',
-        'status'
+        'status',
+        'enable_reminder',
+        'reminder_days'
     ];
 
     protected $casts = [
         'issue_date' => 'date',
         'expiry_date' => 'date',
         'area' => 'decimal:2',
-        'license_fees' => 'decimal:2'
+        'license_fees' => 'decimal:2',
+        'enable_reminder' => 'boolean'
     ];
 
     /**
@@ -43,6 +47,14 @@ class MunicipalityLicense extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Get the task documents related to this license
+     */
+    public function taskDocuments(): HasMany
+    {
+        return $this->hasMany(TaskDocument::class, 'document_id')->where('document_type', TaskDocument::TYPE_MUNICIPALITY);
     }
 
     /**
@@ -60,6 +72,19 @@ class MunicipalityLicense extends Model
     {
         $thirtyDaysFromNow = now()->addDays(30);
         return $this->expiry_date <= $thirtyDaysFromNow && $this->expiry_date >= now();
+    }
+
+    /**
+     * Check if license needs reminder based on its reminder_days setting
+     */
+    public function getNeedsReminderAttribute()
+    {
+        if (!$this->enable_reminder || !$this->reminder_days) {
+            return false;
+        }
+        
+        $daysUntilExpiry = now()->diffInDays($this->expiry_date, false);
+        return $daysUntilExpiry <= $this->reminder_days && $daysUntilExpiry >= 0;
     }
 
     /**
@@ -94,5 +119,16 @@ class MunicipalityLicense extends Model
     public function scopeByMunicipality($query, $municipality)
     {
         return $query->where('municipality_name', $municipality);
+    }
+
+    /**
+     * Scope for licenses needing reminder
+     */
+    public function scopeNeedingReminder($query)
+    {
+        return $query->where('enable_reminder', true)
+                    ->whereNotNull('reminder_days')
+                    ->whereRaw('expiry_date <= ?', [now()->addDays(30)->toDateString()])
+                    ->whereRaw('expiry_date >= ?', [now()->toDateString()]);
     }
 }

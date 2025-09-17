@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBranchRegistrationRequest;
 use App\Http\Requests\UpdateBranchRegistrationRequest;
 use App\Models\Company;
 use App\Models\BranchCommercialRegistration;
+use App\Services\PackageValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,12 @@ class BranchCommercialRegistrationController extends Controller
      */
     public function create(Company $company)
     {
-        return view('admin.companies.documents.branch-registration.create', compact('company'));
+        $packageValidationService = new PackageValidationService();
+        $packageStatus = $packageValidationService->getPackageStatus($company);
+        $warnings = $packageValidationService->getWarningMessages($company);
+        $canAddDocument = $packageValidationService->canAddCompanyDocument($company);
+
+        return view('admin.companies.documents.branch-registration.create', compact('company', 'packageStatus', 'warnings', 'canAddDocument'));
     }
 
     /**
@@ -26,11 +32,23 @@ class BranchCommercialRegistrationController extends Controller
      */
     public function store(StoreBranchRegistrationRequest $request, Company $company)
     {
+        // Validate package limits before storing
+        $packageValidationService = new PackageValidationService();
+        $validation = $packageValidationService->canAddCompanyDocument($company);
+        
+        if (!$validation['allowed']) {
+            return back()->withInput()->with('error', $validation['message']);
+        }
+
         try {
             DB::beginTransaction();
 
             $registrationData = $request->validated();
             $registrationData['company_id'] = $company->id;
+            
+            // Handle reminder settings
+            $registrationData['enable_reminder'] = $request->has('enable_reminder') ? (bool) $request->enable_reminder : false;
+            $registrationData['reminder_days'] = $request->filled('reminder_days') ? (int) $request->reminder_days : null;
 
             // Handle file upload
             if ($request->hasFile('certificate_file')) {
@@ -60,6 +78,20 @@ class BranchCommercialRegistrationController extends Controller
      */
     public function show(Company $company, BranchCommercialRegistration $branchRegistration)
     {
+        // If user is employee, check if this document is assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $hasAccess = auth()->user()->assignedTasks()
+                ->whereHas('taskDocuments', function ($query) use ($branchRegistration) {
+                    $query->where('document_type', 'branch_registration')
+                          ->where('document_id', $branchRegistration->id);
+                })
+                ->exists();
+                
+            if (!$hasAccess) {
+                abort(403, __('common.access_denied'));
+            }
+        }
+
         return view('admin.companies.documents.branch-registration.show', compact('company', 'branchRegistration'));
     }
 
@@ -68,6 +100,21 @@ class BranchCommercialRegistrationController extends Controller
      */
     public function edit(Company $company, BranchCommercialRegistration $branchRegistration)
     {
+        // If user is employee, check if this document is assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $hasAccess = auth()->user()->assignedTasks()
+                ->whereHas('taskDocuments', function ($query) use ($branchRegistration) {
+                    // Check if this branch registration is linked to any task documents assigned to the employee
+                    $query->where('document_type', 'branch_registration')
+                          ->where('document_id', $branchRegistration->id);
+                })
+                ->exists();
+                
+            if (!$hasAccess) {
+                abort(403, __('common.access_denied'));
+            }
+        }
+
         return view('admin.companies.documents.branch-registration.edit', compact('company', 'branchRegistration'));
     }
 
@@ -80,6 +127,10 @@ class BranchCommercialRegistrationController extends Controller
             DB::beginTransaction();
 
             $registrationData = $request->validated();
+            
+            // Handle reminder settings
+            $registrationData['enable_reminder'] = $request->has('enable_reminder') ? (bool) $request->enable_reminder : false;
+            $registrationData['reminder_days'] = $request->filled('reminder_days') ? (int) $request->reminder_days : null;
 
             // Handle file upload
             if ($request->hasFile('certificate_file')) {

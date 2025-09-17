@@ -188,6 +188,304 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--end::Javascript-->
 @yield('scripts')
 @stack('scripts')
+
+<!-- Simple Notification Styles -->
+<style>
+.notification-dropdown {
+    width: 350px;
+    max-height: 400px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f8f9fa;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background-color: #e3f2fd;
+    border-left: 3px solid #2196f3;
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.notification-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.notification-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #212529;
+}
+
+.notification-message {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #adb5bd;
+}
+
+.notification-badge {
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure notification icon displays properly */
+#notificationDropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#notificationDropdown i {
+    color: #7e8299;
+    transition: color 0.2s ease;
+}
+
+#notificationDropdown:hover i {
+    color: #009ef7;
+}
+
+#notificationDropdown:focus i {
+    color: #009ef7;
+}
+
+/* Sidebar notification badge */
+#sidebar-notification-count {
+    font-size: 10px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #f1416c !important;
+    color: #fff !important;
+    font-weight: bold;
+    line-height: 1;
+    padding: 2px 6px;
+}
+
+/* RTL Support */
+.app-rtl .notification-dropdown {
+    right: auto;
+    left: 0;
+}
+
+.app-rtl .notification-item.unread {
+    border-left: none;
+    border-right: 3px solid #2196f3;
+}
+</style>
+
+<!-- Simple Notification JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const notificationList = document.getElementById('notificationList');
+    const notificationBadge = document.getElementById('notificationBadge');
+    const notificationCount = document.getElementById('notificationCount');
+    
+    let notifications = [];
+    let unreadCount = 0;
+    
+    // Load notifications when dropdown is shown
+    notificationDropdown.addEventListener('show.bs.dropdown', function() {
+        loadNotifications();
+    });
+    
+    // Load notifications
+    function loadNotifications() {
+        fetch('{{ route("admin.notifications.index") }}', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            notifications = data.notifications || [];
+            unreadCount = data.unread_count || 0;
+            updateNotificationUI();
+        })
+        .catch(error => {
+            console.error('Error loading notifications:', error);
+            showErrorState();
+        });
+    }
+    
+    // Update notification UI
+    function updateNotificationUI() {
+        // Update header badge
+        if (unreadCount > 0) {
+            notificationBadge.style.display = 'flex';
+            notificationBadge.textContent = unreadCount;
+        } else {
+            notificationBadge.style.display = 'none';
+        }
+        
+        // Update sidebar badge
+        const sidebarBadge = document.getElementById('sidebar-notification-count');
+        sidebarBadge.textContent = unreadCount;
+        if (unreadCount > 0) {
+            sidebarBadge.style.display = 'flex';
+        } else {
+            sidebarBadge.style.display = 'none';
+        }
+        
+        // Update count
+        notificationCount.textContent = `${unreadCount} {{ __('notifications.notifications') }}`;
+        
+        // Update list
+        if (notifications.length === 0) {
+            showEmptyState();
+        } else {
+            showNotifications();
+        }
+    }
+    
+    // Show notifications
+    function showNotifications() {
+            let html = '';
+            notifications.forEach(notification => {
+            const timeAgo = getTimeAgo(notification.created_at);
+                const isUnread = !notification.is_read;
+                
+                html += `
+                <div class="notification-item ${isUnread ? 'unread' : ''}" onclick="markAsRead(${notification.id})">
+                    <div class="notification-content">
+                        <div class="notification-icon bg-${notification.color || 'primary'} text-white">
+                            <i class="${notification.icon || 'fas fa-bell'}"></i>
+                        </div>
+                        <div class="notification-details">
+                            <div class="notification-title">${notification.title}</div>
+                            <div class="notification-message">${notification.message}</div>
+                            <div class="notification-time">${timeAgo}</div>
+                        </div>
+                        </div>
+                    </div>
+                `;
+            });
+            notificationList.innerHTML = html;
+    }
+    
+    // Show empty state
+    function showEmptyState() {
+        notificationList.innerHTML = `
+            <div class="text-center py-4">
+                <i class="fas fa-bell-slash text-muted fs-1 mb-3"></i>
+                <div class="text-muted">{{ __('notifications.no_notifications') }}</div>
+            </div>
+        `;
+    }
+    
+    // Show error state
+    function showErrorState() {
+        notificationList.innerHTML = `
+            <div class="text-center py-4">
+                <i class="fas fa-exclamation-triangle text-danger fs-1 mb-3"></i>
+                <div class="text-danger">{{ __('common.error_loading_notifications') }}</div>
+            </div>
+        `;
+    }
+    
+    // Get time ago
+    function getTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+        
+        if (diffInSeconds < 60) return '{{ __('common.just_now') }}';
+        if (diffInSeconds < 3600) return Math.floor(diffInSeconds / 60) + ' {{ __('common.minutes_ago') }}';
+        if (diffInSeconds < 86400) return Math.floor(diffInSeconds / 3600) + ' {{ __('common.hours_ago') }}';
+        return Math.floor(diffInSeconds / 86400) + ' {{ __('common.days_ago') }}';
+    }
+    
+    // Mark as read
+    window.markAsRead = function(notificationId) {
+        fetch(`{{ route('admin.notifications.read', '') }}/${notificationId}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadNotifications();
+            }
+        });
+    };
+    
+    // Load notifications on page load for badge
+    loadNotifications();
+    
+    // Refresh every 30 seconds
+    // setInterval(loadNotifications, 30000);
+});
+</script>
+
+<!--begin::Employee Monitoring Script-->
+@if(auth()->user()->isEmployee())
+<script src="{{asset('assets/js/employee-monitoring.js')}}"></script>
+<meta name="user-role" content="employee">
+@endif
+<!--end::Employee Monitoring Script-->
+
 </body>
 <!--end::Body-->
 </html>

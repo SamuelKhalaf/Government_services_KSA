@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\LanguageController;
 use App\Http\Controllers\admin\PermissionsController;
 use App\Http\Controllers\admin\RolesController;
 use App\Http\Controllers\admin\UsersController;
+use App\Http\Controllers\EmployeeMonitoringController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,10 +21,10 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware(['auth'])->name('admin.')->group(function () {
 
-    // View Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->middleware('permission:'. PermissionEnum::VIEW_DASHBOARD->value)
-        ->name('dashboard');
+    // View Dashboard - Redirect to Employee Monitoring
+    Route::get('/dashboard', function () {
+        return redirect()->route('admin.employee-monitoring.index');
+    })->name('dashboard');
     ############################### Start:Users Routes #####################################
     Route::middleware('permission:'. PermissionEnum::VIEW_USERS->value)->group(function () {
         Route::get('users', [UsersController::class, 'index'])->name('users.index');
@@ -84,5 +85,34 @@ Route::middleware(['auth'])->name('admin.')->group(function () {
         ->name('permissions.destroy');
     ###############################  End:Permissions Routes  #####################################
 
+    ############################### Start:Employee Monitoring Routes #####################################
+    Route::middleware('permission:'. PermissionEnum::VIEW_EMPLOYEE_MONITORING->value)->group(function () {
+        Route::get('/employee-monitoring', [EmployeeMonitoringController::class, 'index'])->name('employee-monitoring.index');
+        Route::get('/employee-monitoring/statistics', [EmployeeMonitoringController::class, 'getStatistics'])->name('employee-monitoring.statistics');
+        Route::get('/employee-monitoring/activity-chart', [EmployeeMonitoringController::class, 'getActivityChartData'])->name('employee-monitoring.activity-chart');
+        Route::get('/employee-monitoring/screen-time-chart', [EmployeeMonitoringController::class, 'getScreenTimeChartData'])->name('employee-monitoring.screen-time-chart');
+    });
+
+    Route::middleware('permission:'. PermissionEnum::VIEW_EMPLOYEE_LOGIN_LOGS->value)->group(function () {
+        Route::get('/employee-monitoring/login-logs', [EmployeeMonitoringController::class, 'loginLogs'])->name('employee-monitoring.login-logs');
+    });
+
+    Route::middleware('permission:'. PermissionEnum::VIEW_EMPLOYEE_ACTIVITY_LOGS->value)->group(function () {
+        Route::get('/employee-monitoring/activity-logs', [EmployeeMonitoringController::class, 'activityLogs'])->name('employee-monitoring.activity-logs');
+    });
+
+    Route::middleware('permission:'. PermissionEnum::VIEW_EMPLOYEE_CLICK_TRACKING->value)->group(function () {
+        Route::get('/employee-monitoring/click-tracking', [EmployeeMonitoringController::class, 'clickTracking'])->name('employee-monitoring.click-tracking');
+    });
+
+    Route::middleware('permission:'. PermissionEnum::VIEW_EMPLOYEE_SCREEN_TIME->value)->group(function () {
+        Route::get('/employee-monitoring/screen-time', [EmployeeMonitoringController::class, 'screenTime'])->name('employee-monitoring.screen-time');
+    });
+
+
+    Route::middleware('permission:'. PermissionEnum::MANAGE_EMPLOYEE_MONITORING->value)->group(function () {
+        Route::get('/employee-monitoring/export/{type}', [EmployeeMonitoringController::class, 'export'])->name('employee-monitoring.export');
+    });
+    ###############################  End:Employee Monitoring Routes  #####################################
 
 });

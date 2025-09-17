@@ -54,7 +54,11 @@ class StoreBranchRegistrationRequest extends FormRequest
             'certificate_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240', // 10MB max
 
             // Status
-            'status' => 'nullable|in:active,expired,suspended,cancelled'
+            'status' => 'nullable|in:active,expired,suspended,cancelled',
+
+            // Reminder Settings
+            'enable_reminder' => 'nullable|boolean',
+            'reminder_days' => 'nullable|integer|min:1|max:365'
         ];
     }
 
@@ -113,7 +117,12 @@ class StoreBranchRegistrationRequest extends FormRequest
             'certificate_file.mimes' => 'يجب أن يكون الملف من نوع: PDF, JPG, JPEG, PNG',
             'certificate_file.max' => 'حجم الملف يجب ألا يزيد عن 10 ميجابايت',
 
-            'status.in' => 'حالة التسجيل المحددة غير صحيحة'
+            'status.in' => 'حالة التسجيل المحددة غير صحيحة',
+
+            'enable_reminder.boolean' => 'تفعيل التذكير يجب أن يكون صحيح أو خطأ',
+            'reminder_days.integer' => 'أيام التذكير يجب أن تكون رقماً صحيحاً',
+            'reminder_days.min' => 'أيام التذكير يجب أن تكون على الأقل 1',
+            'reminder_days.max' => 'أيام التذكير يجب ألا تزيد عن 365'
         ];
     }
 
@@ -139,7 +148,9 @@ class StoreBranchRegistrationRequest extends FormRequest
             'branch_activity' => 'نشاط الفرع',
             'activities_list' => 'قائمة الأنشطة',
             'certificate_file' => 'ملف الشهادة',
-            'notes' => 'الملاحظات'
+            'notes' => 'الملاحظات',
+            'enable_reminder' => 'تفعيل التذكير',
+            'reminder_days' => 'أيام التذكير'
         ];
     }
 }

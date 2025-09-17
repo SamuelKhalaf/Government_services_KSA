@@ -507,4 +507,10 @@ return [
     'days_before_expiry' => 'days before expiry',
     'enabled' => 'Enabled',
     'disabled' => 'Disabled',
+    
+    // Employee filtering notices
+    'assigned_companies_only' => 'Assigned Companies Only',
+    'assigned_companies_message' => 'You are viewing only the companies assigned to you through tasks. Contact your administrator if you need access to additional companies.',
+    'assigned_data_only' => 'Assigned Data Only',
+    'assigned_data_message' => 'You are viewing only the employees and documents related to your assigned tasks. Contact your administrator if you need access to additional data.',
 ];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\CompanyDocument;
 use App\Models\DocumentType;
+use App\Services\PackageValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,23 @@ class CompanyDocumentController extends Controller
      */
     public function allIndex()
     {
-        $documents = CompanyDocument::with(['company', 'documentType'])
-            ->latest()
-            ->paginate(15);
+        $documentsQuery = CompanyDocument::with(['company', 'documentType']);
+        
+        // If user is employee, only show documents assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $assignedDocumentIds = auth()->user()->assignedTasks()
+                ->with('taskDocuments')
+                ->get()
+                ->pluck('taskDocuments')
+                ->flatten()
+                ->where('document_type', 'company_document')
+                ->pluck('document_id')
+                ->toArray();
+                
+            $documentsQuery->whereIn('id', $assignedDocumentIds);
+        }
+        
+        $documents = $documentsQuery->latest()->paginate(15);
 
         return view('admin.companies.documents.all-index', compact('documents'));
     }
@@ -31,10 +46,23 @@ class CompanyDocumentController extends Controller
     {
         $company->load(['companyDocuments.documentType']);
         
-        $documents = $company->companyDocuments()
-            ->with('documentType')
-            ->latest()
-            ->paginate(15);
+        $documentsQuery = $company->companyDocuments()->with('documentType');
+        
+        // If user is employee, only show documents assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $assignedDocumentIds = auth()->user()->assignedTasks()
+                ->with('taskDocuments')
+                ->get()
+                ->pluck('taskDocuments')
+                ->flatten()
+                ->where('document_type', 'company_document')
+                ->pluck('document_id')
+                ->toArray();
+                
+            $documentsQuery->whereIn('id', $assignedDocumentIds);
+        }
+        
+        $documents = $documentsQuery->latest()->paginate(15);
 
         return view('admin.companies.documents.index', compact('company', 'documents'));
     }
@@ -50,7 +78,13 @@ class CompanyDocumentController extends Controller
             return back()->with('error', __('No compatible document types found for this company.'));
         }
 
-        return view('admin.companies.documents.create', compact('company', 'documentTypes'));
+        // Get package validation information
+        $packageValidationService = new PackageValidationService();
+        $packageStatus = $packageValidationService->getPackageStatus($company);
+        $warnings = $packageValidationService->getWarningMessages($company);
+        $canAddDocument = $packageValidationService->canAddCompanyDocument($company);
+
+        return view('admin.companies.documents.create', compact('company', 'documentTypes', 'packageStatus', 'warnings', 'canAddDocument'));
     }
 
     /**
@@ -58,6 +92,16 @@ class CompanyDocumentController extends Controller
      */
     public function store(Request $request, Company $company)
     {
+        // Validate package limits before creating company document
+        $packageValidationService = new PackageValidationService();
+        $validation = $packageValidationService->canAddCompanyDocument($company);
+        
+        if (!$validation['allowed']) {
+            return back()
+                ->withInput()
+                ->with('error', $validation['message']);
+        }
+
         $documentType = DocumentType::findOrFail($request->document_type_id);
         
         // Validate basic fields

@@ -43,12 +43,16 @@
             <!--end::Page title-->
             <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2 gap-lg-3">
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_CLIENT_EMPLOYEES->value))
                 <a href="{{ route('admin.employees.documents.create', $employee) }}" class="btn btn-sm fw-bold btn-success">
-                    <i class="ki-duotone ki-document fs-2"></i>{{ __('employees.add_document') }}
+                    <i class="fas fa-file-alt fs-2"></i>{{ __('employees.add_document') }}
                 </a>
+                @endif
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_CLIENT_EMPLOYEES->value))
                 <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-sm fw-bold btn-primary">
-                    <i class="ki-duotone ki-pencil fs-2"></i>@lang('employees.edit_employee')
+                    <i class="fas fa-edit fs-2"></i>@lang('employees.edit_employee')
                 </a>
+                @endif
             </div>
             <!--end::Actions-->
         </div>
@@ -60,6 +64,18 @@
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <!--begin::Content container-->
         <div id="kt_app_content_container" class="app-container container-xxl">
+            
+            @if(auth()->user()->isEmployee())
+            <!--begin::Employee Notice-->
+            <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                <i class="fas fa-info-circle fs-2hx text-info me-4"></i>
+                <div class="d-flex flex-column">
+                    <h4 class="mb-1 text-info">{{ __('employees.assigned_documents_only') }}</h4>
+                    <span>{{ __('employees.assigned_documents_message') }}</span>
+                </div>
+            </div>
+            <!--end::Employee Notice-->
+            @endif
 
             <!--begin::Layout-->
             <div class="d-flex flex-column flex-xl-row">
@@ -90,10 +106,7 @@
                                     <div class="border border-gray-300 border-dashed rounded py-3 px-3 mb-3">
                                         <div class="fs-4 fw-bold text-gray-700">
                                             <span class="w-75px">{{ $employee->documents->count() }}</span>
-                                            <i class="ki-duotone ki-document fs-3 text-primary">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fas fa-file-alt fs-3 text-primary"></i>
                                         </div>
                                         <div class="fw-semibold text-muted">@lang('common.documents')</div>
                                     </div>
@@ -106,7 +119,7 @@
                             <div class="d-flex flex-stack fs-4 py-3">
                                 <div class="fw-bold rotate collapsible" data-bs-toggle="collapse" href="#kt_employee_view_details" role="button" aria-expanded="false" aria-controls="kt_employee_view_details">{{ __('employees.details') }}
                                     <span class="ms-2 rotate-180">
-                                        <i class="ki-duotone ki-down fs-3"></i>
+                                        <i class="fas fa-chevron-down fs-3"></i>
                                     </span>
                                 </div>
                             </div>
@@ -534,10 +547,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <div class="symbol symbol-50px">
                                                         <div class="symbol-label fs-6 fw-bold bg-light-info text-info">
-                                                            <i class="ki-duotone ki-document fs-2">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </i>
+                                                            <i class="fas fa-file-alt fs-4 text-info"></i>
                                                         </div>
                                                     </div>
                                                     <div class="ms-5">
@@ -579,7 +589,9 @@
                                                             @break
                                                     @endswitch
                                                     <a href="{{ route('admin.employees.documents.show', [$employee, $document]) }}" class="btn btn-sm btn-light me-2 ms-3">{{ __('employees.view') }}</a>
+                                                    @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_CLIENT_EMPLOYEES->value))
                                                     <a href="{{ route('admin.employees.documents.edit', [$employee, $document]) }}" class="btn btn-sm btn-primary">{{ __('employees.edit') }}</a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

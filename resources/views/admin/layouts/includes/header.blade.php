@@ -149,6 +149,11 @@
                     <!--end::Menu-->
                 </div>
                 <!--end::Language toggle-->
+                <!--begin::Notifications-->
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::VIEW_OWN_NOTIFICATIONS->value))
+                    @include('admin.notifications.dropdown')
+                @endif
+                <!--end::Notifications-->
                 <!--begin::User menu-->
                 <div class="app-navbar-item ms-2 ms-md-3" id="kt_header_user_menu_toggle">
                     <!--begin::Menu wrapper-->

@@ -39,9 +39,9 @@
                  data-kt-menu="true" data-kt-menu-expand="false">
                 @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_DASHBOARD))
                     <!--begin:Menu item-->
-                    <div class="menu-item {{setMenuOpenClass(['admin.dashboard'])}}">
+                    <div class="menu-item {{setMenuOpenClass(['admin.dashboard','admin.employee-monitoring.index'])}}">
                         <!--begin:Menu link-->
-                        <a class="menu-link {{setActiveClass('admin.dashboard')}}" href="{{route('admin.dashboard')}}">
+                        <a class="menu-link {{setActiveClass(['admin.dashboard','admin.employee-monitoring.index'])}}" href="{{route('admin.dashboard')}}">
                         <span class="menu-icon">
                             <span class="svg-icon svg-icon-2">
                                 <i class="fa-solid fa-gauge-high"></i>
@@ -171,6 +171,7 @@
                                 <!--end:Menu item-->
                             @endif
 
+
                             @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_DOCUMENT_DASHBOARD))
                                 <!--begin:Menu item-->
 {{--                                <div class="menu-item">--}}
@@ -188,6 +189,42 @@
                             @endif
                         </div>
                         <!--end:Menu sub-->
+                    </div>
+                    <!--end:Menu item-->
+                @endif
+
+                {{-- TASKS MODULE --}}
+                @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ALL_TASKS, PermissionEnum::VIEW_ASSIGNED_TASKS, PermissionEnum::CREATE_TASKS, PermissionEnum::UPDATE_TASKS, PermissionEnum::DELETE_TASKS]))
+                    <!--begin:Menu item-->
+                    <div class="menu-item {{setMenuOpenClass(['admin.tasks.*'])}}">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{setActiveClass('admin.tasks.*')}}" href="{{route('admin.tasks.index')}}">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-2">
+                                    <i class="fa-solid fa-tasks"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">@lang('navigation.tasks_management')</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                @endif
+
+                {{-- PACKAGES MODULE --}}
+                @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_FINANCIAL_PACKAGES, PermissionEnum::CREATE_FINANCIAL_PACKAGES, PermissionEnum::UPDATE_FINANCIAL_PACKAGES, PermissionEnum::DELETE_FINANCIAL_PACKAGES]))
+                    <!--begin:Menu item-->
+                    <div class="menu-item {{setMenuOpenClass(['admin.packages.*'])}}">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{setActiveClass('admin.packages.*')}}" href="{{route('admin.packages.index')}}">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-2">
+                                    <i class="fa-solid fa-box"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">@lang('navigation.packages_management')</span>
+                        </a>
+                        <!--end:Menu link-->
                     </div>
                     <!--end:Menu item-->
                 @endif
@@ -247,6 +284,108 @@
                     </div>
                     <!--end:Menu item-->
                 @endif
+
+                {{-- EMPLOYEE MONITORING MODULE --}}
+                @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_EMPLOYEE_LOGIN_LOGS, PermissionEnum::VIEW_EMPLOYEE_ACTIVITY_LOGS, PermissionEnum::VIEW_EMPLOYEE_CLICK_TRACKING, PermissionEnum::VIEW_EMPLOYEE_SCREEN_TIME, PermissionEnum::VIEW_EMPLOYEE_SCREENSHOTS]))
+                    <!--begin:Menu item-->
+                    <div data-kt-menu-trigger="click"
+                         class="menu-item menu-accordion {{setMenuOpenClass(['admin.employee-monitoring.login-logs','admin.employee-monitoring.activity-logs','admin.employee-monitoring.click-tracking','admin.employee-monitoring.screen-time'])}}">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-2">
+                                    <i class="fa-solid fa-eye"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">@lang('navigation.employee_monitoring')</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                            @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_EMPLOYEE_LOGIN_LOGS))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.employee-monitoring.login-logs')}}"
+                                       href="{{route('admin.employee-monitoring.login-logs')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.login_logs')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+                            @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_EMPLOYEE_ACTIVITY_LOGS))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.employee-monitoring.activity-logs')}}"
+                                       href="{{route('admin.employee-monitoring.activity-logs')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.activity_logs')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+                            @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_EMPLOYEE_CLICK_TRACKING))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.employee-monitoring.click-tracking')}}"
+                                       href="{{route('admin.employee-monitoring.click-tracking')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.click_tracking')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+                            @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_EMPLOYEE_SCREEN_TIME))
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{setActiveClass('admin.employee-monitoring.screen-time')}}"
+                                       href="{{route('admin.employee-monitoring.screen-time')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">@lang('navigation.screen_time')</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            @endif
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
+                    <!--end:Menu item-->
+                @endif
+
+                <!--begin:Menu item-->
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::VIEW_OWN_NOTIFICATIONS->value))
+                <div class="menu-item">
+                    <a class="menu-link {{setActiveClass('admin.notifications.*')}}" href="{{ route('admin.notifications.all') }}">
+                        <span class="menu-icon">
+                            <span class="svg-icon svg-icon-2">
+                                <i class="fa-solid fa-bell"></i>
+                            </span>
+                        </span>
+                        <span class="menu-title">{{ __('notifications.notification_center') }}</span>
+                        <span class="menu-badge">
+                            <span class="badge badge-light-danger fs-8 fw-bold" id="sidebar-notification-count" style="min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">0</span>
+                        </span>
+                    </a>
+                </div>
+                @endif
+                <!--end:Menu item-->
 
             </div>
             <!--end::Menu-->

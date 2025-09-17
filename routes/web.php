@@ -3,6 +3,7 @@
 use App\Enums\PermissionEnum;
 use App\Enums\RoleEnum;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -45,13 +46,78 @@ Route::get('/test', function () {
     $adminRole->givePermissionTo(PermissionEnum::all());
 });
 
+// Employee Monitoring API Routes (moved from api.php for better session handling)
+Route::middleware(['auth:web'])->prefix('api/employee-monitoring')->group(function () {
+    // Track click activity
+    Route::post('/track-click', function (Request $request) {
+        $user = $request->user();
+        
+        if (!$user->isEmployee()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        $clickData = $request->validate([
+            'element_type' => 'required|string|max:50',
+            'element_id' => 'nullable|string|max:100',
+            'element_class' => 'nullable|string|max:200',
+            'element_text' => 'nullable|string|max:500',
+            'page_url' => 'required|string|max:500',
+            'x_position' => 'nullable|integer',
+            'y_position' => 'nullable|integer',
+        ]);
+        
+        app(\App\Services\EmployeeMonitoringService::class)->trackClick($user, $clickData);
+        
+        return response()->json(['success' => true]);
+    });
+    
+    // Update screen time
+    Route::post('/update-screen-time', function (Request $request) {
+        $user = $request->user();
+        
+        if (!$user->isEmployee()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        $activityData = $request->validate([
+            'active_seconds' => 'required|integer|min:0',
+            'idle_seconds' => 'required|integer|min:0',
+            'clicks' => 'required|integer|min:0',
+            'keypresses' => 'required|integer|min:0',
+            'scrolls' => 'required|integer|min:0',
+            'breaks' => 'nullable|array',
+        ]);
+        
+        app(\App\Services\EmployeeMonitoringService::class)->updateScreenTimeSession($user, $activityData);
+        
+        return response()->json(['success' => true]);
+    });
+    
+    
+    // Get employee statistics
+    Route::get('/my-statistics', function (Request $request) {
+        $user = $request->user();
+        
+        if (!$user->isEmployee()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        $days = $request->get('days', 30);
+        $statistics = app(\App\Services\EmployeeMonitoringService::class)->getProductivityMetrics($user, $days);
+        
+        return response()->json($statistics);
+    });
+});
+
 
 
 // Client Management Module Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
-    // Admin Dashboard
-    Route::get('dashboard', [App\Http\Controllers\admin\DashboardController::class, 'index'])->name('dashboard');
+    // Admin Dashboard - Redirect to Employee Monitoring
+    Route::get('dashboard', function () {
+        return redirect()->route('admin.employee-monitoring.index');
+    })->name('dashboard');
 
     ############################### Start: Companies Management Routes #####################################
     // Companies - Create (must come before parameterized routes)
@@ -246,4 +312,107 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::delete('bulk-delete', [App\Http\Controllers\admin\FileController::class, 'bulkDelete'])->name('bulk-delete');
         });
     });
+
+    ############################### Start: Tasks Management Routes #####################################
+    // Tasks - Create
+    Route::middleware('permission:' . PermissionEnum::CREATE_TASKS->value)->group(function () {
+        Route::get('tasks/create', [App\Http\Controllers\TaskController::class, 'create'])->name('tasks.create');
+        Route::post('tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+        
+        // Document Assignment Interface
+        Route::get('tasks/assign-documents', [App\Http\Controllers\TaskController::class, 'showAssignDocuments'])->name('tasks.assign-documents');
+        Route::post('tasks/bulk-assign', [App\Http\Controllers\TaskController::class, 'bulkAssignDocuments'])->name('tasks.bulk-assign');
+    });
+    
+    // Tasks - View All/Assigned
+    Route::middleware('permission:' . PermissionEnum::VIEW_ALL_TASKS->value . '|' . PermissionEnum::VIEW_ASSIGNED_TASKS->value)->group(function () {
+        Route::get('tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+        Route::get('tasks/{task}', [App\Http\Controllers\TaskController::class, 'show'])->name('tasks.show');
+    });
+
+    // Tasks - Update
+    Route::middleware('permission:' . PermissionEnum::UPDATE_TASKS->value)->group(function () {
+        Route::get('tasks/{task}/edit', [App\Http\Controllers\TaskController::class, 'edit'])->name('tasks.edit');
+        Route::put('tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+    });
+
+    // Tasks - Delete
+    Route::delete('tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])
+        ->middleware('permission:' . PermissionEnum::DELETE_TASKS->value)
+        ->name('tasks.destroy');
+
+    // Tasks - AJAX endpoints for dynamic selection
+    Route::middleware('permission:' . PermissionEnum::CREATE_TASKS->value . '|' . PermissionEnum::UPDATE_TASKS->value)->group(function () {
+        Route::get('tasks/ajax/company-employees', [App\Http\Controllers\TaskController::class, 'getCompanyEmployees'])->name('tasks.ajax.company-employees');
+        Route::get('tasks/ajax/company-documents', [App\Http\Controllers\TaskController::class, 'getCompanyDocuments'])->name('tasks.ajax.company-documents');
+        Route::get('tasks/ajax/company-licenses', [App\Http\Controllers\TaskController::class, 'getCompanyLicenses'])->name('tasks.ajax.company-licenses');
+        Route::get('tasks/ajax/employee-documents', [App\Http\Controllers\TaskController::class, 'getEmployeeDocuments'])->name('tasks.ajax.employee-documents');
+        Route::get('tasks/ajax/employees-for-assignment', [App\Http\Controllers\TaskController::class, 'getEmployeesForAssignment'])->name('tasks.ajax.employees-for-assignment');
+    });
+
+    // Notifications
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        // View own notifications
+        Route::middleware('permission:' . PermissionEnum::VIEW_OWN_NOTIFICATIONS->value)->group(function () {
+            Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])->name('index');
+            Route::get('/all', [App\Http\Controllers\NotificationController::class, 'showAll'])->name('all');
+            Route::get('/count', [App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('count');
+        });
+        
+        // Mark notifications as read/unread
+        Route::middleware('permission:' . PermissionEnum::MARK_NOTIFICATIONS_READ->value)->group(function () {
+            Route::post('/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('read');
+            Route::post('/{id}/unread', [App\Http\Controllers\NotificationController::class, 'markAsUnread'])->name('unread');
+            Route::post('/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark_all_read');
+        });
+        
+        // Delete notifications
+        Route::middleware('permission:' . PermissionEnum::DELETE_NOTIFICATIONS->value)->group(function () {
+            Route::delete('/{id}', [App\Http\Controllers\NotificationController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    ############################### Start: Packages Management Routes #####################################
+    // Packages - Create
+    Route::middleware('permission:' . PermissionEnum::CREATE_FINANCIAL_PACKAGES->value)->group(function () {
+        Route::get('packages/create', [App\Http\Controllers\PackageController::class, 'create'])->name('packages.create');
+        Route::post('packages', [App\Http\Controllers\PackageController::class, 'store'])->name('packages.store');
+    });
+    
+    // Packages - View
+    Route::middleware('permission:' . PermissionEnum::VIEW_FINANCIAL_PACKAGES->value)->group(function () {
+        Route::get('packages', [App\Http\Controllers\PackageController::class, 'index'])->name('packages.index');
+        Route::get('packages/{package}', [App\Http\Controllers\PackageController::class, 'show'])->name('packages.show');
+    });
+    
+    // Packages - Update
+    Route::middleware('permission:' . PermissionEnum::UPDATE_FINANCIAL_PACKAGES->value)->group(function () {
+        Route::get('packages/{package}/edit', [App\Http\Controllers\PackageController::class, 'edit'])->name('packages.edit');
+        Route::put('packages/{package}', [App\Http\Controllers\PackageController::class, 'update'])->name('packages.update');
+    });
+    
+    // Packages - Delete
+    Route::delete('packages/{package}', [App\Http\Controllers\PackageController::class, 'destroy'])
+        ->middleware('permission:' . PermissionEnum::DELETE_FINANCIAL_PACKAGES->value)
+        ->name('packages.destroy');
+
+    ############################### Start: Client Package Management Routes #####################################
+    // Client Package - Assign
+    Route::middleware('permission:' . PermissionEnum::ASSIGN_PACKAGES_TO_CLIENTS->value)->group(function () {
+        Route::get('companies/{company}/packages/assign', [App\Http\Controllers\ClientPackageController::class, 'create'])->name('companies.packages.assign');
+        Route::post('companies/{company}/packages', [App\Http\Controllers\ClientPackageController::class, 'store'])->name('companies.packages.store');
+        Route::get('companies/{company}/packages/{clientPackage}/change', [App\Http\Controllers\ClientPackageController::class, 'change'])->name('companies.packages.change');
+        Route::post('companies/{company}/packages/{clientPackage}/change', [App\Http\Controllers\ClientPackageController::class, 'changePackage'])->name('companies.packages.change.store');
+    });
+    
+    // Client Package - Renew
+    Route::middleware('permission:' . PermissionEnum::RENEW_CLIENT_PACKAGES->value)->group(function () {
+        Route::get('companies/{company}/packages/{clientPackage}/renew', [App\Http\Controllers\ClientPackageController::class, 'edit'])->name('companies.packages.renew');
+        Route::put('companies/{company}/packages/{clientPackage}/renew', [App\Http\Controllers\ClientPackageController::class, 'update'])->name('companies.packages.renew.store');
+    });
+    
+    // Client Package - Cancel
+    Route::delete('companies/{company}/packages/{clientPackage}', [App\Http\Controllers\ClientPackageController::class, 'destroy'])
+        ->middleware('permission:' . PermissionEnum::CANCEL_CLIENT_PACKAGES->value)
+        ->name('companies.packages.cancel');
 });

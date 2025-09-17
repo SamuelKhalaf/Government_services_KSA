@@ -259,8 +259,26 @@
             .select2-container--bootstrap5 .select2-dropdown {
                 direction: rtl !important;
             }
+
+            /* Sidebar Menu Title Font Size Increase */
+            .app-sidebar .menu-title {
+                font-size: 1.3rem !important;
+                font-weight: 500 !important;
+            }
         </style>
         <!--end::Arabic RTL Styles-->
     @endif
+
+    <!--begin::Global Sidebar Font Size Styles-->
+    <style>
+        /* Sidebar Menu Title Font Size Increase - Applied to all languages */
+        .app-sidebar .menu-title {
+            font-size: 1.3rem !important;
+            font-weight: 500 !important;
+        }
+    </style>
+    <!--end::Global Sidebar Font Size Styles-->
+
+    @stack('styles')
 
 </head>

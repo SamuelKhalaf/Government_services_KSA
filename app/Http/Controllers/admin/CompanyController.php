@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
+use App\Services\PackageValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +18,12 @@ class CompanyController extends Controller
     public function index(Request $request)
     {
         $query = Company::with(['employees', 'civilDefenseLicenses', 'municipalityLicenses', 'branchCommercialRegistrations']);
+
+        // If user is employee, only show assigned companies
+        if (auth()->user()->isEmployee()) {
+            $assignedCompanyIds = auth()->user()->getAssignedCompanyIds()->toArray();
+            $query->whereIn('id', $assignedCompanyIds);
+        }
 
         // Search functionality
         if ($request->filled('search')) {
@@ -51,9 +58,15 @@ class CompanyController extends Controller
 
         $companies = $query->latest()->paginate(15);
 
-        // Get filter options
-        $regions = Company::distinct()->pluck('region')->filter()->sort();
-        $companyTypes = Company::distinct()->pluck('company_type')->filter()->sort();
+        // Get filter options - for employees, only show options for their assigned companies
+        if (auth()->user()->isEmployee()) {
+            $assignedCompanyIds = auth()->user()->getAssignedCompanyIds()->toArray();
+            $regions = Company::whereIn('id', $assignedCompanyIds)->distinct()->pluck('region')->filter()->sort();
+            $companyTypes = Company::whereIn('id', $assignedCompanyIds)->distinct()->pluck('company_type')->filter()->sort();
+        } else {
+            $regions = Company::distinct()->pluck('region')->filter()->sort();
+            $companyTypes = Company::distinct()->pluck('company_type')->filter()->sort();
+        }
 
         return view('admin.companies.index', compact('companies', 'regions', 'companyTypes'));
     }
@@ -94,15 +107,62 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        $company->load([
-            'employees' => function ($query) {
-                $query->with('documents.documentType');
-            },
-            'civilDefenseLicenses',
-            'municipalityLicenses',
-            'branchCommercialRegistrations',
-            'companyDocuments.documentType'
-        ]);
+        // If user is employee, filter employees based on their assigned tasks
+        if (auth()->user()->isEmployee()) {
+            $assignedEmployeeIds = auth()->user()->getAssignedEmployeeIds()->toArray();
+            $assignedCompanyIds = auth()->user()->getAssignedCompanyIds()->toArray();
+            
+            // Only show this company if it's assigned to the employee
+            if (!in_array($company->id, $assignedCompanyIds)) {
+                abort(403, 'You do not have access to this company.');
+            }
+            
+            $company->load([
+                'employees' => function ($query) use ($assignedEmployeeIds) {
+                    $query->whereIn('id', $assignedEmployeeIds)
+                          ->with(['documents' => function ($docQuery) {
+                              $docQuery->whereHas('taskDocuments.task', function ($taskQuery) {
+                                  $taskQuery->where('assigned_to', auth()->id());
+                              })->with('documentType');
+                          }]);
+                },
+                'civilDefenseLicenses' => function ($query) {
+                    // Only show civil defense licenses that are related to employee's tasks
+                    $query->whereHas('taskDocuments.task', function ($q) {
+                        $q->where('assigned_to', auth()->id());
+                    });
+                },
+                'municipalityLicenses' => function ($query) {
+                    // Only show municipality licenses that are related to employee's tasks
+                    $query->whereHas('taskDocuments.task', function ($q) {
+                        $q->where('assigned_to', auth()->id());
+                    });
+                },
+                'branchCommercialRegistrations' => function ($query) {
+                    // Only show branch registrations that are related to employee's tasks
+                    $query->whereHas('taskDocuments.task', function ($q) {
+                        $q->where('assigned_to', auth()->id());
+                    });
+                },
+                'companyDocuments' => function ($query) {
+                    // Only show company documents that are related to employee's tasks
+                    $query->whereHas('taskDocuments.task', function ($q) {
+                        $q->where('assigned_to', auth()->id());
+                    })->with('documentType');
+                }
+            ]);
+        } else {
+            // Admin users see all data
+            $company->load([
+                'employees' => function ($query) {
+                    $query->with('documents.documentType');
+                },
+                'civilDefenseLicenses',
+                'municipalityLicenses',
+                'branchCommercialRegistrations',
+                'companyDocuments.documentType'
+            ]);
+        }
 
         // Get document statistics
         $documentStats = [
@@ -114,7 +174,12 @@ class CompanyController extends Controller
             'expiring_documents' => $company->expiring_soon_documents
         ];
 
-        return view('admin.companies.show', compact('company', 'documentStats'));
+        // Get package validation information
+        $packageValidationService = new PackageValidationService();
+        $packageStatus = $packageValidationService->getPackageStatus($company);
+        $warnings = $packageValidationService->getWarningMessages($company);
+
+        return view('admin.companies.show', compact('company', 'documentStats', 'packageStatus', 'warnings'));
     }
 
     /**

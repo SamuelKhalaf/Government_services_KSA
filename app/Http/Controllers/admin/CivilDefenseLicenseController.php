@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCivilDefenseLicenseRequest;
 use App\Http\Requests\UpdateCivilDefenseLicenseRequest;
 use App\Models\Company;
 use App\Models\CivilDefenseLicense;
+use App\Services\PackageValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,12 @@ class CivilDefenseLicenseController extends Controller
      */
     public function create(Company $company)
     {
-        return view('admin.companies.documents.civil-defense.create', compact('company'));
+        $packageValidationService = new PackageValidationService();
+        $packageStatus = $packageValidationService->getPackageStatus($company);
+        $warnings = $packageValidationService->getWarningMessages($company);
+        $canAddDocument = $packageValidationService->canAddCompanyDocument($company);
+
+        return view('admin.companies.documents.civil-defense.create', compact('company', 'packageStatus', 'warnings', 'canAddDocument'));
     }
 
     /**
@@ -26,11 +32,23 @@ class CivilDefenseLicenseController extends Controller
      */
     public function store(StoreCivilDefenseLicenseRequest $request, Company $company)
     {
+        // Validate package limits before storing
+        $packageValidationService = new PackageValidationService();
+        $validation = $packageValidationService->canAddCompanyDocument($company);
+        
+        if (!$validation['allowed']) {
+            return back()->withInput()->with('error', $validation['message']);
+        }
+
         try {
             DB::beginTransaction();
 
             $licenseData = $request->validated();
             $licenseData['company_id'] = $company->id;
+            
+            // Handle reminder settings
+            $licenseData['enable_reminder'] = $request->has('enable_reminder') ? (bool) $request->enable_reminder : false;
+            $licenseData['reminder_days'] = $request->filled('reminder_days') ? (int) $request->reminder_days : null;
 
             // Handle file upload
             if ($request->hasFile('certificate_file')) {
@@ -60,6 +78,21 @@ class CivilDefenseLicenseController extends Controller
      */
     public function show(Company $company, CivilDefenseLicense $civilDefenseLicense)
     {
+        // If user is employee, check if this document is assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $hasAccess = auth()->user()->assignedTasks()
+                ->whereHas('taskDocuments', function ($query) use ($civilDefenseLicense) {
+                    // Check if this civil defense license is linked to any task documents assigned to the employee
+                    $query->where('document_type', 'civil_defense')
+                          ->where('document_id', $civilDefenseLicense->id);
+                })
+                ->exists();
+                
+            if (!$hasAccess) {
+                abort(403, __('common.access_denied'));
+            }
+        }
+
         return view('admin.companies.documents.civil-defense.show', compact('company', 'civilDefenseLicense'));
     }
 
@@ -68,6 +101,21 @@ class CivilDefenseLicenseController extends Controller
      */
     public function edit(Company $company, CivilDefenseLicense $civilDefenseLicense)
     {
+        // If user is employee, check if this document is assigned to them via tasks
+        if (auth()->user()->isEmployee()) {
+            $hasAccess = auth()->user()->assignedTasks()
+                ->whereHas('taskDocuments', function ($query) use ($civilDefenseLicense) {
+                    // Check if this civil defense license is linked to any task documents assigned to the employee
+                    $query->where('document_type', 'civil_defense')
+                          ->where('document_id', $civilDefenseLicense->id);
+                })
+                ->exists();
+                
+            if (!$hasAccess) {
+                abort(403, __('common.access_denied'));
+            }
+        }
+
         return view('admin.companies.documents.civil-defense.edit', compact('company', 'civilDefenseLicense'));
     }
 
@@ -80,6 +128,10 @@ class CivilDefenseLicenseController extends Controller
             DB::beginTransaction();
 
             $licenseData = $request->validated();
+            
+            // Handle reminder settings
+            $licenseData['enable_reminder'] = $request->has('enable_reminder') ? (bool) $request->enable_reminder : false;
+            $licenseData['reminder_days'] = $request->filled('reminder_days') ? (int) $request->reminder_days : null;
 
             // Handle file upload
             if ($request->hasFile('certificate_file')) {

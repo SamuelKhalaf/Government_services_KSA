@@ -48,12 +48,16 @@
                             <i class="fa fa-download"></i>@lang('documents.download_file')
                         </a>
                     @endif
+                    @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_CLIENT_EMPLOYEES->value))
                     <a href="{{ route('admin.employees.documents.edit', [$employee, $document]) }}" class="btn btn-sm fw-bold btn-primary">
-                        <i class="ki-duotone ki-pencil fs-2"></i>@lang('documents.edit_document')
+                        <i class="fas fa-edit fs-2"></i>@lang('documents.edit_document')
                     </a>
+                    @endif
+                    @if(auth()->user()->can(\App\Enums\PermissionEnum::DELETE_CLIENT_EMPLOYEES->value))
                     <button type="button" class="btn btn-sm fw-bold btn-danger" data-bs-toggle="modal" data-bs-target="#delete_document_modal">
-                        <i class="ki-duotone ki-trash fs-2"></i>@lang('documents.delete_document')
+                        <i class="fas fa-trash fs-2"></i>@lang('documents.delete_document')
                     </button>
+                    @endif
                 </div>
                 <!--end::Actions-->
             </div>
@@ -79,10 +83,7 @@
                                     <!--begin::Avatar-->
                                     <div class="symbol symbol-100px symbol-circle mb-7">
                                         <div class="symbol-label fs-3 bg-light-info text-info">
-                                            <i class="ki-duotone ki-document fs-1">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fas fa-file-alt fs-1"></i>
                                         </div>
                                     </div>
                                     <!--end::Avatar-->
@@ -109,7 +110,7 @@
                                 <div class="d-flex flex-stack fs-4 py-3">
                                     <div class="fw-bold rotate collapsible" data-bs-toggle="collapse" href="#kt_document_view_details" role="button" aria-expanded="false" aria-controls="kt_document_view_details">@lang('documents.document_details')
                                         <span class="ms-2 rotate-180">
-                                        <i class="ki-duotone ki-down fs-3"></i>
+                                        <i class="fas fa-chevron-down fs-3"></i>
                                     </span>
                                     </div>
                                 </div>
@@ -514,10 +515,7 @@
                     <!--end::Modal title-->
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
-                        <i class="ki-duotone ki-cross fs-1">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
+                        <i class="fas fa-times fs-1"></i>
                     </div>
                     <!--end::Close-->
                 </div>

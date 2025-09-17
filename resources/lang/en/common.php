@@ -8,6 +8,16 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'view' => 'View',
+    'view_task' => 'View Task',
+    'view_document' => 'View Document',
+    'edit_document' => 'Edit Document',
+    'access_denied' => 'Access denied. You do not have permission to access this resource.',
+    'loading' => 'Loading...',
+    'error_loading_notifications' => 'Error loading notifications',
+    'just_now' => 'Just now',
+    'minutes_ago' => 'minutes ago',
+    'hours_ago' => 'hours ago',
+    'days_ago' => 'days ago',
     'add' => 'Add',
     'update' => 'Update',
     'create' => 'Create',
@@ -50,6 +60,14 @@ return [
     'data_updated' => 'Data updated successfully!',
     'data_deleted' => 'Data deleted successfully!',
 
+    // Messages for controllers
+    'messages' => [
+        'created_successfully' => 'Created successfully',
+        'updated_successfully' => 'Updated successfully',
+        'deleted_successfully' => 'Deleted successfully',
+        'something_went_wrong' => 'Something went wrong. Please try again.',
+    ],
+
     // Form labels
     'name' => 'Name',
     'email' => 'Email',
@@ -59,7 +77,13 @@ return [
     'status' => 'Status',
     'created_at' => 'Created At',
     'updated_at' => 'Updated At',
+    'start_date' => 'Start Date',
+    'end_date' => 'End Date',
+    'client_name' => 'Client Name',
     'actions' => 'Actions',
+    'used' => 'Used',
+    'remaining' => 'Remaining',
+    'completed' => 'Completed',
     'select_all' => 'Select All',
     'deselect_all' => 'Deselect All',
 
@@ -202,4 +226,20 @@ return [
     'form_not_cancelled' => 'Your form has not been cancelled!',
 
     'employee' => 'Employee',
+    
+    // Finance Management
+    'finance_management' => 'Finance Management',
+    'package_information' => 'Package Information',
+    'package_details' => 'Package Details',
+    'package_limits' => 'Package Limits',
+    'pricing_duration' => 'Pricing & Duration',
+    'package_summary' => 'Package Summary',
+    'assigned_clients' => 'Assigned Clients',
+    'no_clients_assigned' => 'No clients assigned to this package',
+    'unlimited' => 'Unlimited',
+    'currency' => 'SAR',
+    'month' => 'Month',
+    'months' => 'Months',
+    'expired' => 'Expired',
+    'total_invoices' => 'Total Invoices',
 ];

@@ -1,0 +1,220 @@
+<?php
+
+return [
+    // Page titles
+    'tasks_management' => 'إدارة المهام',
+    'tasks' => 'المهام',
+    'task' => 'المهمة',
+    'add_task' => 'إضافة مهمة',
+    'edit_task' => 'تعديل المهمة',
+    'task_details' => 'تفاصيل المهمة',
+    'task_list' => 'قائمة المهام',
+    'my_tasks' => 'مهامي',
+    'all_tasks' => 'جميع المهام',
+
+    // Task fields
+    'title' => 'العنوان',
+    'description' => 'الوصف',
+    'client' => 'العميل',
+    'document_type' => 'نوع الوثيقة',
+    'document' => 'الوثيقة',
+    'company_document' => 'وثيقة الشركة',
+    'employee_document' => 'وثيقة الموظف',
+    'civil_defense_license' => 'رخصة الدفاع المدني',
+    'municipality_license' => 'رخصة البلدية',
+    'branch_registration' => 'السجل التجاري للفرع',
+    'assigned_to' => 'مُكلف إلى',
+    'assigned_user' => 'المستخدم المُكلف',
+    'created_by' => 'أنشأ بواسطة',
+    'creator' => 'المنشئ',
+    'due_date' => 'تاريخ الاستحقاق',
+    'created_at' => 'تاريخ الإنشاء',
+    'updated_at' => 'تاريخ التحديث',
+
+    // Task statuses
+    'status' => 'الحالة',
+    'new' => 'جديدة',
+    'in_progress' => 'قيد التنفيذ',
+    'completed' => 'مكتملة',
+    'pending' => 'معلقة',
+
+    // Task actions
+    'create_task' => 'إنشاء مهمة',
+    'update_task' => 'تحديث المهمة',
+    'delete_task' => 'حذف المهمة',
+    'view_task' => 'عرض المهمة',
+    'edit_task' => 'تعديل المهمة',
+    'assign_task' => 'تعيين مهمة',
+    'complete_task' => 'إكمال المهمة',
+    'start_task' => 'بدء المهمة',
+    'pause_task' => 'إيقاف المهمة',
+
+    // Task history
+    'task_history' => 'سجل المهمة',
+    'history' => 'السجل',
+    'activity_log' => 'سجل النشاط',
+    'changes' => 'التغييرات',
+    'action' => 'الإجراء',
+    'changed_by' => 'غُيّر بواسطة',
+    'old_value' => 'القيمة القديمة',
+    'new_value' => 'القيمة الجديدة',
+    'note' => 'ملاحظة',
+    'notes' => 'الملاحظات',
+    'add_note' => 'إضافة ملاحظة',
+
+    // History actions
+    'created' => 'تم الإنشاء',
+    'updated' => 'تم التحديث',
+    'status_changed' => 'تم تغيير الحالة',
+    'note_added' => 'تم إضافة ملاحظة',
+    'deleted' => 'تم الحذف',
+
+    // Messages
+    'task_created_successfully' => 'تم إنشاء المهمة بنجاح!',
+    'task_updated_successfully' => 'تم تحديث المهمة بنجاح!',
+    'task_deleted_successfully' => 'تم حذف المهمة بنجاح!',
+    'note_added_successfully' => 'تم إضافة الملاحظة بنجاح!',
+    'status_updated_successfully' => 'تم تحديث الحالة بنجاح!',
+    'task_not_found' => 'لم يتم العثور على المهمة.',
+    'access_denied' => 'تم رفض الوصول. ليس لديك صلاحية لعرض هذه المهمة.',
+    'cannot_view_tasks' => 'ليس لديك صلاحية لعرض المهام.',
+    'cannot_create_tasks' => 'ليس لديك صلاحية لإنشاء المهام.',
+    'cannot_update_tasks' => 'ليس لديك صلاحية لتحديث المهام.',
+    'cannot_delete_tasks' => 'ليس لديك صلاحية لحذف المهام.',
+    'cannot_manage_task_documents' => 'ليس لديك صلاحية لإدارة وثائق المهام.',
+
+    // Validation messages
+    'title_required' => 'عنوان المهمة مطلوب.',
+    'title_max' => 'عنوان المهمة يجب أن يكون أقل من 255 حرف.',
+    'document_type_required' => 'نوع الوثيقة مطلوب.',
+    'document_type_invalid' => 'نوع الوثيقة غير صحيح.',
+    'document_required' => 'الوثيقة مطلوبة.',
+    'document_invalid' => 'اختيار الوثيقة غير صحيح.',
+    'company_document_not_found' => 'وثيقة الشركة المحددة غير موجودة.',
+    'employee_document_not_found' => 'وثيقة الموظف المحددة غير موجودة.',
+    'civil_defense_license_not_found' => 'رخصة الدفاع المدني المحددة غير موجودة.',
+    'municipality_license_not_found' => 'رخصة البلدية المحددة غير موجودة.',
+    'branch_registration_not_found' => 'السجل التجاري للفرع المحدد غير موجود.',
+    'user_must_be_employee' => 'يمكن تعيين المهام للموظفين فقط.',
+    'document_not_found' => 'الوثيقة غير موجودة.',
+    'unknown_document' => 'نوع وثيقة غير معروف.',
+    'client_required' => 'العميل مطلوب.',
+    'client_not_found' => 'العميل المحدد غير موجود.',
+    'assigned_to_required' => 'المستخدم المُكلف مطلوب.',
+    'assigned_to_not_found' => 'المستخدم المُكلف المحدد غير موجود.',
+    'status_invalid' => 'حالة المهمة غير صحيحة.',
+    'due_date_invalid' => 'تاريخ الاستحقاق غير صحيح.',
+    'due_date_future' => 'تاريخ الاستحقاق يجب أن يكون اليوم أو بعده.',
+    'note_required' => 'الملاحظة مطلوبة.',
+    'note_max' => 'الملاحظة يجب أن تكون أقل من 1000 حرف.',
+
+    // Filters and search
+    'filter_by_status' => 'تصفية حسب الحالة',
+    'filter_by_client' => 'تصفية حسب العميل',
+    'filter_by_assigned_to' => 'تصفية حسب المُكلف',
+    'filter_by_due_date' => 'تصفية حسب تاريخ الاستحقاق',
+    'search_tasks' => 'البحث في المهام',
+    'overdue_tasks' => 'المهام المتأخرة',
+    'due_soon_tasks' => 'المهام المستحقة قريباً',
+    'no_tasks_found' => 'لم يتم العثور على مهام.',
+    'no_tasks_assigned' => 'لا توجد مهام مُكلفة إليك.',
+
+    // Task statistics
+    'total_tasks' => 'إجمالي المهام',
+    'new_tasks' => 'المهام الجديدة',
+    'in_progress_tasks' => 'المهام قيد التنفيذ',
+    'completed_tasks' => 'المهام المكتملة',
+    'pending_tasks' => 'المهام المعلقة',
+    'overdue_count' => 'متأخرة',
+    'due_soon_count' => 'مستحقة قريباً',
+
+    // Task properties
+    'is_overdue' => 'متأخرة',
+    'is_due_soon' => 'مستحقة قريباً',
+    'days_remaining' => 'أيام متبقية',
+    'days_overdue' => 'أيام متأخرة',
+    'no_due_date' => 'لا يوجد تاريخ استحقاق',
+
+    // Form placeholders
+    'enter_task_title' => 'أدخل عنوان المهمة...',
+    'enter_task_description' => 'أدخل وصف المهمة...',
+    'select_client' => 'اختر العميل',
+    'select_document_type' => 'اختر نوع الوثيقة',
+    'select_document' => 'اختر الوثيقة',
+    'select_assigned_user' => 'اختر المستخدم المُكلف',
+    'select_status' => 'اختر الحالة',
+    'enter_note' => 'أدخل ملاحظة...',
+
+    // Confirmation messages
+    'confirm_delete_task' => 'هل أنت متأكد من حذف هذه المهمة؟',
+    'confirm_complete_task' => 'هل أنت متأكد من إكمال هذه المهمة؟',
+    'confirm_start_task' => 'هل أنت متأكد من بدء هذه المهمة؟',
+
+    // Task workflow
+    'workflow' => 'سير العمل',
+    'start_work' => 'بدء العمل',
+    'mark_complete' => 'تحديد كمكتملة',
+    'mark_pending' => 'تحديد كمعلقة',
+    'reopen_task' => 'إعادة فتح المهمة',
+
+    // Priority (if needed in future)
+    'priority' => 'الأولوية',
+    'high' => 'عالية',
+    'medium' => 'متوسطة',
+    'low' => 'منخفضة',
+
+    // Categories (if needed in future)
+    'category' => 'الفئة',
+    'categories' => 'الفئات',
+    'uncategorized' => 'غير مصنفة',
+    
+    // Additional keys for show view
+    'task_info' => 'معلومات المهمة',
+    'no_history_found' => 'لا يوجد سجل لهذه المهمة.',
+    'confirm_status_change' => 'هل أنت متأكد من تغيير الحالة؟',
+    'old_value' => 'القيمة القديمة',
+    'new_value' => 'القيمة الجديدة',
+    'changed_by' => 'غير بواسطة',
+    
+    // Employee edit restrictions
+    'employee_edit_notice_title' => 'ملاحظة للموظفين',
+    'employee_edit_notice_message' => 'بصفتك موظف، يمكنك تعديل حالة المهمة فقط. باقي التفاصيل محمية من التعديل.',
+    
+    // Multiple documents
+    'mixed_documents' => 'وثائق مختلطة',
+    'documents_count' => '{0}لا توجد وثائق|{1}وثيقة واحدة|[2,*]:count وثائق',
+    'documents_required' => 'يجب اختيار وثيقة واحدة على الأقل.',
+    'documents_min_one' => 'يجب اختيار وثيقة واحدة على الأقل.',
+    'select_company_first' => 'يرجى اختيار الشركة أولاً',
+    'select_employee_first' => 'يرجى اختيار الموظف أولاً',
+    'no_documents_available' => 'لا توجد وثائق متاحة',
+    'no_employees_available' => 'لا يوجد موظفون متاحون لهذه الشركة',
+    'add_document' => 'إضافة وثيقة',
+    'selected_documents' => 'الوثائق المحددة',
+    'current_documents' => 'الوثائق الحالية',
+    'remove_document' => 'إزالة الوثيقة',
+    'please_select_document' => 'يرجى تحديد وثيقة أولاً.',
+    'document_management_restricted_title' => 'إدارة الوثائق مقيدة',
+    'document_management_restricted_message' => 'ليس لديك صلاحية لإدارة وثائق المهام. فقط المديرون يمكنهم إضافة أو إزالة الوثائق من المهام.',
+    'company_selection' => 'اختيار الشركة',
+    'employee_selection' => 'اختيار الموظف',
+    'document_selection' => 'اختيار الوثيقة',
+    'select_document_type' => 'اختر نوع الوثيقة',
+    'company_documents' => 'وثائق الشركة',
+    'employee_documents' => 'وثائق الموظف',
+    'document_already_selected' => 'هذه الوثيقة محددة مسبقاً.',
+    
+    // Task show/edit additional keys
+    'document_summary' => 'ملخص الوثائق',
+    'total_documents_assigned' => '{0}لا توجد وثائق مُسندة|{1}وثيقة واحدة مُسندة|[2,*]:count وثائق مُسندة',
+    'all_company_documents' => 'جميع وثائق الشركة',
+    'all_employee_documents' => 'جميع وثائق الموظف',
+    'no_documents_assigned' => 'لم يتم إسناد وثائق',
+    'no_documents_assigned_message' => 'لا توجد وثائق مُسندة لهذه المهمة.',
+    'current_documents' => 'الوثائق الحالية',
+    'add_new_documents' => 'إضافة وثائق جديدة',
+    'new_documents_to_add' => 'وثائق جديدة لإضافتها',
+    'confirm_remove_document' => 'هل أنت متأكد من إزالة هذه الوثيقة من المهمة؟',
+    'note_about_documents' => 'ملاحظة حول الوثائق',
+    'document_edit_limitation_message' => 'لتعديل الوثائق المُسندة لهذه المهمة، يرجى إنشاء مهمة جديدة أو الاتصال بالمدير.',
+];

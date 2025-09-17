@@ -12,7 +12,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Check for document expiration alerts daily at 9:00 AM
+        $schedule->command('documents:check-expiration-alerts')
+                 ->dailyAt('09:00')
+                 ->withoutOverlapping()
+                 ->runInBackground();
     }
 
     /**

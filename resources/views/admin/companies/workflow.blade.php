@@ -249,7 +249,9 @@
                                                                     @if($company->civilDefenseLicenses->count() > 0)
                                                                         <span class="badge badge-light-success">{{ __('Uploaded') }}</span>
                                                                     @else
+                                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                                                         <a href="{{ route('admin.companies.civil-defense-licenses.create', $company) }}" class="btn btn-sm btn-primary">{{ __('companies.add_license') }}</a>
+                                                                        @endif
                                                                     @endif
                                                                 </div>
                                                             </div>
@@ -257,10 +259,7 @@
                                                                 <div class="card-body pt-0">
                                                                     @foreach($company->civilDefenseLicenses as $license)
                                                                         <div class="d-flex align-items-center mb-3">
-                                                                            <i class="ki-duotone ki-shield-tick fs-3 text-success me-3">
-                                                                                <span class="path1"></span>
-                                                                                <span class="path2"></span>
-                                                                            </i>
+                                                                            <i class="fas fa-shield-alt fs-3 text-success me-3"></i>
                                                                             <div class="flex-grow-1">
                                                                                 <div class="fw-bold">{{ __('companies.license_number') }}{{ $license->license_number }}</div>
                                                                                 <div class="text-muted">{{ __('companies.expires') }}: {{ $license->expiry_date->format('Y-m-d') }}</div>
@@ -282,7 +281,9 @@
                                                                     @if($company->municipalityLicenses->count() > 0)
                                                                         <span class="badge badge-light-success">{{ __('Uploaded') }}</span>
                                                                     @else
+                                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                                                         <a href="{{ route('admin.companies.municipality-licenses.create', $company) }}" class="btn btn-sm btn-primary">{{ __('companies.add_license') }}</a>
+                                                                        @endif
                                                                     @endif
                                                                 </div>
                                                             </div>
@@ -290,10 +291,7 @@
                                                                 <div class="card-body pt-0">
                                                                     @foreach($company->municipalityLicenses as $license)
                                                                         <div class="d-flex align-items-center mb-3">
-                                                                            <i class="ki-duotone ki-building fs-3 text-success me-3">
-                                                                                <span class="path1"></span>
-                                                                                <span class="path2"></span>
-                                                                            </i>
+                                                                            <i class="fas fa-building fs-3 text-success me-3"></i>
                                                                             <div class="flex-grow-1">
                                                                                 <div class="fw-bold">{{ __('companies.license_number') }}{{ $license->license_number }}</div>
                                                                                 <div class="text-muted">{{ __('companies.expires') }}: {{ $license->expiry_date->format('Y-m-d') }}</div>
@@ -315,7 +313,9 @@
                                                                     @if($company->branchCommercialRegistrations->count() > 0)
                                                                         <span class="badge badge-light-success">{{ __('Uploaded') }}</span>
                                                                     @else
+                                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                                                         <a href="{{ route('admin.companies.branch-registrations.create', $company) }}" class="btn btn-sm btn-primary">{{ __('companies.add_registration') }}</a>
+                                                                        @endif
                                                                     @endif
                                                                 </div>
                                                             </div>
@@ -323,10 +323,7 @@
                                                                 <div class="card-body pt-0">
                                                                     @foreach($company->branchCommercialRegistrations as $registration)
                                                                         <div class="d-flex align-items-center mb-3">
-                                                                            <i class="ki-duotone ki-file-text fs-3 text-success me-3">
-                                                                                <span class="path1"></span>
-                                                                                <span class="path2"></span>
-                                                                            </i>
+                                                                            <i class="fas fa-file-alt fs-3 text-success me-3"></i>
                                                                             <div class="flex-grow-1">
                                                                                 <div class="fw-bold">{{ __('companies.registration_number') }}{{ $registration->branch_reg_number }}</div>
                                                                                 <div class="text-muted">{{ __('companies.expires') }}: {{ $registration->expiry_date->format('Y-m-d') }}</div>
@@ -411,12 +408,7 @@
                                                             @foreach($company->employees as $employee)
                                                                 <div class="card card-flush py-4">
                                                                     <div class="card-body d-flex align-items-center">
-                                                                        <i class="ki-duotone ki-profile-user fs-3 text-primary me-3">
-                                                                            <span class="path1"></span>
-                                                                            <span class="path2"></span>
-                                                                            <span class="path3"></span>
-                                                                            <span class="path4"></span>
-                                                                        </i>
+                                                                        <i class="fas fa-user fs-3 text-primary me-3"></i>
                                                                         <div class="flex-grow-1">
                                                                             <div class="fw-bold">{{ $employee->full_name_en }}</div>
                                                                             <div class="text-muted">{{ $employee->job_title }} - {{ ucfirst($employee->type) }}</div>
@@ -429,14 +421,12 @@
 
                                                         <div class="card card-flush py-4 border-dashed border-primary">
                                                             <div class="card-body text-center">
-                                                                <i class="ki-duotone ki-user-plus fs-3x text-primary mb-4">
-                                                                    <span class="path1"></span>
-                                                                    <span class="path2"></span>
-                                                                    <span class="path3"></span>
-                                                                </i>
+                                                                <i class="fas fa-user-plus fs-3x text-primary mb-4"></i>
                                                                 <h3 class="text-gray-800 fw-bold mb-3">{{ __('companies.add_more_employees') }}</h3>
                                                                 <p class="text-gray-600 mb-5">{{ __('companies.add_employees_manage_info') }}</p>
+                                                                @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_CLIENT_EMPLOYEES->value))
                                                                 <a href="{{ route('admin.companies.employees.create', $company) }}" class="btn btn-primary">{{ __('common.add_employee') }}</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
@@ -469,7 +459,9 @@
                                                                         @if($employee->documents->count() > 0)
                                                                             <span class="badge badge-light-success">{{ $employee->documents->count() }} {{ __('common.documents') }}</span>
                                                                         @else
+                                                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_CLIENT_EMPLOYEES->value))
                                                                             <a href="{{ route('admin.employees.documents.create', $employee) }}" class="btn btn-sm btn-primary">{{ __('companies.add_documents') }}</a>
+                                                                            @endif
                                                                         @endif
                                                                     </div>
                                                                 </div>
@@ -477,10 +469,7 @@
                                                                     <div class="card-body pt-0">
                                                                         @foreach($employee->documents as $document)
                                                                             <div class="d-flex align-items-center mb-3">
-                                                                                <i class="ki-duotone ki-document fs-3 text-success me-3">
-                                                                                    <span class="path1"></span>
-                                                                                    <span class="path2"></span>
-                                                                                </i>
+                                                                                <i class="fas fa-file-alt fs-3 text-success me-3"></i>
                                                                                 <div class="flex-grow-1">
                                                                                     <div class="fw-bold">{{ $document->documentType->name_en }}</div>
                                                                                     <div class="text-muted">{{ $document->document_number }}</div>
@@ -493,14 +482,12 @@
                                                         @empty
                                                             <div class="card card-flush py-4 border-dashed border-warning">
                                                                 <div class="card-body text-center">
-                                                                    <i class="ki-duotone ki-information fs-3x text-warning mb-4">
-                                                                        <span class="path1"></span>
-                                                                        <span class="path2"></span>
-                                                                        <span class="path3"></span>
-                                                                    </i>
+                                                                    <i class="fas fa-info-circle fs-3x text-warning mb-4"></i>
                                                                     <h3 class="text-gray-800 fw-bold mb-3">{{ __('companies.no_employees_added') }}</h3>
                                                                     <p class="text-gray-600 mb-5">{{ __('companies.add_employees_first') }}</p>
+                                                                    @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_CLIENT_EMPLOYEES->value))
                                                                     <a href="{{ route('admin.companies.employees.create', $company) }}" class="btn btn-warning">{{ __('common.add_employee') }}</a>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         @endforelse
@@ -560,10 +547,7 @@
                                     <div class="mr-2">
                                         @if($currentStep > 1)
                                             <a href="{{ route('admin.companies.show', $company) }}" class="btn btn-lg btn-light-primary me-3">
-                                                <i class="ki-duotone ki-arrow-left fs-4 me-1">
-                                                    <span class="path1"></span>
-                                                    <span class="path2"></span>
-                                                </i>{{ __('companies.view_company') }}
+                                                <i class="fas fa-arrow-left fs-4 me-1"></i>{{ __('companies.view_company') }}
                                             </a>
                                         @endif
                                     </div>
@@ -576,10 +560,7 @@
                                                         <input type="hidden" name="step" value="employees">
                                                         <button type="submit" class="btn btn-lg btn-primary">
                                                             {{ __('companies.continue_to_employees') }}
-                                                            <i class="ki-duotone ki-arrow-right fs-4 ms-1">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </i>
+                                                            <i class="fas fa-arrow-right fs-4 ms-1"></i>
                                                         </button>
                                                     </form>
                                                 @endif
@@ -591,10 +572,7 @@
                                                         <input type="hidden" name="step" value="documents">
                                                         <button type="submit" class="btn btn-lg btn-primary">
                                                             {{ __('companies.continue_to_documents') }}
-                                                            <i class="ki-duotone ki-arrow-right fs-4 ms-1">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </i>
+                                                            <i class="fas fa-arrow-right fs-4 ms-1"></i>
                                                         </button>
                                                     </form>
                                                 @endif

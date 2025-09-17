@@ -37,12 +37,16 @@
             <!--end::Page title-->
             <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2 gap-lg-3">
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::VIEW_ALL_CLIENTS->value) || auth()->user()->can(\App\Enums\PermissionEnum::VIEW_ASSIGNED_CLIENTS->value))
                 <a href="{{ route('admin.companies.workflow', $company) }}" class="btn btn-sm fw-bold btn-primary">
-                    <i class="ki-duotone ki-setting-3 fs-2"></i>{{ __('companies.workflow') }}
+                    <i class="fas fa-cogs fs-2"></i>{{ __('companies.workflow') }}
                 </a>
+                @endif
+                @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_CLIENTS->value))
                 <a href="{{ route('admin.companies.edit', $company) }}" class="btn btn-sm fw-bold btn-light">
-                    <i class="ki-duotone ki-pencil fs-2"></i>{{ __('companies.edit_company') }}
+                    <i class="fas fa-edit fs-2"></i>{{ __('companies.edit_company') }}
                 </a>
+                @endif
             </div>
             <!--end::Actions-->
         </div>
@@ -54,6 +58,18 @@
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <!--begin::Content container-->
         <div id="kt_app_content_container" class="app-container container-xxl">
+            
+            @if(auth()->user()->isEmployee())
+            <!--begin::Employee Notice-->
+            <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                <i class="fas fa-info-circle fs-2hx text-info me-4"></i>
+                <div class="d-flex flex-column">
+                    <h4 class="mb-1 text-info">{{ __('companies.assigned_data_only') }}</h4>
+                    <span>{{ __('companies.assigned_data_message') }}</span>
+                </div>
+            </div>
+            <!--end::Employee Notice-->
+            @endif
 
             <!--begin::Layout-->
             <div class="d-flex flex-column flex-xl-row">
@@ -84,10 +100,7 @@
                                     <div class="border border-gray-300 border-dashed rounded py-3 px-3 mb-3">
                                         <div class="fs-4 fw-bold text-gray-700">
                                             <span class="w-75px">{{ $documentStats['active_employees'] }}</span>
-                                            <i class="ki-duotone ki-arrow-up fs-3 text-success">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
+                                            <i class="fas fa-arrow-up fs-3 text-success"></i>
                                         </div>
                                         <div class="fw-semibold text-muted">{{ __('companies.active_employees') }}</div>
                                     </div>
@@ -100,7 +113,7 @@
                             <div class="d-flex flex-stack fs-4 py-3">
                                 <div class="fw-bold rotate collapsible" data-bs-toggle="collapse" href="#kt_customer_view_details" role="button" aria-expanded="false" aria-controls="kt_customer_view_details">{{ __('companies.details') }}
                                     <span class="ms-2 rotate-180">
-                                        <i class="ki-duotone ki-down fs-3"></i>
+                                        <i class="fas fa-chevron-down fs-3"></i>
                                     </span>
                                 </div>
                             </div>
@@ -183,6 +196,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_customer_view_employees_tab">{{ __('common.employees') }}</a>
                         </li>
+                        <!--end:::Tab item-->
+                        <!--begin:::Tab item-->
+                        @canany(['assign_packages_to_clients', 'renew_client_packages', 'cancel_client_packages'])
+                        <li class="nav-item">
+                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_customer_view_packages_tab">{{ __('client_packages.package_assignment') }}</a>
+                        </li>
+                        @endcanany
                         <!--end:::Tab item-->
                     </ul>
                     <!--end:::Tabs-->
@@ -275,11 +295,10 @@
                                     <!--begin::Civil Defense Licenses-->
                                     <div class="mb-10">
                                         <h4 class="text-gray-800 mb-5">
-                                            <i class="ki-duotone ki-shield-tick fs-2 text-success me-2">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>{{ __('companies.civil_defense_licenses') }}
+                                            <i class="fas fa-shield-alt fs-2 text-success me-2"></i>{{ __('companies.civil_defense_licenses') }}
+                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                             <a href="{{ route('admin.companies.civil-defense-licenses.create', $company) }}" class="btn btn-sm btn-light-primary ms-3">{{ __('companies.add_license') }}</a>
+                                            @endif
                                         </h4>
                                         @forelse($company->civilDefenseLicenses as $license)
                                             <div class="card card-flush mb-3">
@@ -293,7 +312,9 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         <a href="{{ route('admin.companies.civil-defense-licenses.show', [$company, $license]) }}" class="btn btn-sm btn-light me-2">{{ __('companies.view') }}</a>
+                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                                                         <a href="{{ route('admin.companies.civil-defense-licenses.edit', [$company, $license]) }}" class="btn btn-sm btn-primary">{{ __('companies.edit') }}</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -312,11 +333,10 @@
                                     <!--begin::Municipality Licenses-->
                                     <div class="mb-10">
                                         <h4 class="text-gray-800 mb-5">
-                                            <i class="ki-duotone ki-building fs-2 text-info me-2">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>{{ __('companies.municipality_licenses') }}
+                                            <i class="fas fa-building fs-2 text-info me-2"></i>{{ __('companies.municipality_licenses') }}
+                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                             <a href="{{ route('admin.companies.municipality-licenses.create', $company) }}" class="btn btn-sm btn-light-primary ms-3">{{ __('companies.add_license') }}</a>
+                                            @endif
                                         </h4>
                                         @forelse($company->municipalityLicenses as $license)
                                             <div class="card card-flush mb-3">
@@ -330,7 +350,9 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         <a href="{{ route('admin.companies.municipality-licenses.show', [$company, $license]) }}" class="btn btn-sm btn-light me-2">{{ __('companies.view') }}</a>
+                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                                                         <a href="{{ route('admin.companies.municipality-licenses.edit', [$company, $license]) }}" class="btn btn-sm btn-primary">{{ __('companies.edit') }}</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -349,11 +371,10 @@
                                     <!--begin::Branch Registrations-->
                                     <div class="mb-10">
                                         <h4 class="text-gray-800 mb-5">
-                                            <i class="ki-duotone ki-file-text fs-2 text-warning me-2">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>{{ __('companies.branch_commercial_registrations') }}
+                                            <i class="fas fa-file-alt fs-2 text-warning me-2"></i>{{ __('companies.branch_commercial_registrations') }}
+                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                             <a href="{{ route('admin.companies.branch-registrations.create', $company) }}" class="btn btn-sm btn-light-primary ms-3">{{ __('companies.add_registration') }}</a>
+                                            @endif
                                         </h4>
                                         @forelse($company->branchCommercialRegistrations as $registration)
                                             <div class="card card-flush mb-3">
@@ -367,7 +388,9 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         <a href="{{ route('admin.companies.branch-registrations.show', [$company, $registration]) }}" class="btn btn-sm btn-light me-2">{{ __('companies.view') }}</a>
+                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                                                         <a href="{{ route('admin.companies.branch-registrations.edit', [$company, $registration]) }}" class="btn btn-sm btn-primary">{{ __('companies.edit') }}</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -388,7 +411,9 @@
                                         <h4 class="text-gray-800 mb-5">
                                             <i class="fa-solid fa-file-circle-plus fs-2 text-primary me-2"></i>{{ __('companies.additional_documents') }}
                                             <a href="{{ route('admin.companies.documents.index', $company) }}" class="btn btn-sm btn-light-info ms-2">{{ __('companies.view_all_documents') }}</a>
+                                            @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_COMPANY_DOCUMENTS->value))
                                             <a href="{{ route('admin.companies.documents.create', $company) }}" class="btn btn-sm btn-light-primary ms-3">{{ __('companies.add_document') }}</a>
+                                            @endif
                                         </h4>
                                         @forelse($company->companyDocuments as $document)
                                             <div class="card card-flush mb-3">
@@ -404,7 +429,9 @@
                                                     </div>
                                                     <div class="d-flex">
                                                         <a href="{{ route('admin.companies.documents.show', [$company, $document]) }}" class="btn btn-sm btn-light me-2">{{ __('companies.view') }}</a>
+                                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_COMPANY_DOCUMENTS->value))
                                                         <a href="{{ route('admin.companies.documents.edit', [$company, $document]) }}" class="btn btn-sm btn-primary">{{ __('companies.edit') }}</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -439,7 +466,9 @@
                                     <!--end::Card title-->
                                     <!--begin::Card toolbar-->
                                     <div class="card-toolbar">
+                                        @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_CLIENT_EMPLOYEES->value))
                                         <a href="{{ route('admin.companies.employees.create', $company) }}" class="btn btn-sm btn-primary">{{ __('common.add_employee') }}</a>
+                                        @endif
                                     </div>
                                     <!--end::Card toolbar-->
                                 </div>
@@ -464,7 +493,9 @@
                                                 <div class="d-flex">
                                                     <span class="badge badge-light-primary me-3">{{ $employee->documents->count() }} {{ __('common.documents') }}</span>
                                                     <a href="{{ route('admin.employees.show', $employee) }}" class="btn btn-sm btn-light me-2">{{ __('companies.view') }}</a>
+                                                    @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_CLIENT_EMPLOYEES->value))
                                                     <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-sm btn-primary">{{ __('companies.edit') }}</a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -482,6 +513,14 @@
                             </div>
                             <!--end::Card-->
                         </div>
+                        <!--end:::Tab pane-->
+
+                        <!--begin:::Tab pane-->
+                        @canany(['assign_packages_to_clients', 'renew_client_packages', 'cancel_client_packages'])
+                        <div class="tab-pane fade" id="kt_customer_view_packages_tab" role="tabpanel">
+                            @include('admin.companies.partials.package-section')
+                        </div>
+                        @endcanany
                         <!--end:::Tab pane-->
                     </div>
                     <!--end:::Tab content-->

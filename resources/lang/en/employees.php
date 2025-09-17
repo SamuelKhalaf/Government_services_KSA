@@ -221,4 +221,10 @@ return [
     'employee_documents' => 'Employee Documents',
     'no_documents_found' => 'No documents found',
     'total_monthly_salary' => 'Total Monthly Salary',
+    
+    // Employee filtering notices
+    'assigned_employees_only' => 'Assigned Employees Only',
+    'assigned_employees_message' => 'You are viewing only the employees assigned to you through tasks. Contact your administrator if you need access to additional employees.',
+    'assigned_documents_only' => 'Assigned Documents Only',
+    'assigned_documents_message' => 'You are viewing only the documents related to your assigned tasks. Contact your administrator if you need access to additional documents.',
 ];

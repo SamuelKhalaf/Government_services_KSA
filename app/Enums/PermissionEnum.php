@@ -6,15 +6,12 @@ enum PermissionEnum : string
 {
     // Dashboard & System
     case VIEW_DASHBOARD = 'view_dashboard';
-    case VIEW_ANALYTICS = 'view_analytics';
-    case MANAGE_SYSTEM_SETTINGS = 'manage_system_settings';
 
     // Users Management
     case VIEW_USERS = 'view_users';
     case CREATE_USERS = 'create_users';
     case UPDATE_USERS = 'update_users';
     case DELETE_USERS = 'delete_users';
-    case ACTIVATE_DEACTIVATE_USERS = 'activate_deactivate_users';
 
     // Roles & Permissions
     case VIEW_ROLES = 'view_roles';
@@ -32,7 +29,6 @@ enum PermissionEnum : string
     case CREATE_CLIENTS = 'create_clients';
     case UPDATE_CLIENTS = 'update_clients';
     case DELETE_CLIENTS = 'delete_clients';
-    case ASSIGN_CLIENTS_TO_EMPLOYEES = 'assign_clients_to_employees';
 
     // Client Employees Management
     case VIEW_CLIENT_EMPLOYEES = 'view_client_employees';
@@ -56,7 +52,6 @@ enum PermissionEnum : string
     case UPDATE_DOCUMENTS = 'update_documents';
     case DELETE_DOCUMENTS = 'delete_documents';
     case DOWNLOAD_DOCUMENTS = 'download_documents';
-    case APPROVE_DOCUMENTS = 'approve_documents';
     case VIEW_DOCUMENT_DASHBOARD = 'view_document_dashboard';
 
     // Document Types Management
@@ -71,13 +66,11 @@ enum PermissionEnum : string
     case CREATE_TASKS = 'create_tasks';
     case UPDATE_TASKS = 'update_tasks';
     case DELETE_TASKS = 'delete_tasks';
-    case ASSIGN_TASKS = 'assign_tasks';
     case COMPLETE_TASKS = 'complete_tasks';
+    case MANAGE_TASK_DOCUMENTS = 'manage_task_documents';
 
     // Notifications Management
-    case VIEW_ALL_NOTIFICATIONS = 'view_all_notifications';
     case VIEW_OWN_NOTIFICATIONS = 'view_own_notifications';
-    case CREATE_NOTIFICATIONS = 'create_notifications';
     case MARK_NOTIFICATIONS_READ = 'mark_notifications_read';
     case DELETE_NOTIFICATIONS = 'delete_notifications';
 
@@ -87,12 +80,20 @@ enum PermissionEnum : string
     case UPDATE_FINANCIAL_PACKAGES = 'update_financial_packages';
     case DELETE_FINANCIAL_PACKAGES = 'delete_financial_packages';
     case ASSIGN_PACKAGES_TO_CLIENTS = 'assign_packages_to_clients';
+    case RENEW_CLIENT_PACKAGES = 'renew_client_packages';
+    case CANCEL_CLIENT_PACKAGES = 'cancel_client_packages';
 
     // Reports & Analytics
-    case VIEW_REPORTS = 'view_reports';
-    case EXPORT_REPORTS = 'export_reports';
-    case VIEW_CLIENT_REPORTS = 'view_client_reports';
-    case VIEW_EMPLOYEE_PERFORMANCE = 'view_employee_performance';
+    // case VIEW_CLIENT_REPORTS = 'view_client_reports';
+
+    // Employee Activity Tracking
+    case VIEW_EMPLOYEE_MONITORING = 'view_employee_monitoring';
+    case VIEW_EMPLOYEE_LOGIN_LOGS = 'view_employee_login_logs';
+    case VIEW_EMPLOYEE_ACTIVITY_LOGS = 'view_employee_activity_logs';
+    case VIEW_EMPLOYEE_CLICK_TRACKING = 'view_employee_click_tracking';
+    case VIEW_EMPLOYEE_SCREEN_TIME = 'view_employee_screen_time';
+    case VIEW_EMPLOYEE_SCREENSHOTS = 'view_employee_screenshots';
+    case MANAGE_EMPLOYEE_MONITORING = 'manage_employee_monitoring';
 
     /**
      * @return array
@@ -131,7 +132,7 @@ enum PermissionEnum : string
             self::COMPLETE_TASKS->value,
             self::VIEW_OWN_NOTIFICATIONS->value,
             self::MARK_NOTIFICATIONS_READ->value,
-            self::VIEW_CLIENT_REPORTS->value,
+            // self::VIEW_CLIENT_REPORTS->value,
         ];
     }
 
@@ -143,15 +144,12 @@ enum PermissionEnum : string
         return match($this) {
             // Dashboard & System
             self::VIEW_DASHBOARD => $lang === 'ar' ? 'عرض لوحة التحكم' : 'View Dashboard',
-            self::VIEW_ANALYTICS => $lang === 'ar' ? 'عرض التحليلات' : 'View Analytics',
-            self::MANAGE_SYSTEM_SETTINGS => $lang === 'ar' ? 'إدارة إعدادات النظام' : 'Manage System Settings',
 
             // Users Management
             self::VIEW_USERS => $lang === 'ar' ? 'عرض المستخدمين' : 'View Users',
             self::CREATE_USERS => $lang === 'ar' ? 'إنشاء مستخدمين' : 'Create Users',
             self::UPDATE_USERS => $lang === 'ar' ? 'تحديث المستخدمين' : 'Update Users',
             self::DELETE_USERS => $lang === 'ar' ? 'حذف المستخدمين' : 'Delete Users',
-            self::ACTIVATE_DEACTIVATE_USERS => $lang === 'ar' ? 'تفعيل/إلغاء تفعيل المستخدمين' : 'Activate/Deactivate Users',
 
             // Roles & Permissions
             self::VIEW_ROLES => $lang === 'ar' ? 'عرض الأدوار' : 'View Roles',
@@ -169,7 +167,6 @@ enum PermissionEnum : string
             self::CREATE_CLIENTS => $lang === 'ar' ? 'إنشاء منشأت' : 'Create Clients',
             self::UPDATE_CLIENTS => $lang === 'ar' ? 'تحديث المنشأت' : 'Update Clients',
             self::DELETE_CLIENTS => $lang === 'ar' ? 'حذف المنشأت' : 'Delete Clients',
-            self::ASSIGN_CLIENTS_TO_EMPLOYEES => $lang === 'ar' ? 'تعيين المنشأت للموظفين' : 'Assign Clients to Employees',
 
             // Client Employees Management
             self::VIEW_CLIENT_EMPLOYEES => $lang === 'ar' ? 'عرض موظفي المنشأت' : 'View Client Employees',
@@ -193,7 +190,6 @@ enum PermissionEnum : string
             self::UPDATE_DOCUMENTS => $lang === 'ar' ? 'تحديث الوثائق' : 'Update Documents',
             self::DELETE_DOCUMENTS => $lang === 'ar' ? 'حذف الوثائق' : 'Delete Documents',
             self::DOWNLOAD_DOCUMENTS => $lang === 'ar' ? 'تحميل الوثائق' : 'Download Documents',
-            self::APPROVE_DOCUMENTS => $lang === 'ar' ? 'اعتماد الوثائق' : 'Approve Documents',
             self::VIEW_DOCUMENT_DASHBOARD => $lang === 'ar' ? 'عرض لوحة الوثائق' : 'View Document Dashboard',
 
             // Document Types Management
@@ -208,13 +204,11 @@ enum PermissionEnum : string
             self::CREATE_TASKS => $lang === 'ar' ? 'إنشاء مهام' : 'Create Tasks',
             self::UPDATE_TASKS => $lang === 'ar' ? 'تحديث المهام' : 'Update Tasks',
             self::DELETE_TASKS => $lang === 'ar' ? 'حذف المهام' : 'Delete Tasks',
-            self::ASSIGN_TASKS => $lang === 'ar' ? 'تعيين المهام' : 'Assign Tasks',
             self::COMPLETE_TASKS => $lang === 'ar' ? 'إكمال المهام' : 'Complete Tasks',
+            self::MANAGE_TASK_DOCUMENTS => $lang === 'ar' ? 'إدارة وثائق المهام' : 'Manage Task Documents',
 
             // Notifications Management
-            self::VIEW_ALL_NOTIFICATIONS => $lang === 'ar' ? 'عرض جميع الإشعارات' : 'View All Notifications',
             self::VIEW_OWN_NOTIFICATIONS => $lang === 'ar' ? 'عرض الإشعارات الخاصة' : 'View Own Notifications',
-            self::CREATE_NOTIFICATIONS => $lang === 'ar' ? 'إنشاء إشعارات' : 'Create Notifications',
             self::MARK_NOTIFICATIONS_READ => $lang === 'ar' ? 'تعيين الإشعارات كمقروءة' : 'Mark Notifications Read',
             self::DELETE_NOTIFICATIONS => $lang === 'ar' ? 'حذف الإشعارات' : 'Delete Notifications',
 
@@ -224,12 +218,20 @@ enum PermissionEnum : string
             self::UPDATE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'تحديث الباقات المالية' : 'Update Financial Packages',
             self::DELETE_FINANCIAL_PACKAGES => $lang === 'ar' ? 'حذف الباقات المالية' : 'Delete Financial Packages',
             self::ASSIGN_PACKAGES_TO_CLIENTS => $lang === 'ar' ? 'تعيين الباقات للمنشأت' : 'Assign Packages to Clients',
+            self::RENEW_CLIENT_PACKAGES => $lang === 'ar' ? 'تجديد باقات المنشأت' : 'Renew Client Packages',
+            self::CANCEL_CLIENT_PACKAGES => $lang === 'ar' ? 'إلغاء باقات المنشأت' : 'Cancel Client Packages',
 
             // Reports & Analytics
-            self::VIEW_REPORTS => $lang === 'ar' ? 'عرض التقارير' : 'View Reports',
-            self::EXPORT_REPORTS => $lang === 'ar' ? 'تصدير التقارير' : 'Export Reports',
-            self::VIEW_CLIENT_REPORTS => $lang === 'ar' ? 'عرض تقارير المنشأت' : 'View Client Reports',
-            self::VIEW_EMPLOYEE_PERFORMANCE => $lang === 'ar' ? 'عرض أداء الموظفين' : 'View Employee Performance',
+            // self::VIEW_CLIENT_REPORTS => $lang === 'ar' ? 'عرض تقارير المنشأت' : 'View Client Reports',
+
+            // Employee Activity Tracking
+            self::VIEW_EMPLOYEE_MONITORING => $lang === 'ar' ? 'عرض تتبع نشاط الموظفين' : 'View Employee Activity Tracking',
+            self::VIEW_EMPLOYEE_LOGIN_LOGS => $lang === 'ar' ? 'عرض سجلات تسجيل الدخول' : 'View Employee Login Logs',
+            self::VIEW_EMPLOYEE_ACTIVITY_LOGS => $lang === 'ar' ? 'عرض سجلات الأنشطة' : 'View Employee Activity Logs',
+            self::VIEW_EMPLOYEE_CLICK_TRACKING => $lang === 'ar' ? 'عرض تتبع النقرات' : 'View Employee Click Tracking',
+            self::VIEW_EMPLOYEE_SCREEN_TIME => $lang === 'ar' ? 'عرض وقت الشاشة النشط' : 'View Employee Screen Time',
+            self::VIEW_EMPLOYEE_SCREENSHOTS => $lang === 'ar' ? 'عرض لقطات الشاشة' : 'View Employee Screenshots',
+            self::MANAGE_EMPLOYEE_MONITORING => $lang === 'ar' ? 'إدارة تتبع نشاط الموظفين' : 'Manage Employee Activity Tracking',
         };
     }
 
@@ -239,16 +241,16 @@ enum PermissionEnum : string
     public function getCategory(string $lang = 'en'): string
     {
         return match($this) {
-            self::VIEW_DASHBOARD, self::VIEW_ANALYTICS, self::MANAGE_SYSTEM_SETTINGS
+            self::VIEW_DASHBOARD
                 => $lang === 'ar' ? 'لوحة التحكم والنظام' : 'Dashboard & System',
 
-            self::VIEW_USERS, self::CREATE_USERS, self::UPDATE_USERS, self::DELETE_USERS, self::ACTIVATE_DEACTIVATE_USERS
+            self::VIEW_USERS, self::CREATE_USERS, self::UPDATE_USERS, self::DELETE_USERS
                 => $lang === 'ar' ? 'إدارة المستخدمين' : 'Users Management',
 
             self::VIEW_ROLES, self::CREATE_ROLES, self::UPDATE_ROLES, self::DELETE_ROLES, self::VIEW_PERMISSIONS, self::CREATE_PERMISSIONS, self::DELETE_PERMISSIONS, self::ASSIGN_PERMISSIONS
                 => $lang === 'ar' ? 'الأدوار والصلاحيات' : 'Roles & Permissions',
 
-            self::VIEW_ALL_CLIENTS, self::VIEW_ASSIGNED_CLIENTS, self::CREATE_CLIENTS, self::UPDATE_CLIENTS, self::DELETE_CLIENTS, self::ASSIGN_CLIENTS_TO_EMPLOYEES
+            self::VIEW_ALL_CLIENTS, self::VIEW_ASSIGNED_CLIENTS, self::CREATE_CLIENTS, self::UPDATE_CLIENTS, self::DELETE_CLIENTS
                 => $lang === 'ar' ? 'إدارة المنشأت' : 'Clients Management',
 
             self::VIEW_CLIENT_EMPLOYEES, self::CREATE_CLIENT_EMPLOYEES, self::UPDATE_CLIENT_EMPLOYEES, self::DELETE_CLIENT_EMPLOYEES
@@ -257,23 +259,26 @@ enum PermissionEnum : string
             self::VIEW_COMPANY_DOCUMENTS, self::CREATE_COMPANY_DOCUMENTS, self::UPDATE_COMPANY_DOCUMENTS, self::DELETE_COMPANY_DOCUMENTS, self::MANAGE_CIVIL_DEFENSE_LICENSES, self::MANAGE_MUNICIPALITY_LICENSES, self::MANAGE_BRANCH_REGISTRATIONS
                 => $lang === 'ar' ? 'إدارة وثائق المنشأت' : 'Company Documents Management',
 
-            self::VIEW_ALL_DOCUMENTS, self::VIEW_ASSIGNED_DOCUMENTS, self::UPLOAD_DOCUMENTS, self::UPDATE_DOCUMENTS, self::DELETE_DOCUMENTS, self::DOWNLOAD_DOCUMENTS, self::APPROVE_DOCUMENTS, self::VIEW_DOCUMENT_DASHBOARD
+            self::VIEW_ALL_DOCUMENTS, self::VIEW_ASSIGNED_DOCUMENTS, self::UPLOAD_DOCUMENTS, self::UPDATE_DOCUMENTS, self::DELETE_DOCUMENTS, self::DOWNLOAD_DOCUMENTS, self::VIEW_DOCUMENT_DASHBOARD
                 => $lang === 'ar' ? 'إدارة الوثائق' : 'Documents Management',
 
             self::VIEW_DOCUMENT_TYPES, self::CREATE_DOCUMENT_TYPES, self::UPDATE_DOCUMENT_TYPES, self::DELETE_DOCUMENT_TYPES
                 => $lang === 'ar' ? 'إدارة أنواع الوثائق' : 'Document Types Management',
 
-            self::VIEW_ALL_TASKS, self::VIEW_ASSIGNED_TASKS, self::CREATE_TASKS, self::UPDATE_TASKS, self::DELETE_TASKS, self::ASSIGN_TASKS, self::COMPLETE_TASKS
+            self::VIEW_ALL_TASKS, self::VIEW_ASSIGNED_TASKS, self::CREATE_TASKS, self::UPDATE_TASKS, self::DELETE_TASKS, self::COMPLETE_TASKS, self::MANAGE_TASK_DOCUMENTS
                 => $lang === 'ar' ? 'إدارة المهام' : 'Tasks Management',
 
-            self::VIEW_ALL_NOTIFICATIONS, self::VIEW_OWN_NOTIFICATIONS, self::CREATE_NOTIFICATIONS, self::MARK_NOTIFICATIONS_READ, self::DELETE_NOTIFICATIONS
+            self::VIEW_OWN_NOTIFICATIONS, self::MARK_NOTIFICATIONS_READ, self::DELETE_NOTIFICATIONS
                 => $lang === 'ar' ? 'إدارة الإشعارات' : 'Notifications Management',
 
-            self::VIEW_FINANCIAL_PACKAGES, self::CREATE_FINANCIAL_PACKAGES, self::UPDATE_FINANCIAL_PACKAGES, self::DELETE_FINANCIAL_PACKAGES, self::ASSIGN_PACKAGES_TO_CLIENTS
+            self::VIEW_FINANCIAL_PACKAGES, self::CREATE_FINANCIAL_PACKAGES, self::UPDATE_FINANCIAL_PACKAGES, self::DELETE_FINANCIAL_PACKAGES, self::ASSIGN_PACKAGES_TO_CLIENTS, self::RENEW_CLIENT_PACKAGES, self::CANCEL_CLIENT_PACKAGES
                 => $lang === 'ar' ? 'إدارة الباقات المالية' : 'Financial Packages Management',
 
-            self::VIEW_REPORTS, self::EXPORT_REPORTS, self::VIEW_CLIENT_REPORTS, self::VIEW_EMPLOYEE_PERFORMANCE
-                => $lang === 'ar' ? 'التقارير والتحليلات' : 'Reports & Analytics',
+            // self::VIEW_CLIENT_REPORTS
+            //     => $lang === 'ar' ? 'التقارير والتحليلات' : 'Reports & Analytics',
+
+            self::VIEW_EMPLOYEE_MONITORING, self::VIEW_EMPLOYEE_LOGIN_LOGS, self::VIEW_EMPLOYEE_ACTIVITY_LOGS, self::VIEW_EMPLOYEE_CLICK_TRACKING, self::VIEW_EMPLOYEE_SCREEN_TIME, self::VIEW_EMPLOYEE_SCREENSHOTS, self::MANAGE_EMPLOYEE_MONITORING
+                => $lang === 'ar' ? 'تتبع نشاط الموظفين' : 'Employee Activity Tracking',
         };
     }
 }

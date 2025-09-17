@@ -287,6 +287,46 @@
                             <!--end::Col-->
                         </div>
                         <!--end::Row-->
+
+                        <!--begin::Reminder Section-->
+                        <div class="row mb-8">
+                            <!--begin::Col-->
+                            <div class="col-xl-3">
+                                <div class="fs-6 fw-semibold mt-2 mb-3">{{ __('documents.reminder_settings') }}</div>
+                            </div>
+                            <!--end::Col-->
+                            <!--begin::Col-->
+                            <div class="col-xl-9 fv-row">
+                                <!--begin::Row-->
+                                <div class="row g-9">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            <input class="form-check-input" type="checkbox" name="enable_reminder"
+                                                   id="enable_reminder" value="1" @checked(old('enable_reminder', $municipalityLicense->enable_reminder)) />
+                                            <label class="form-check-label fw-semibold text-gray-400 ms-3" for="enable_reminder">
+                                                {{ __('documents.enable_expiry_reminder') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row" id="reminder_days_field">
+                                        <label class="fs-6 fw-semibold mb-2">{{ __('documents.remind_before_days') }}</label>
+                                        <input type="number" min="1" max="365" class="form-control form-control-solid @error('reminder_days') is-invalid @enderror"
+                                               name="reminder_days" value="{{ old('reminder_days', $municipalityLicense->reminder_days ?? 30) }}" />
+                                        <div class="form-text">{{ __('documents.reminder_help_text') }}</div>
+                                        @error('reminder_days')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Reminder Section-->
                     </div>
                     <!--end::Card body-->
 
@@ -324,6 +364,8 @@ var KTMunicipalityEdit = function () {
     // Elements
     var form;
     var submitButton;
+    var enableReminderCheckbox;
+    var reminderDaysField;
 
     // Private functions
     var handleSubmit = function () {
@@ -343,17 +385,39 @@ var KTMunicipalityEdit = function () {
         });
     }
 
+    var handleReminderToggle = function () {
+        if (enableReminderCheckbox) {
+            enableReminderCheckbox.addEventListener('change', function () {
+                if (this.checked) {
+                    reminderDaysField.style.display = 'block';
+                    reminderDaysField.querySelector('input').setAttribute('required', 'required');
+                } else {
+                    reminderDaysField.style.display = 'none';
+                    reminderDaysField.querySelector('input').removeAttribute('required');
+                }
+            });
+
+            // Initial state
+            if (!enableReminderCheckbox.checked) {
+                reminderDaysField.style.display = 'none';
+            }
+        }
+    }
+
     // Public methods
     return {
         init: function () {
             form = document.querySelector('#kt_municipality_form');
             submitButton = document.querySelector('#kt_municipality_submit');
+            enableReminderCheckbox = document.querySelector('#enable_reminder');
+            reminderDaysField = document.querySelector('#reminder_days_field');
 
             if (!form) {
                 return;
             }
 
             handleSubmit();
+            handleReminderToggle();
         }
     }
 }();

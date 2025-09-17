@@ -36,7 +36,7 @@
             <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2 gap-lg-3">
                 <a href="{{ route('admin.companies.index') }}" class="btn btn-sm fw-bold btn-light">
-                    <i class="ki-duotone ki-building fs-2"></i>@lang('common.companies')
+                    <i class="fas fa-building fs-2"></i>@lang('common.companies')
                 </a>
             </div>
             <!--end::Actions-->
@@ -49,6 +49,17 @@
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <!--begin::Content container-->
         <div id="kt_app_content_container" class="app-container container-xxl">
+            @if(auth()->user()->isEmployee())
+            <!--begin::Employee Notice-->
+            <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                <i class="fas fa-info-circle fs-2hx text-info me-4"></i>
+                <div class="d-flex flex-column">
+                    <h4 class="mb-1 text-info">{{ __('employees.assigned_employees_only') }}</h4>
+                    <span>{{ __('employees.assigned_employees_message') }}</span>
+                </div>
+            </div>
+            <!--end::Employee Notice-->
+            @endif
 
             <!--begin::Card-->
             <div class="card">
@@ -58,10 +69,7 @@
                     <div class="card-title">
                         <!--begin::Search-->
                         <div class="d-flex align-items-center position-relative my-1">
-                            <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
+                            <i class="fas fa-search fs-3 position-absolute ms-5"></i>
                             <input type="text" data-kt-employees-table-filter="search"
                                    class="form-control form-control-solid w-250px ps-13"
                                    placeholder="{{ __('employees.search_employees') }}"
@@ -76,10 +84,7 @@
                         <div class="d-flex justify-content-end" data-kt-employees-table-toolbar="base">
                             <!--begin::Filter-->
                             <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                <i class="ki-duotone ki-filter fs-2">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>@lang('common.filter')
+                                <i class="fas fa-filter fs-2"></i>@lang('common.filter')
                             </button>
                             <!--begin::Menu 1-->
                             <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true">
@@ -215,11 +220,11 @@
                                         <td>
                                             <div class="d-flex flex-column">
                                                 <span class="text-gray-600 mb-1">
-                                                    <i class="ki-duotone ki-phone fs-6 me-2"></i>{{ $employee->primary_mobile }}
+                                                    <i class="fas fa-phone fs-6 me-2"></i>{{ $employee->primary_mobile }}
                                                 </span>
                                                 @if($employee->email)
                                                     <span class="text-gray-600">
-                                                        <i class="ki-duotone ki-sms fs-6 me-2"></i>{{ $employee->email }}
+                                                        <i class="fas fa-envelope fs-6 me-2"></i>{{ $employee->email }}
                                                     </span>
                                                 @endif
                                             </div>
@@ -263,7 +268,7 @@
                                         <td class="text-end">
                                             <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                                                 {{ __('employees.actions') }}
-                                                <i class="ki-duotone ki-down fs-5 ms-1"></i>
+                                                <i class="fas fa-chevron-down fs-5 ms-1"></i>
                                             </a>
                                             <!--begin::Menu-->
                                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
@@ -272,21 +277,27 @@
                                                     <a href="{{ route('admin.employees.show', $employee) }}" class="menu-link px-3">{{ __('employees.view') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @if(auth()->user()->can(\App\Enums\PermissionEnum::UPDATE_CLIENT_EMPLOYEES->value))
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
                                                     <a href="{{ route('admin.employees.edit', $employee) }}" class="menu-link px-3">{{ __('employees.edit') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @endif
+                                                @if(auth()->user()->can(\App\Enums\PermissionEnum::CREATE_CLIENT_EMPLOYEES->value))
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
                                                     <a href="{{ route('admin.employees.documents.create', $employee) }}" class="menu-link px-3">{{ __('employees.add_document') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @endif
+                                                @if(auth()->user()->can(\App\Enums\PermissionEnum::DELETE_CLIENT_EMPLOYEES->value))
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
                                                     <a href="#" class="menu-link px-3" data-kt-employees-table-filter="delete_row" data-employee-id="{{ $employee->id }}">@lang('common.delete')</a>
                                                 </div>
                                                 <!--end::Menu item-->
+                                                @endif
                                             </div>
                                             <!--end::Menu-->
                                         </td>
@@ -295,11 +306,7 @@
                                     <tr>
                                         <td colspan="8" class="text-center py-10">
                                             <div class="d-flex flex-column align-items-center">
-                                                <i class="ki-duotone ki-search-list fs-3x text-muted mb-4">
-                                                    <span class="path1"></span>
-                                                    <span class="path2"></span>
-                                                    <span class="path3"></span>
-                                                </i>
+                                                <i class="fas fa-search fs-3x text-muted mb-4"></i>
                                                 <span class="text-muted fs-6">{{ __('employees.no_employees_found') }}</span>
                                             </div>
                                         </td>
