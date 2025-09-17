@@ -24,7 +24,7 @@ Route::middleware(['auth'])->name('admin.')->group(function () {
     // View Dashboard - Redirect to Employee Monitoring
     Route::get('/dashboard', function () {
         return redirect()->route('admin.employee-monitoring.index');
-    })->name('dashboard');
+    })->name('admin.dashboard');
     ############################### Start:Users Routes #####################################
     Route::middleware('permission:'. PermissionEnum::VIEW_USERS->value)->group(function () {
         Route::get('users', [UsersController::class, 'index'])->name('users.index');
