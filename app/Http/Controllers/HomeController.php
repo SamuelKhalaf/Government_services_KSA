@@ -19,25 +19,23 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard or redirect based on authentication status.
+     * Show the home page for all users.
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
-        if (Auth::check()) {
-            // User is authenticated, check if they have dashboard access
-            if (Auth::user()->hasPermissionTo(PermissionEnum::VIEW_DASHBOARD->value)) {
-                // User has dashboard permission, redirect to dashboard
-                return redirect()->route('admin.dashboard');
-            } else {
-                // User is authenticated but doesn't have dashboard access
-                // Show the home page with limited access message
-                return view('home')->with('limited_access', true);
-            }
-        }
-        
-        // User is not authenticated, redirect to login
-        return redirect()->route('login');
+        // Show the home page for all users (authenticated and unauthenticated)
+        return view('home');
+    }
+
+    public function about()
+    {
+        return view('about');
+    }
+
+    public function services()
+    {
+        return view('services');
     }
 }

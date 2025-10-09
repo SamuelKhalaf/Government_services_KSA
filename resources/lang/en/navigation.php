@@ -24,6 +24,7 @@ return [
     'finance_management' => 'Finance Management',
     'packages' => 'Packages',
     'packages_management' => 'Packages Management',
+    'invoices' => 'All Invoices',
 
     // Employee Activity Tracking
     'employee_monitoring' => 'Employee Activity Tracking',
@@ -31,6 +32,9 @@ return [
     'activity_logs' => 'Activity Logs',
     'click_tracking' => 'Click Tracking',
     'screen_time' => 'Screen Time',
+
+    // Database Backup
+    'database_backup' => 'Database Backup',
 
     // User menu
     'my_profile' => 'My Profile',

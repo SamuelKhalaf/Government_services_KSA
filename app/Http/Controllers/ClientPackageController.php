@@ -8,6 +8,7 @@ use App\Http\Requests\RenewPackageRequest;
 use App\Models\ClientPackage;
 use App\Models\Company;
 use App\Models\Package;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -56,6 +57,16 @@ class ClientPackageController extends Controller
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'status' => 'active',
+            ]);
+            
+            // Create invoice for assigned package
+            Invoice::create([
+                'client_id' => $company->id,
+                'package_id' => $package->id,
+                'amount' => $package->price,
+                'issue_date' => now(),
+                'due_date' => now()->copy()->addDays(14),
+                'payment_status' => 'pending',
             ]);
             
             DB::commit();
@@ -109,6 +120,16 @@ class ClientPackageController extends Controller
                 'status' => 'active', // Ensure it's active after renewal
             ]);
             
+            // Create invoice for renewal
+            Invoice::create([
+                'client_id' => $company->id,
+                'package_id' => $clientPackage->package_id,
+                'amount' => $clientPackage->package->price,
+                'issue_date' => now(),
+                'due_date' => now()->copy()->addDays(14),
+                'payment_status' => 'pending',
+            ]);
+            
             DB::commit();
             
             return redirect()->route('admin.companies.show', $company)
@@ -141,6 +162,12 @@ class ClientPackageController extends Controller
             $clientPackage->update([
                 'status' => 'canceled',
             ]);
+            
+            // Mark related invoices as cancelled
+            Invoice::where('client_id', $company->id)
+                   ->where('package_id', $clientPackage->package_id)
+                   ->whereIn('payment_status', ['pending', 'overdue'])
+                   ->update(['payment_status' => 'cancelled']);
             
             DB::commit();
             
@@ -198,6 +225,12 @@ class ClientPackageController extends Controller
                 'status' => 'canceled',
             ]);
             
+            // Mark old package invoices as cancelled
+            Invoice::where('client_id', $company->id)
+                   ->where('package_id', $clientPackage->package_id)
+                   ->whereIn('payment_status', ['pending', 'overdue'])
+                   ->update(['payment_status' => 'cancelled']);
+            
             // Calculate dates for new package
             $startDate = now();
             $endDate = $startDate->copy()->addMonths($newPackage->duration);
@@ -209,6 +242,16 @@ class ClientPackageController extends Controller
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'status' => 'active',
+            ]);
+            
+            // Create invoice for changed package
+            Invoice::create([
+                'client_id' => $company->id,
+                'package_id' => $newPackage->id,
+                'amount' => $newPackage->price,
+                'issue_date' => now(),
+                'due_date' => now()->copy()->addDays(14),
+                'payment_status' => 'pending',
             ]);
             
             DB::commit();

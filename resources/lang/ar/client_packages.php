@@ -8,6 +8,8 @@ return [
     'change_package' => 'تغيير الباقة',
     'current_package' => 'الباقة الحالية',
     'package_assignment' => 'تعيين الباقة',
+    'invoice' => 'فاتورة',
+    'invoices' => 'الفواتير',
 
     // Form Labels
     'select_package' => 'اختر الباقة',
@@ -38,6 +40,9 @@ return [
         'no_package_assigned' => 'لا توجد باقة مخصصة لهذا العميل',
         'package_expires_on' => 'تنتهي الباقة في',
         'package_renewed_until' => 'تم تجديد الباقة حتى',
+        'confirm_cancel_package' => 'هل أنت متأكد أنك تريد إلغاء هذه الباقة؟',
+        'package_required_notice' => 'الباقة مطلوبة لإضافة الموظفين ورفع الوثائق واستخدام ميزات النظام.',
+        'no_invoices_found' => 'لا توجد فواتير',
     ],
 
     // Validation
@@ -54,4 +59,10 @@ return [
         'renewal_info' => 'التجديد سيمدد مدة الباقة بالفترة الأصلية',
         'change_info' => 'تغيير الباقة سيلغي الحالية ويعين الجديدة',
     ],
+
+    // Labels
+    'package' => 'الباقة',
+
+    // Additional Messages
+    'messages_no_invoices_found' => 'لا توجد فواتير لهذا العميل',
 ];

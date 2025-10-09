@@ -229,6 +229,24 @@
                     <!--end:Menu item-->
                 @endif
 
+                {{-- INVOICES MODULE --}}
+                @if(auth()->user()->hasPermissionTo(PermissionEnum::VIEW_FINANCIAL_PACKAGES))
+                    <!--begin:Menu item-->
+                    <div class="menu-item {{setMenuOpenClass(['admin.invoices.*'])}}">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{setActiveClass('admin.invoices.*')}}" href="{{route('admin.invoices.index')}}">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-2">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">@lang('navigation.invoices')</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                @endif
+
                 @if(auth()->user()->hasAnyPermission([PermissionEnum::VIEW_PERMISSIONS, PermissionEnum::CREATE_PERMISSIONS, PermissionEnum::DELETE_PERMISSIONS, PermissionEnum::ASSIGN_PERMISSIONS]) || auth()->user()->hasAnyPermission([PermissionEnum::VIEW_ROLES, PermissionEnum::CREATE_ROLES, PermissionEnum::UPDATE_ROLES, PermissionEnum::DELETE_ROLES]))
                     <!--begin:Menu item-->
                     <div data-kt-menu-trigger="click"
@@ -281,6 +299,24 @@
 
                         </div>
                         <!--end:Menu sub-->
+                    </div>
+                    <!--end:Menu item-->
+                @endif
+
+                {{-- DATABASE BACKUP MODULE --}}
+                @if(auth()->user()->hasPermissionTo(PermissionEnum::MANAGE_DATABASE_BACKUP))
+                    <!--begin:Menu item-->
+                    <div class="menu-item {{setMenuOpenClass(['admin.backup.*'])}}">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{setActiveClass('admin.backup.*')}}" href="{{route('admin.backup.index')}}">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-2">
+                                    <i class="fa-solid fa-database"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">@lang('navigation.database_backup')</span>
+                        </a>
+                        <!--end:Menu link-->
                     </div>
                     <!--end:Menu item-->
                 @endif

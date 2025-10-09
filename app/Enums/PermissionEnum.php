@@ -95,6 +95,9 @@ enum PermissionEnum : string
     case VIEW_EMPLOYEE_SCREENSHOTS = 'view_employee_screenshots';
     case MANAGE_EMPLOYEE_MONITORING = 'manage_employee_monitoring';
 
+    // Database Backup Management
+    case MANAGE_DATABASE_BACKUP = 'manage_database_backup';
+
     /**
      * @return array
      */
@@ -232,6 +235,9 @@ enum PermissionEnum : string
             self::VIEW_EMPLOYEE_SCREEN_TIME => $lang === 'ar' ? 'عرض وقت الشاشة النشط' : 'View Employee Screen Time',
             self::VIEW_EMPLOYEE_SCREENSHOTS => $lang === 'ar' ? 'عرض لقطات الشاشة' : 'View Employee Screenshots',
             self::MANAGE_EMPLOYEE_MONITORING => $lang === 'ar' ? 'إدارة تتبع نشاط الموظفين' : 'Manage Employee Activity Tracking',
+
+            // Database Backup Management
+            self::MANAGE_DATABASE_BACKUP => $lang === 'ar' ? 'إدارة نسخ احتياطية قاعدة البيانات' : 'Manage Database Backup',
         };
     }
 
@@ -279,6 +285,9 @@ enum PermissionEnum : string
 
             self::VIEW_EMPLOYEE_MONITORING, self::VIEW_EMPLOYEE_LOGIN_LOGS, self::VIEW_EMPLOYEE_ACTIVITY_LOGS, self::VIEW_EMPLOYEE_CLICK_TRACKING, self::VIEW_EMPLOYEE_SCREEN_TIME, self::VIEW_EMPLOYEE_SCREENSHOTS, self::MANAGE_EMPLOYEE_MONITORING
                 => $lang === 'ar' ? 'تتبع نشاط الموظفين' : 'Employee Activity Tracking',
+
+            self::MANAGE_DATABASE_BACKUP
+                => $lang === 'ar' ? 'إدارة النسخ الاحتياطية' : 'Database Backup Management',
         };
     }
 }

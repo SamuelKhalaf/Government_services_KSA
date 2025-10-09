@@ -24,6 +24,7 @@ return [
     'finance_management' => 'إدارة المالية',
     'packages' => 'الباقات',
     'packages_management' => 'إدارة الباقات',
+    'invoices' => 'جميع الفواتير',
 
     // Employee Activity Tracking
     'employee_monitoring' => 'تتبع نشاط الموظفين',
@@ -31,6 +32,9 @@ return [
     'activity_logs' => 'سجلات النشاط',
     'click_tracking' => 'تتبع النقرات',
     'screen_time' => 'وقت الشاشة',
+
+    // Database Backup
+    'database_backup' => 'نسخ احتياطية قاعدة البيانات',
 
     // User menu
     'my_profile' => 'ملفي الشخصي',

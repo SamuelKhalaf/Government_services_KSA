@@ -204,6 +204,13 @@
                         </li>
                         @endcanany
                         <!--end:::Tab item-->
+                        <!--begin:::Tab item-->
+                        @can('view_financial_packages')
+                        <li class="nav-item">
+                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_customer_view_invoices_tab">{{ __('client_packages.invoices') }}</a>
+                        </li>
+                        @endcan
+                        <!--end:::Tab item-->
                     </ul>
                     <!--end:::Tabs-->
 
@@ -521,6 +528,13 @@
                             @include('admin.companies.partials.package-section')
                         </div>
                         @endcanany
+                        <!--end:::Tab pane-->
+                        <!--begin:::Tab pane-->
+                        @can('view_financial_packages')
+                        <div class="tab-pane fade" id="kt_customer_view_invoices_tab" role="tabpanel">
+                            @include('admin.companies.partials.invoice-section')
+                        </div>
+                        @endcan
                         <!--end:::Tab pane-->
                     </div>
                     <!--end:::Tab content-->

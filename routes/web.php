@@ -33,7 +33,8 @@ Route::get('/language/current', [App\Http\Controllers\admin\LanguageController::
     ->name('language.current');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/services', [HomeController::class, 'services'])->name('services');
 Route::get('/401', function () {
     abort(401);
 });
@@ -196,6 +197,25 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             Route::delete('/documents/{document}', [App\Http\Controllers\admin\CompanyDocumentController::class, 'destroy'])->name('documents.destroy');
             Route::get('/documents/{document}/download', [App\Http\Controllers\admin\CompanyDocumentController::class, 'download'])->name('documents.download');
         });
+
+            // Invoices - View and Download
+            Route::middleware('permission:' . PermissionEnum::VIEW_FINANCIAL_PACKAGES->value)->group(function () {
+                Route::get('invoices/{invoice}', [App\Http\Controllers\admin\InvoiceController::class, 'show'])->name('invoices.show');
+                Route::get('invoices/{invoice}/download', [App\Http\Controllers\admin\InvoiceController::class, 'download'])->name('invoices.download');
+                
+                // Invoice Payments
+                Route::get('invoices/{invoice}/payments/create', [App\Http\Controllers\admin\InvoicePaymentController::class, 'create'])->name('invoices.payments.create');
+                Route::post('invoices/{invoice}/payments', [App\Http\Controllers\admin\InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
+                Route::get('invoices/{invoice}/payments/history', [App\Http\Controllers\admin\InvoicePaymentController::class, 'history'])->name('invoices.payments.history');
+                Route::delete('invoices/{invoice}/payments/{payment}', [App\Http\Controllers\admin\InvoicePaymentController::class, 'destroy'])->name('invoices.payments.destroy');
+            });
+    });
+
+    // All Invoices - View all invoices across all companies
+    Route::middleware('permission:' . PermissionEnum::VIEW_FINANCIAL_PACKAGES->value)->group(function () {
+        Route::get('invoices', [App\Http\Controllers\admin\AllInvoicesController::class, 'index'])->name('invoices.index');
+        Route::get('invoices/{invoice}', [App\Http\Controllers\admin\AllInvoicesController::class, 'show'])->name('invoices.show');
+        Route::get('invoices/{invoice}/download', [App\Http\Controllers\admin\AllInvoicesController::class, 'download'])->name('invoices.download');
     });
 
     // Dynamic Company Documents - General Index (All Companies)
@@ -415,4 +435,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('companies/{company}/packages/{clientPackage}', [App\Http\Controllers\ClientPackageController::class, 'destroy'])
         ->middleware('permission:' . PermissionEnum::CANCEL_CLIENT_PACKAGES->value)
         ->name('companies.packages.cancel');
+
+    ############################### Start: Database Backup Management Routes #####################################
+    // Database Backup Management
+    Route::middleware('permission:' . PermissionEnum::MANAGE_DATABASE_BACKUP->value)->group(function () {
+        Route::get('backup', [App\Http\Controllers\admin\BackupController::class, 'index'])->name('backup.index');
+        Route::post('backup/create', [App\Http\Controllers\admin\BackupController::class, 'create'])->name('backup.create');
+        Route::post('backup/store', [App\Http\Controllers\admin\BackupController::class, 'store'])->name('backup.store');
+        Route::get('backup/list', [App\Http\Controllers\admin\BackupController::class, 'list'])->name('backup.list');
+        Route::get('backup/download/{filename}', [App\Http\Controllers\admin\BackupController::class, 'download'])->name('backup.download');
+        Route::delete('backup/delete/{filename}', [App\Http\Controllers\admin\BackupController::class, 'delete'])->name('backup.delete');
+    });
 });
