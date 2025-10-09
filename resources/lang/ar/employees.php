@@ -22,7 +22,9 @@ return [
     'religion' => 'الديانة',
     'education' => 'التعليم',
     'specialization' => 'التخصص',
-
+    'are_you_sure' => 'هل أنت متأكد؟',
+    'delete_employee_warning' => 'سيتم حذف الموظف بالكامل وجميع الوثائق المرتبطة به. هل أنت متأكد؟',
+    
     // Employee types
     'saudi' => 'سعودي',
     'expat' => 'مغترب',

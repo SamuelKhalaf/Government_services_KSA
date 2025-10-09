@@ -170,6 +170,7 @@ return [
     'confirm_delete' => 'هل أنت متأكد من أنك تريد حذف هذه الوثيقة؟',
     'confirm_renew' => 'هل أنت متأكد من أنك تريد تجديد هذه الوثيقة؟',
     'confirm_extend' => 'هل أنت متأكد من أنك تريد تمديد هذه الوثيقة؟',
+    'delete_document_warning' => 'هل أنت متأكد من أنك تريد حذف هذه الوثيقة؟ لا يمكن التراجع عن هذا الإجراء.',
 
     // Reminder Information
     'reminder_information' => 'معلومات التذكير',

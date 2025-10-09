@@ -22,7 +22,8 @@ return [
     'religion' => 'Religion',
     'education' => 'Education',
     'specialization' => 'Specialization',
-
+    'are_you_sure' => 'Are you sure?',
+    'delete_employee_warning' => 'This action will delete the employee and all associated documents. Are you sure?',
     // Employee types
     'saudi' => 'Saudi',
     'expat' => 'Expatriate',

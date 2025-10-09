@@ -381,11 +381,19 @@ var KTCompaniesList = function () {
     var initDeleteModal = function () {
         if (!deleteModal) return;
 
-        $(deleteModal).on('show.bs.modal', function (e) {
-            var button = e.relatedTarget;
-            var companyId = $(button).data('company-id');
-            var form = $(this).find('form');
-            form.attr('action', '{{ route("admin.companies.destroy", ":id") }}'.replace(':id', companyId));
+        // Handle modal close buttons
+        deleteModal.querySelectorAll('[data-kt-companies-modal-action="close"]').forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                $('#kt_modal_delete_company').modal('hide');
+            });
+        });
+
+        deleteModal.querySelectorAll('[data-kt-companies-modal-action="cancel"]').forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                $('#kt_modal_delete_company').modal('hide');
+            });
         });
     }
 
@@ -398,15 +406,14 @@ var KTCompaniesList = function () {
             d.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                // Select parent row
-                const parent = e.target.closest('tr');
+                // Get company ID from the clicked element
+                const companyId = e.currentTarget.dataset.companyId;
+                
+                // Set form action with the company ID
+                deleteForm.action = '{{ route("admin.companies.destroy", ":id") }}'.replace(':id', companyId);
 
                 // Show modal
                 $('#kt_modal_delete_company').modal('show');
-
-                // Set company ID for deletion
-                const companyId = e.target.dataset.companyId;
-                deleteForm.action = deleteForm.action.replace(':id', companyId);
             })
         });
     }

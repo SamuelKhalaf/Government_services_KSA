@@ -18,7 +18,7 @@
                         </a>
                         
                         @auth
-                        <a href="{{ route('home') }}" class="nav-link w-inline-block">
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link w-inline-block">
                             <div class="nav-text">{{ __('home.nav.dashboard') }}</div>
                         </a>
                         @else

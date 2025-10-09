@@ -169,6 +169,7 @@ return [
     'confirm_delete' => 'Are you sure you want to delete this document?',
     'confirm_renew' => 'Are you sure you want to renew this document?',
     'confirm_extend' => 'Are you sure you want to extend this document?',
+    'delete_document_warning' => 'Are you sure you want to delete this document? This action cannot be undone.',
 
     // Reminder Information
     'reminder_information' => 'Reminder Information',

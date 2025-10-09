@@ -307,12 +307,29 @@ class CompanyDocumentController extends Controller
 
             DB::commit();
 
+            // Return JSON for AJAX requests
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => __('Document deleted successfully.')
+                ]);
+            }
+
             return redirect()
                 ->route('admin.companies.documents.index', $company)
                 ->with('success', __('Document deleted successfully.'));
 
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            // Return JSON error for AJAX requests
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('An error occurred while deleting the document. Please try again.')
+                ], 500);
+            }
+            
             return back()->with('error', __('An error occurred while deleting the document. Please try again.'));
         }
     }

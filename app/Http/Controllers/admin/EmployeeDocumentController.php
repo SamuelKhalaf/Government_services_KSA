@@ -333,11 +333,28 @@ class EmployeeDocumentController extends Controller
 
             DB::commit();
 
+            // Return JSON for AJAX requests
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => __('documents.document_deleted_successfully')
+                ]);
+            }
+
             return redirect()
                 ->route('admin.employees.show', $employee)
                 ->with('success', __('documents.document_deleted_successfully'));
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            // Return JSON error for AJAX requests
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('documents.error_deleting_document')
+                ], 500);
+            }
+            
             return back()->with('error', __('documents.error_deleting_document'));
         }
     }

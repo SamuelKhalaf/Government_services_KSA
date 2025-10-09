@@ -339,6 +339,49 @@
     <!--end::Content-->
 </div>
 <!--end::Content wrapper-->
+
+<!--begin::Modals-->
+<!--begin::Modal - Delete Employee-->
+<div class="modal fade" id="kt_modal_delete_employee" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="fw-bold">{{ __('employees.delete_employee') }}</h2>
+                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-employees-modal-action="close">
+                    <i class="fas fa-times fs-1"></i>
+                </div>
+            </div>
+            <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                <form id="kt_modal_delete_employee_form" class="form" action="" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="fv-row mb-7">
+                        <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
+                            <i class="fas fa-info-circle fs-2tx text-warning me-4"></i>
+                            <div class="d-flex flex-stack flex-grow-1">
+                                <div class="fw-semibold">
+                                    <h4 class="text-gray-900 fw-bold">{{ __('employees.are_you_sure') }}</h4>
+                                    <div class="fs-6 text-gray-700">{{ __('employees.delete_employee_warning') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center pt-15">
+                        <button type="reset" class="btn btn-light me-3" data-kt-employees-modal-action="cancel">{{ __('common.cancel') }}</button>
+                        <button type="submit" class="btn btn-danger" data-kt-employees-modal-action="submit">
+                            <span class="indicator-label">{{ __('common.delete') }}</span>
+                            <span class="indicator-progress">{{ __('employees.please_wait') }}
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Modal - Delete Employee-->
+<!--end::Modals-->
 @endsection
 
 @push('scripts')
@@ -350,8 +393,50 @@ var KTEmployeesList = function () {
     // Define shared variables
     var table = document.getElementById('kt_employees_table');
     var filterForm = document.querySelector('[data-kt-employees-table-filter="form"]');
+    var deleteModal = document.getElementById('kt_modal_delete_employee');
+    var deleteForm = document.getElementById('kt_modal_delete_employee_form');
 
     // Private functions
+    var initDeleteModal = function () {
+        if (!deleteModal) return;
+
+        // Handle modal close buttons
+        deleteModal.querySelectorAll('[data-kt-employees-modal-action="close"]').forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                $('#kt_modal_delete_employee').modal('hide');
+            });
+        });
+
+        deleteModal.querySelectorAll('[data-kt-employees-modal-action="cancel"]').forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                $('#kt_modal_delete_employee').modal('hide');
+            });
+        });
+    }
+
+    var handleDeleteActions = function () {
+        // Select all delete buttons
+        const deleteButtons = table.querySelectorAll('[data-kt-employees-table-filter="delete_row"]');
+
+        deleteButtons.forEach(d => {
+            // Delete button on click
+            d.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Get employee ID from the clicked element
+                const employeeId = e.currentTarget.dataset.employeeId;
+                
+                // Set form action with the employee ID
+                deleteForm.action = '{{ route("admin.employees.destroy", ":id") }}'.replace(':id', employeeId);
+
+                // Show modal
+                $('#kt_modal_delete_employee').modal('show');
+            })
+        });
+    }
+
     var handleSearchDatatable = function () {
         const filterSearch = document.querySelector('[data-kt-employees-table-filter="search"]');
         filterSearch.addEventListener('keyup', function (e) {
@@ -453,6 +538,8 @@ var KTEmployeesList = function () {
                 return;
             }
 
+            initDeleteModal();
+            handleDeleteActions();
             handleSearchDatatable();
             handleFilterDatatable();
         }

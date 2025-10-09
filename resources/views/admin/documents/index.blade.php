@@ -264,7 +264,7 @@
                                                 <!--end::Menu item-->
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
-                                                    <a href="#" class="menu-link px-3" data-kt-documents-table-filter="delete_row" data-document-id="{{ $document->id }}">{{ __('documents.delete_document') }}</a>
+                                                    <a href="#" class="menu-link px-3 text-danger" data-kt-documents-table-filter="delete_row" data-employee-id="{{ $document->employee_id }}" data-document-id="{{ $document->id }}">{{ __('documents.delete_document') }}</a>
                                                 </div>
                                                 <!--end::Menu item-->
                                             </div>
@@ -383,6 +383,89 @@
                 });
             }
 
+            var handleDeleteRows = function () {
+                // Select all delete buttons
+                const deleteButtons = table.querySelectorAll('[data-kt-documents-table-filter="delete_row"]');
+
+                deleteButtons.forEach(d => {
+                    d.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        // Get employee and document IDs
+                        const employeeId = e.currentTarget.getAttribute('data-employee-id');
+                        const documentId = e.currentTarget.getAttribute('data-document-id');
+
+                        // SweetAlert2 confirmation
+                        Swal.fire({
+                            text: "{{ __('documents.delete_document_warning') }}",
+                            icon: "warning",
+                            showCancelButton: true,
+                            buttonsStyling: false,
+                            confirmButtonText: "{{ __('common.yes') }}",
+                            cancelButtonText: "{{ __('common.no') }}",
+                            customClass: {
+                                confirmButton: "btn fw-bold btn-danger",
+                                cancelButton: "btn fw-bold btn-active-light-primary"
+                            }
+                        }).then(function (result) {
+                            if (result.value) {
+                                // Send delete request
+                                fetch(`/admin/employees/${employeeId}/documents/${documentId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        // Show success message
+                                        Swal.fire({
+                                            text: data.message || "{{ __('documents.document_deleted_successfully') }}",
+                                            icon: "success",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "{{ __('common.ok') }}",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary"
+                                            }
+                                        }).then(() => {
+                                            // Reload the page
+                                            window.location.reload();
+                                        });
+                                    } else {
+                                        // Show error message
+                                        Swal.fire({
+                                            text: data.message || "{{ __('common.error_occurred') }}",
+                                            icon: "error",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "{{ __('common.ok') }}",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary"
+                                            }
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        text: "{{ __('common.error_occurred') }}",
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "{{ __('common.ok') }}",
+                                        customClass: {
+                                            confirmButton: "btn fw-bold btn-primary"
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+
             // Helper function to update URL parameters
             function updateUrlParameter(url, param, paramVal) {
                 var newAdditionalURL = "";
@@ -416,6 +499,7 @@
 
                     handleSearchDatatable();
                     handleFilterDatatable();
+                    handleDeleteRows();
                 }
             }
         }();
