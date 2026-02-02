@@ -11,7 +11,7 @@ return [
     
     'mission' => [
         'title' => 'Our Mission',
-        'description' => 'Our mission at SolarVerse is simple: to provide comprehensive government transaction management services that simplify business operations for establishments across Saudi Arabia',
+        'description' => 'Our mission at Tebra is simple: to provide comprehensive government transaction management services that simplify business operations for establishments across Saudi Arabia',
         'items' => [
             'expert_service' => 'Deliver Expert Service',
             'fast_processing' => 'Ensure Fast Transaction Processing',
@@ -43,7 +43,7 @@ return [
     'why_choose_us' => [
         'title_line1' => 'Why',
         'title_line2' => 'Choose',
-        'title_line3' => 'SolarVerse',
+        'title_line3' => 'Tebra',
         'expert_team' => [
             'title' => 'Expert Team',
             'description' => 'Experienced professionals specializing in government procedures and regulations.',

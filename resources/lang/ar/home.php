@@ -16,7 +16,7 @@ return [
     
     'hero' => [
         'badge' => '#1 في إدارة المعاملات الحكومية',
-        'title' => 'مرحباً بك في',
+        'title' => 'مرحباً بك فى',
         'subtitle' => 'الحل الشامل لإدارة جميع معاملاتك الحكومية',
         'description' => 'نحن شريكك الموثوق في إدارة جميع المعاملات الحكومية والخدمات الإدارية للمنشآت في المملكة العربية السعودية. خبرتنا الواسعة تضمن لك إنجاز جميع معاملاتك بأسرع وقت وأقل تكلفة.',
         'dashboard' => 'لوحة التحكم',
@@ -138,8 +138,8 @@ return [
             'contact_description' => 'لنقوم بخدمتك بما يتناسب مع احتياجاتك',
             'phone_label' => 'اتصل بنا',
             'email_label' => 'راسلنا',
-            'phone_number' => '+966 50 000 0000',
-            'email_address' => 'info@SolarVerse.com',
+            'phone_number' => '+966 56 113 0606',
+            'email_address' => 'info@tebra-info.com',
             'contact_button' => 'اتصل بنا الآن',
         ],
         'most_popular' => 'الأكثر شعبية',
@@ -147,7 +147,7 @@ return [
     
     'features' => [
         'badge' => 'مميزاتنا',
-        'title' => 'لماذا تختار SolarVerse؟',
+        'title' => 'لماذا تختار Tebra؟',
         'description' => 'نحن شريكك الموثوق في إدارة المعاملات الحكومية',
         'peace_of_mind' => [
             'title' => 'راحة بال تامة',
@@ -181,8 +181,8 @@ return [
         'description' => 'فريقنا المتخصص جاهز لمساعدتك في اختيار الحل الأمثل لمنشأتك',
         'phone_label' => 'اتصل بنا',
         'email_label' => 'راسلنا',
-        'phone_number' => '+966 50 000 0000',
-        'email_address' => 'info@SolarVerse.com',
+        'phone_number' => '+966 56 113 0606',
+        'email_address' => 'info@tebra-info.com',
         'contact_now' => 'اتصل بنا الآن',
         'email_us' => 'راسلنا عبر البريد',
         'live_chat' => 'دردشة مباشرة',

@@ -10,7 +10,7 @@ return [
     
     // Home page
     'welcome_title' => 'Welcome to',
-    'solar_verse' => 'Solar Verse',
+    'solar_verse' => 'Tebra',
     'welcome_description' => 'This is your opportunity to get creative and make a name that gives readers an idea',
     'go_to_dashboard' => 'Go To Dashboard',
     'logout' => 'Logout',

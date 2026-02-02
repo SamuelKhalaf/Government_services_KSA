@@ -10,7 +10,7 @@ return [
 
     // Home page
     'welcome_title' => 'مرحباً بك في',
-    'solar_verse' => 'Solar Verse',
+    'solar_verse' => 'Tebra',
     'welcome_description' => 'هذه فرصتك لتكون مبدعاً وتصنع اسماً يعطي القراء فكرة',
     'go_to_dashboard' => 'الذهاب إلى لوحة التحكم',
     'logout' => 'تسجيل الخروج',

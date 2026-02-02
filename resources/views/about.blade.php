@@ -1,7 +1,7 @@
 @extends('layouts.frontend')
 
-@section('title', 'About SolarVerse - Government Transaction Management')
-@section('description', 'Learn about SolarVerse, your trusted partner for government transaction management services in Saudi Arabia')
+@section('title', 'About Tebra - Government Transaction Management')
+@section('description', 'Learn about Tebra, your trusted partner for government transaction management services in Saudi Arabia')
 @section('page-id', '66fff006bbdc69367f9ec80f')
 
 @section('content')

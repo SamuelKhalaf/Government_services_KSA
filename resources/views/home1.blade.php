@@ -7,7 +7,7 @@
     <div class="container">
         <!-- Brand -->
         <a class="navbar-brand fw-bold fs-2" href="{{ route('home') }}">
-            <img src="{{asset('assets/media/logos/solar_verse_small.png')}}" alt="SOLARVERSE" height="45" class="me-3">
+            <img src="{{asset('assets/media/logos/logo-sm.png')}}" alt="TEBRA" height="45" class="me-3">
             <span class="text-warning fs-1 fw-bold">Solar</span><span class="text-danger fs-1 fw-bold">Verse</span>
         </a>
         
@@ -967,7 +967,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Logo Placeholder with Animation -->
                     <div class="hero-logo-container mb-6">
                         <div class="logo-placeholder floating d-inline-block">
-                            <img src="{{asset('assets/media/logos/solar_verse_small.png')}}" alt="SOLARVERSE" class="img-fluid" style="max-height: 200px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
+                            <img src="{{asset('assets/media/logos/logo-sm.png')}}" alt="TEBRA" class="img-fluid" style="max-height: 200px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
                         </div>
                     </div>
 

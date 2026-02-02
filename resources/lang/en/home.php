@@ -138,8 +138,8 @@ return [
             'contact_description' => 'To serve you according to your needs',
             'phone_label' => 'Phone',
             'email_label' => 'Email',
-            'phone_number' => '+966 50 000 0000',
-            'email_address' => 'info@solarverse.com',
+            'phone_number' => '+966 56 113 0606',
+            'email_address' => 'info@tebra-info.com',
             'contact_button' => 'Contact Us Now',
         ],
         'most_popular' => 'Most Popular',
@@ -147,7 +147,7 @@ return [
     
     'features' => [
         'badge' => 'Our Features',
-        'title' => 'Why Choose SolarVerse?',
+        'title' => 'Why Choose Tebra?',
         'description' => 'We are your trusted partner in managing government transactions',
         'peace_of_mind' => [
             'title' => 'Complete Peace of Mind',
@@ -181,8 +181,8 @@ return [
         'description' => 'Our specialized team is ready to help you choose the optimal solution for your establishment',
         'phone_label' => 'Call Us',
         'email_label' => 'Email Us',
-        'phone_number' => '+966 50 000 0000',
-        'email_address' => 'info@solarverse.com',
+        'phone_number' => '+966 56 113 0606',
+        'email_address' => 'info@tebra-info.com',
         'contact_now' => 'Contact Us Now',
         'email_us' => 'Email Us',
         'live_chat' => 'Live Chat',

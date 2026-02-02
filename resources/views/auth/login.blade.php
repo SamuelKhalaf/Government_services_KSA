@@ -13,7 +13,7 @@
             <div class="d-flex flex-center flex-lg-start flex-column">
                 <!--begin::Logo-->
                 <a class="mb-7">
-                    <img alt="Logo" src="{{asset('assets/media/logos/solar_verse.png')}}" style="width: 400px" />
+                    <img alt="Logo" src="{{asset('assets/media/logos/logo.png')}}" style="width: 400px" />
                 </a>
                 <!--end::Logo-->
                 <!--begin::Title-->

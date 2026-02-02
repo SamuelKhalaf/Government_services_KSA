@@ -6,9 +6,9 @@
     <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
         <!--begin::Logo image-->
         <a href="">
-            <img alt="Logo" src="{{asset('assets/media/logos/solar_verse.png')}}"
+            <img alt="Logo" src="{{asset('assets/media/logos/logo.png')}}"
                  class="app-sidebar-logo-default" style="width: 230px !important;"/>
-            <img alt="Logo" src="{{asset('assets/media/logos/solar_verse_small.png')}}"
+            <img alt="Logo" src="{{asset('assets/media/logos/logo-sm.png')}}"
                  class="h-50px app-sidebar-logo-minimize"/>
         </a>
         <!--end::Logo image-->

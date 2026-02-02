@@ -2,12 +2,12 @@
 <html data-wf-domain="omidic.webflow.io" data-wf-page="@yield('page-id', '66fe2653492e7505da575a52')" data-wf-site="66faa9e8ff11833f7081087e" data-wf-status="1" lang="{{ app()->getLocale() }}">
     <head>
         <meta charset="utf-8"/>
-        <title>@yield('title', 'SolarVerse')</title>
+        <title>@yield('title', 'Tebra')</title>
         <meta content="@yield('description', 'Government transaction management services in Saudi Arabia')" name="description"/>
-        <meta content="@yield('og-title', 'SolarVerse')" property="og:title"/>
+        <meta content="@yield('og-title', 'Tebra')" property="og:title"/>
         <meta content="@yield('og-description', 'Government transaction management services in Saudi Arabia')" property="og:description"/>
         <meta content="@yield('og-image', '/assets/media/images/6893a1ee63458c918744d13f_open_20graph_20image_20_1200x630_.webp')" property="og:image"/>
-        <meta content="@yield('twitter-title', 'SolarVerse')" property="twitter:title"/>
+        <meta content="@yield('twitter-title', 'Tebra')" property="twitter:title"/>
         <meta content="@yield('twitter-description', 'Government transaction management services in Saudi Arabia')" property="twitter:description"/>
         <meta content="@yield('twitter-image', '/assets/media/images/6893a1ee63458c918744d13f_open_20graph_20image_20_1200x630_.webp')" property="twitter:image"/>
         <meta property="og:type" content="website"/>
@@ -27,8 +27,8 @@
                 ("ontouchstart"in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
             }(window, document);
         </script>
-        <link href="/assets/media/logos/solar_verse_small.png" rel="shortcut icon" type="image/png"/>
-        <link href="/assets/media/logos/solar_verse_small.png" rel="apple-touch-icon"/>
+        <link href="/assets/media/logos/logo-sm.png" rel="shortcut icon" type="image/png"/>
+        <link href="/assets/media/logos/logo-sm.png" rel="apple-touch-icon"/>
     </head>
     <body>
         <div class="page-wrapper">

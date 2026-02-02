@@ -3,7 +3,7 @@
         <div class="nav-content-wrap">
             <div class="navbar-logo-link-wrap">
                 <a href="/" class="navbar-brand-logo-wrap w-inline-block">
-                    <img src="/assets/media/logos/solar_verse.png" loading="lazy" alt="SolarVerse Company" class="nav-brand-logo"/>
+                    <img src="/assets/media/logos/logo.png" loading="lazy" alt="Tebra Company" class="nav-brand-logo"/>
                 </a>
                 <nav role="navigation" class="nav-menu w-nav-menu">
                     <div class="nav-link-wrap" @if(app()->getLocale() == 'ar') style="direction: rtl;" @endif>

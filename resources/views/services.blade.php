@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'SolarVerse - Services')
+@section('title', 'Tebra - Services')
 @section('description', 'Comprehensive government transaction services for small, medium, and large companies in Saudi Arabia')
 @section('page-id', '67005d7f5e67dd5e9f7afda4')
 

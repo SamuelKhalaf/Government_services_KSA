@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'SolarVerse - Government Transaction Management')
+@section('title', 'Tebra - Government Transaction Management')
 @section('description', 'Complete solutions for all your government transaction needs in Saudi Arabia')
 @section('page-id', '66fe2653492e7505da575a52')
 
@@ -34,7 +34,7 @@
             <div class="hero-v2-content-wrap">
                 <div class="hero-v2-header-wrap">
                     <div class="hero-v2-header-block">
-                        <h1 data-w-id="360f05cf-10a7-9dac-ccc6-a5c3b08b325e" class="large-title">{{ __('home.hero.title') }} SolarVerse</h1>
+                        <h1 data-w-id="360f05cf-10a7-9dac-ccc6-a5c3b08b325e" class="large-title">{{ __('home.hero.title') }} Tebra</h1>
                     </div>
                     <div class="hero-v2-sub-header-block">
                         <div class="body-text-medium">{{ __('home.hero.subtitle') }}</div>
