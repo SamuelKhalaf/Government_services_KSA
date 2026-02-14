@@ -4,16 +4,7 @@
         <meta charset="utf-8"/>
         <title>@yield('title', 'Tebra')</title>
         <meta content="@yield('description', 'Government transaction management services in Saudi Arabia')" name="description"/>
-        <meta content="@yield('og-title', 'Tebra')" property="og:title"/>
-        <meta content="@yield('og-description', 'Government transaction management services in Saudi Arabia')" property="og:description"/>
-        <meta content="@yield('og-image', '/assets/media/images/6893a1ee63458c918744d13f_open_20graph_20image_20_1200x630_.webp')" property="og:image"/>
-        <meta content="@yield('twitter-title', 'Tebra')" property="twitter:title"/>
-        <meta content="@yield('twitter-description', 'Government transaction management services in Saudi Arabia')" property="twitter:description"/>
-        <meta content="@yield('twitter-image', '/assets/media/images/6893a1ee63458c918744d13f_open_20graph_20image_20_1200x630_.webp')" property="twitter:image"/>
-        <meta property="og:type" content="website"/>
-        <meta content="summary_large_image" name="twitter:card"/>
         <meta content="width=device-width, initial-scale=1" name="viewport"/>
-        <meta content="Webflow" name="generator"/>
         <link href="/assets/css/webflow_omidic.webflow.shared.7d7ba27fe.css" rel="stylesheet" type="text/css"/>
         <!--begin::FontAwesome Icons-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
