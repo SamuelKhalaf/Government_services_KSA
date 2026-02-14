@@ -185,4 +185,30 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Social Media Links
+    |--------------------------------------------------------------------------
+    |
+    | These values are used for the floating social media icons on the public
+    | website. You can configure these in your .env file.
+    |
+    */
+
+    'facebook_url' => env('FACEBOOK_URL', 'https://www.facebook.com/profile.php?id=61587236321020'),
+    'instagram_url' => env('INSTAGRAM_URL', 'https://www.instagram.com/tebra.info?igsh=Y2hjcm9hbnVjdnN5'),
+    'whatsapp_number' => env('WHATSAPP_NUMBER', '+966561130606'),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Company Legal Information
+    |--------------------------------------------------------------------------
+    |
+    | Tax number and commercial registration number for display in contact section
+    |
+    */
+    
+    'tax_number' => env('TAX_NUMBER', '313112974100003'),
+    'commercial_registration_number' => env('COMMERCIAL_REGISTRATION_NUMBER', '7050662324'),
+
 ];

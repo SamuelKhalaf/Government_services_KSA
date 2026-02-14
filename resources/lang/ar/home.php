@@ -186,6 +186,8 @@ return [
         'contact_now' => 'اتصل بنا الآن',
         'email_us' => 'راسلنا عبر البريد',
         'live_chat' => 'دردشة مباشرة',
+        'tax_number_label' => 'الرقم الضريبي',
+        'commercial_registration_label' => 'رقم السجل التجاري',
     ],
     
     'registration' => [

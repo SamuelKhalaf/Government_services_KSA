@@ -186,6 +186,8 @@ return [
         'contact_now' => 'Contact Us Now',
         'email_us' => 'Email Us',
         'live_chat' => 'Live Chat',
+        'tax_number_label' => 'Tax Number',
+        'commercial_registration_label' => 'Commercial Registration Number',
     ],
     
     'registration' => [

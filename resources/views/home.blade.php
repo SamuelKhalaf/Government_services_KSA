@@ -21,6 +21,120 @@
             transform: translate3d(0, -50%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
         }
     }
+    
+    /* Contact Info Grid Styles */
+    .contact-info-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 48px;
+    }
+    
+    .contact-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+    
+    @media (min-width: 1200px) {
+        .contact-info-grid {
+            padding: 0;
+        }
+    }
+    
+    .contact-info-card {
+        background: linear-gradient(135deg, rgba(102, 205, 204, 0.1) 0%, rgba(102, 205, 204, 0.05) 100%);
+        border: 1px solid rgba(102, 205, 204, 0.2);
+        border-radius: 16px;
+        padding: 32px 24px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .contact-info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102, 205, 204, 0.2);
+        border-color: rgba(102, 205, 204, 0.4);
+    }
+    
+    .contact-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #66cdcc 0%, #4fb3b2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 4px 15px rgba(102, 205, 204, 0.3);
+        transition: transform 0.3s ease;
+    }
+    
+    .contact-info-card:hover .contact-icon-wrapper {
+        transform: scale(1.1);
+    }
+    
+    .contact-icon-wrapper i {
+        color: white;
+        font-size: 24px;
+    }
+    
+    .contact-card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #333;
+    }
+    
+    .contact-card-link {
+        color: #66cdcc;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        word-break: break-word;
+    }
+    
+    .contact-card-link:hover {
+        color: #4fb3b2;
+    }
+    
+    .contact-card-value {
+        color: #66cdcc;
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .contact-info-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 32px;
+        }
+        .contact-info-card {
+            padding: 24px 20px;
+        }
+    }
+    
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .contact-info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1025px) {
+        .contact-info-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
 </style>
 @endsection
 
@@ -945,22 +1059,59 @@
                                                 <h2 class="mid-title">{{ __('home.contact.title') }}</h2>
                                             </div>
                                         </div>
-                                        <div class="sub-header-wrap top-margine-meidum">
-                                            <div class="body-text-medium">{{ __('home.contact.description') }}</div>
-                                        </div>
-                                        <div class="buttons-wrap top-margine-32" style="justify-content: center; gap: 20px; margin-top: 32px;">
-                                            <div style="text-align: center;">
-                                                <p class="body-text-medium"><strong>{{ __('home.contact.phone_label') }}:</strong></p>
-                                                <p class="body-text-medium"><a href="tel:{{ __('home.contact.phone_number') }}" style="color: #66cdcc;">{{ __('home.contact.phone_number') }}</a></p>
-                                            </div>
-                                            <div style="text-align: center;">
-                                                <p class="body-text-medium"><strong>{{ __('home.contact.email_label') }}:</strong></p>
-                                                <p class="body-text-medium"><a href="mailto:{{ __('home.contact.email_address') }}" style="color: #66cdcc;">{{ __('home.contact.email_address') }}</a></p>
-                                            </div>
-                                        </div>
+                        <div class="sub-header-wrap top-margine-meidum">
+                            <div class="body-text-medium">{{ __('home.contact.description') }}</div>
+                        </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="contact-info-wrapper" style="width: 100%; display: flex; justify-content: center; margin-top: 48px;">
+                                <div class="contact-info-grid">
+                            <!-- Phone Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon-wrapper">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <h4 class="contact-card-title">{{ __('home.contact.phone_label') }}</h4>
+                                <a href="tel:{{ __('home.contact.phone_number') }}" class="contact-card-link">{{ __('home.contact.phone_number') }}</a>
+                            </div>
+                            
+                            <!-- Email Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon-wrapper">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <h4 class="contact-card-title">{{ __('home.contact.email_label') }}</h4>
+                                <a href="mailto:{{ __('home.contact.email_address') }}" class="contact-card-link">{{ __('home.contact.email_address') }}</a>
+                            </div>
+                            
+                            @if(config('app.tax_number'))
+                            <!-- Tax Number Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon-wrapper">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <h4 class="contact-card-title">{{ __('home.contact.tax_number_label') }}</h4>
+                                <p class="contact-card-value">{{ config('app.tax_number') }}</p>
+                            </div>
+                            @endif
+                            
+                            @if(config('app.commercial_registration_number'))
+                            <!-- Commercial Registration Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon-wrapper">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h4 class="contact-card-title">{{ __('home.contact.commercial_registration_label') }}</h4>
+                                <p class="contact-card-value">{{ config('app.commercial_registration_number') }}</p>
+                            </div>
+                            @endif
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

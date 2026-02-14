@@ -1870,6 +1870,40 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             </div>
                         </div>
+                        @if(config('app.tax_number'))
+                        <div class="col-md-6">
+                            <div class="bg-white bg-opacity-10 rounded-3 p-4 backdrop-blur">
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-40px me-3">
+                                        <div class="symbol-label bg-warning text-white rounded-circle">
+                                            <i class="fas fa-file-invoice fs-5"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-white mb-2 fs-5">{{ __('home.contact.tax_number_label') }}</h6>
+                                        <p class="text-white-75 mb-0 fs-6">{{ config('app.tax_number') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                        @if(config('app.commercial_registration_number'))
+                        <div class="col-md-6">
+                            <div class="bg-white bg-opacity-10 rounded-3 p-4 backdrop-blur">
+                                <div class="d-flex align-items-center">
+                                    <div class="symbol symbol-40px me-3">
+                                        <div class="symbol-label bg-warning text-white rounded-circle">
+                                            <i class="fas fa-building fs-5"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-white mb-2 fs-5">{{ __('home.contact.commercial_registration_label') }}</h6>
+                                        <p class="text-white-75 mb-0 fs-6">{{ config('app.commercial_registration_number') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

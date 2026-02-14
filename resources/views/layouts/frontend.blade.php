@@ -27,8 +27,14 @@
                 ("ontouchstart"in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
             }(window, document);
         </script>
-        <link href="/assets/media/logos/logo-sm.png" rel="shortcut icon" type="image/png"/>
-        <link href="/assets/media/logos/logo-sm.png" rel="apple-touch-icon"/>
+        <!-- Favicon Configuration for Search Engines -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+        <link rel="icon" type="image/x-icon" sizes="16x16" href="/assets/media/logos/favicon.ico"/>
+        <link rel="icon" type="image/x-icon" sizes="32x32" href="/assets/media/logos/favicon.ico"/>
+        <link rel="icon" type="image/png" sizes="192x192" href="/assets/media/logos/logo-sm.png"/>
+        <link rel="icon" type="image/png" sizes="512x512" href="/assets/media/logos/logo.png"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/media/logos/logo-sm.png"/>
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
     </head>
     <body>
         <div class="page-wrapper">
@@ -42,6 +48,9 @@
                 @include('partials.footer')
             </div>
         </div>
+        
+        <!-- Floating Social Media Icons -->
+        @include('partials.floating-social-icons')
         
         <!-- JavaScript Files -->
         <script src="/assets/js/jquery-3.5.1.min.dc5e7f18c8.js" type="text/javascript"></script>
