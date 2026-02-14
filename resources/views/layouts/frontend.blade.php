@@ -27,14 +27,8 @@
                 ("ontouchstart"in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
             }(window, document);
         </script>
-        <!-- Favicon Configuration for Search Engines -->
-        <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-        <link rel="icon" type="image/x-icon" sizes="16x16" href="/assets/media/logos/favicon.ico"/>
-        <link rel="icon" type="image/x-icon" sizes="32x32" href="/assets/media/logos/favicon.ico"/>
-        <link rel="icon" type="image/png" sizes="192x192" href="/assets/media/logos/logo-sm.png"/>
-        <link rel="icon" type="image/png" sizes="512x512" href="/assets/media/logos/logo.png"/>
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/media/logos/logo-sm.png"/>
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+        <link href="{{ asset('favicon.ico') }}" rel="shortcut icon" type="image/x-icon"/>
+        <link href="{{ asset('assets/media/logos/favicon.ico') }}" rel="apple-touch-icon"/>
     </head>
     <body>
         <div class="page-wrapper">
