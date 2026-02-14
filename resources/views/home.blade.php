@@ -462,7 +462,7 @@
                                                 <div class="stats-counter">
                                                     <div class="counter">
                                                         <div style="-webkit-transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="counter-train upper">
-                                                            <h2 class="large-title">5</h2>
+                                                            <h2 class="large-title">2</h2>
                                                             <h2 class="large-title">6</h2>
                                                             <h2 class="large-title">7</h2>
                                                             <h2 class="large-title">4</h2>
@@ -500,21 +500,14 @@
                                                 <div class="stats-counter">
                                                     <div class="counter">
                                                         <div style="-webkit-transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, -400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="counter-train upper">
-                                                            <h2 class="large-title c-white">1</h2>
+                                                            <h2 class="large-title c-white">2</h2>
                                                             <h2 class="large-title c-white">6</h2>
                                                             <h2 class="large-title c-white">7</h2>
                                                             <h2 class="large-title c-white">4</h2>
                                                             <h2 class="large-title c-white">9</h2>
                                                             <h2 class="large-title c-white">5</h2>
                                                         </div>
-                                                        <div style="-webkit-transform:translate3d(0, 400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 400%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="counter-train lower">
-                                                            <h2 class="large-title c-white">0</h2>
-                                                            <h2 class="large-title c-white">2</h2>
-                                                            <h2 class="large-title c-white">2</h2>
-                                                            <h2 class="large-title c-white">8</h2>
-                                                            <h2 class="large-title c-white">4</h2>
-                                                            <h2 class="large-title c-white">0</h2>
-                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
                                                 <div class="stats-plus-wrap">
